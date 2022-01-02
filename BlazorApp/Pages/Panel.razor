@@ -1,0 +1,13 @@
+<div class="panel-header">
+  <b>@Header</b>
+</div>
+<div class="panel-body">
+  @Body
+</div>
+  
+@code {
+    [Parameter]
+    public RenderFragment Header { get; set; }
+    [Parameter]
+    public RenderFragment Body { get; set; }
+}

@@ -1,0 +1,43 @@
+@using SiRandomizer.Data
+
+<Panel>
+    <Header>
+        <input type="checkbox" @bind="Group.Selected" >@Group.Name
+    </Header>
+    <Body>
+        <table>
+            @{
+                var rows = Group
+                    .Where((x) => {
+                        bool display = true;
+                        if(x is IExpansionContent item) {
+                            display = item.Expansion == null ||
+                                item.Expansion.Selected;
+                        }
+                        return display;
+                    })
+                    .Select((x, i) => new { x, i })
+                    .GroupBy(p => (p.i / 2), p => p.x);
+            }
+            @foreach(var row in rows)
+            {
+                <tr>
+                    @foreach (var item in row)
+                    {
+                        <CascadingValue Value="item" Name="Item">
+                            <td><SelectableItem /></td>
+                        </CascadingValue>
+                    }
+                </tr>
+            }
+        </table>
+    </Body>
+</Panel>
+
+@code {
+    [CascadingParameter(Name = "Group")]
+    public OptionGroup Group { get; set; }
+
+    [CascadingParameter(Name = "Expansions")]
+    public OptionGroup Expansions { get; set; }
+}

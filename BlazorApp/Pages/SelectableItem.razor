@@ -1,0 +1,37 @@
+@using Data
+
+<input type="checkbox" @bind="Item.Selected" >@Item.Name
+
+@if(Item is IExpansionContent itemEx && 
+    itemEx.Expansion != null &&
+    string.IsNullOrEmpty(itemEx.Expansion.Tag) == false) {
+    <span class="si-tag expansion-tag-@itemEx.Expansion.Tag">@itemEx.Expansion.Tag</span>
+}
+@if(Item is IDifficultyModifier difficultyMod) {
+    <span class="si-tag">+@difficultyMod.DifficultyModifier</span>
+}
+@if(children != null) {
+    <table>
+        @foreach (var child in children) {
+            <tr>
+                <CascadingValue Value="child" Name="Item">
+                    <td><SelectableItem /></td>
+                </CascadingValue>
+            </tr>
+        }
+    </table>
+}
+
+@code {
+    [CascadingParameter(Name = "Item")]
+    public INamedComponent Item { 
+        set {
+            if(value is IComponentCollection<INamedComponent> collection) {
+                children = collection;
+            }
+            values = value; }
+        get { return values; } }
+
+    private INamedComponent values;
+    private IEnumerable<INamedComponent> children;        
+}

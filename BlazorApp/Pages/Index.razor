@@ -1,0 +1,181 @@
+﻿@page "/"
+
+@using SiRandomizer.Data
+@using SiRandomizer.Services
+@inject ConfigurationService ConfigurationService
+@inject SetupGenerator SetupGenerator
+
+<h2>Spirit Island Randomizer</h2>
+
+<div class="container">
+@if (config == null)
+{
+  <div class="row">
+    <div class="col-12">
+        <em>Loading...</em>
+    </div>
+  </div>
+}
+else if (setup == null)
+{  
+    <EditForm Model=@config>
+        <div class="row">
+            <div class="col-4">
+                <Panel>
+                    <Header>
+                        Player Count
+                    </Header>
+                    <Body>    
+                        <InputNumber class="numeric-2" @bind-Value=config.Players/>
+                    </Body>
+                </Panel>
+            </div>
+            <div class="col-4">
+                <Panel>
+                    <Header>
+                        Difficulty
+                    </Header>
+                    <Body>
+                        <span>Min<InputNumber class="numeric-2" @bind-Value=config.MinDifficulty/></span>
+                        <span>Max<InputNumber class="numeric-2" @bind-Value=config.MaxDifficulty/></span>
+                    </Body>
+                </Panel>
+            </div>
+            <div class="col-4">
+                <Panel>
+                    <Header>
+                        Allow Combined Adversaries
+                    </Header>
+                    <Body>
+                        <label>Allow?<input type="checkbox" @bind="config.AllowCombinedAdversaries"></label>
+                    </Body>
+                </Panel>
+            </div>
+        </div>  
+
+        <div class="row">
+            <div class="col-12">
+                <CascadingValue Value="expansions" Name="Group">
+                    <SelectableGroup />
+                </CascadingValue>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <CascadingValue Value="spirits" Name="Group">
+                    <SelectableGroup />
+                </CascadingValue>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-6">
+                <CascadingValue Value="maps" Name="Group">
+                    <SelectableGroup />
+                </CascadingValue>
+                <CascadingValue Value="boards" Name="Group">
+                    <SelectableGroup />
+                </CascadingValue>
+            </div>
+            <div class="col-6">
+                <CascadingValue Value="scenarios" Name="Group">
+                    <SelectableGroup />
+                </CascadingValue>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <CascadingValue Value="adversaries" Name="Group">
+                    <SelectableGroup />
+                </CascadingValue>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <button @onclick="GenerateSetup">
+                    Generate
+                </button>
+            </div>
+        </div>
+    </EditForm>
+} 
+else
+{
+    <div class="row">
+        <div class="col-12">
+            @setup.Setup.Map.Name
+            <br>
+            @setup.Setup.Scenario.Name
+            <br>
+            @setup.Setup.LeadingAdversary.Adversary.Name @setup.Setup.LeadingAdversary.Level
+
+            @if(@setup.Setup.SupportingAdversary != null)
+            {
+                <br>
+                @setup.Setup.SupportingAdversary.Adversary.Name @setup.Setup.SupportingAdversary.Level
+            }
+
+            @foreach (var board in setup.Setup.BoardSetups)
+            {
+                <br>
+                @board.Board.Name                
+                <br>
+                @(board.Spirit == null ? "No Spirit" : board.Spirit.Name);
+                <br>
+            }
+
+            <br>
+            @setup.DifficultyOptionsConsidered            
+            <br>
+            @setup.BoardSetupOptionsConsidered
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <button @onclick="ClearSetup">
+                Edit Setup
+            </button>
+            <button @onclick="GenerateSetup">
+                Re-Generate
+            </button>
+        </div>
+    </div>
+}
+</div>
+
+@code {
+    private OverallConfiguration config;
+    private OptionGroup expansions;
+    private OptionGroup spirits;
+    private OptionGroup adversaries;
+    private OptionGroup boards;    
+    private OptionGroup maps;
+    private OptionGroup scenarios;
+    private SetupResult setup;
+
+    protected override async Task OnInitializedAsync()
+    {
+        config = await ConfigurationService.GetConfigurationAsync();
+        expansions = config.Expansions;
+        spirits = config.Spirits;
+        adversaries = config.Adversaries;
+        boards = config.Boards;
+        maps = config.Maps;
+        scenarios = config.Scenarios;
+
+        expansions.PropertyChanged += (sender, args) => InvokeAsync(StateHasChanged);        
+    }
+
+    protected void GenerateSetup()
+    {
+        setup = SetupGenerator.Generate(config);
+    }
+    protected void ClearSetup()
+    {
+        setup = null;
+    }
+}
