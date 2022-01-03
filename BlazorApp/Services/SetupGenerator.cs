@@ -127,8 +127,6 @@ namespace SiRandomizer.Services
         /// <param name="config"></param>
         /// <returns></returns>
         private IEnumerable<GameSetup> GetSetups(OverallConfiguration config) {
-            List<GameSetup> setups = new List<GameSetup>();
-
             // Get the possible scenarios, maps and adversaries.
             var scenarios = config.Scenarios
                 .Where(s => s.Selected).Cast<Scenario>();
@@ -138,54 +136,69 @@ namespace SiRandomizer.Services
                 .Where(s => s.Selected).Cast<Adversary>()
                 .SelectMany(a => a.Levels);
             // Get the possible supporting adversaries.
-            List<AdversaryLevel> supportingAdversaryLevels = new List<AdversaryLevel>() { null };
-            if(config.AllowCombinedAdversaries) {
-                supportingAdversaryLevels.AddRange(adversaryLevels);
-            }
+            List<AdversaryLevel> supportingAdversaryLevels = adversaryLevels.ToList();
             // Get the possible numbers of additional boards.
             var additionalBoards = new List<int>();
             for(int i = 0; i <= config.MaxAdditionalBoards; i++) {
                 additionalBoards.Add(i);
             }
 
-            // Join all the various options so that we have all possible permutations.
+            // Join the various options so that we have all possible permutations.
             var joined1 = scenarios.Join(maps, s => true, m => true, 
                 (s, m) => new { Scenario = s, Map = m });
             var joined2 = joined1.Join(adversaryLevels, j => true, a => true, 
-                (j, a) => new { Scenario = j.Scenario, Map = j.Map, LeadingAdversary = a });
-            // We fiddle with the conditions of the third join in order to ensure that 
-            // the leading and supporting adversary will not be the same.
-            var joined3 = joined2.Join(supportingAdversaryLevels, j => j.LeadingAdversary.Adversary.Name, a => a.Adversary.Name, 
-                (j, a) => new { Scenario = j.Scenario, Map = j.Map, LeadingAdversary = j.LeadingAdversary, SupportingAdversary = a },
-                new BlockSameSupportingAdversary());
-            var joined4 = joined3.Join(additionalBoards, j => true, a => true, 
-                (j, b) => new { Scenario = j.Scenario, Map = j.Map, LeadingAdversary = j.LeadingAdversary, SupportingAdversary = j.SupportingAdversary, AdditionalBoards = b });
+                (j, a) => new { Scenario = j.Scenario, Map = j.Map, LeadingAdversary = a });            
+            var setups = joined2.Join(additionalBoards, j => true, a => true, 
+                (j, b) => new { Scenario = j.Scenario, Map = j.Map, LeadingAdversary = j.LeadingAdversary, AdditionalBoards = b })
+                .Select(j => new GameSetup() {
+                    Scenario = j.Scenario,
+                    Map = j.Map,
+                    LeadingAdversary = j.LeadingAdversary,
+                    SupportingAdversary = Adversary.NoAdversary.Levels.First(),
+                    AdditionalBoards = j.AdditionalBoards
+                });
+            // Adding a supporting adversary is a little trickier as we want some logic to ensure that:
+            // 1. If leading adversary is 'no adversary' then supporting adversary MUST be 'no adversary'.
+            // 2. Otherwise, supporting adversary MUST be different to leading adverary.
+            if(config.AllowCombinedAdversaries) 
+            {
+                setups = AddSupportingAdveraryOptions(setups, supportingAdversaryLevels);
+            }
 
-            // Return the permutations as GameSetup instances.
-            return joined4.Select(j => new GameSetup() {
-                Scenario = j.Scenario,
-                Map = j.Map,
-                LeadingAdversary = j.LeadingAdversary,
-                SupportingAdversary = j.SupportingAdversary,
-                AdditionalBoards = j.AdditionalBoards
-            });
+            // Return the possible options as GameSetup instances.
+            return setups;
+        }
+
+        private IEnumerable<GameSetup> AddSupportingAdveraryOptions(
+            IEnumerable<GameSetup> input, 
+            List<AdversaryLevel> supportingAdversaries)
+        {
+            foreach(var entry in input)
+            {
+                // If leading adversary is 'no adversary' then supporting adversary MUST be 'no adversary'.
+                if(entry.LeadingAdversary.Adversary.Name == Adversary.NoAdversary.Name)
+                {
+                    entry.SupportingAdversary = Adversary.NoAdversary.Levels.First();
+                    yield return entry;
+                }
+                else 
+                {
+                    // Otherwise, supporting adversary MUST be different to leading adverary.
+                    foreach(var adversaryLevel in supportingAdversaries
+                        .Where(s => s.Adversary.Name != entry.LeadingAdversary.Name))
+                    {                        
+                        yield return new GameSetup()
+                        {
+                            Scenario = entry.Scenario,
+                            Map = entry.Map,
+                            LeadingAdversary = entry.LeadingAdversary,
+                            SupportingAdversary = adversaryLevel,
+                            AdditionalBoards = entry.AdditionalBoards
+                        };
+                    }
+                }
+            }
         }
     }
 
-    /// <summary>
-    /// This comparaer is used when joining the lists of leading and supporting adversaries.
-    /// We want to allow joins in all cases where the adversaries are NOT the same.
-    /// </summary>
-    public class BlockSameSupportingAdversary : IEqualityComparer<string>
-    {
-        public bool Equals(string x, string y)
-        {
-            return x != y;
-        }
-
-        public int GetHashCode([DisallowNull] string obj)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
