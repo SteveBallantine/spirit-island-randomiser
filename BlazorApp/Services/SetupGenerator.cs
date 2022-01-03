@@ -185,8 +185,8 @@ namespace SiRandomizer.Services
                 {
                     // Otherwise, supporting adversary MUST be different to leading adverary.
                     foreach(var adversaryLevel in supportingAdversaries
-                        .Where(s => s.Adversary.Name != entry.LeadingAdversary.Name))
-                    {                        
+                        .Where(s => s.Adversary.Name != entry.LeadingAdversary.Adversary.Name))
+                    {
                         yield return new GameSetup()
                         {
                             Scenario = entry.Scenario,
