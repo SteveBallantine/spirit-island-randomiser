@@ -19,6 +19,7 @@
 else if (setup == null)
 {  
     <EditForm Model=@config>
+        <DataAnnotationsValidator/>
         <div class="row">
             <div class="col-4">
                 <Panel>
@@ -172,7 +173,11 @@ else
 
     protected void GenerateSetup()
     {
-        setup = SetupGenerator.Generate(config);
+        var context = new EditContext(config);
+        if(context.Validate())
+        {
+            setup = SetupGenerator.Generate(config);
+        }
     }
     protected void ClearSetup()
     {

@@ -70,8 +70,24 @@ namespace SiRandomizer.Data
             }
             if(Players + MaxAdditionalBoards > Boards.Count(b => b.Selected))
             {
-                yield return new ValidationResult("Player count + max additional boards must by no bigger than the number of selected boards",
+                yield return new ValidationResult("Player count + max additional boards must be no bigger than the number of selected boards",
                     new[] { nameof(MaxAdditionalBoards) });
+            }
+            if(Scenarios.All(s => s.Selected) == false)
+            {
+                yield return new ValidationResult("Must pick at least one scenario", new[] { nameof(Scenarios) });
+            }
+            if(Adversaries.All(s => s.Selected) == false)
+            {
+                yield return new ValidationResult("Must pick at least one adversary", new[] { nameof(Adversaries) });
+            }
+            if(Maps.All(s => s.Selected) == false)
+            {
+                yield return new ValidationResult("Must pick at least one maps", new[] { nameof(Maps) });
+            }
+            if(Spirits.Count(s => s.Selected) < Players)
+            {
+                yield return new ValidationResult($"Must pick at least {Players} spirits for {Players} players", new[] { nameof(Spirits) });
             }
         }
     }
