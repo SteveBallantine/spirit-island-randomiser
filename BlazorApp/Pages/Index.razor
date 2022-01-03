@@ -106,32 +106,75 @@ else if (setup == null)
 else
 {
     <div class="row">
+        <div class="col-6">
+            <Panel>
+                <Header>
+                    Difficulty
+                </Header>
+                <Body>
+                    <span class="si-tag">@setup.Setup.Difficulty</span>
+                </Body>
+            </Panel>
+        </div>
+        <div class="col-6">
+            <Panel>
+                <Header>
+                    Map
+                </Header>
+                <Body>
+                    <label>@setup.Setup.Map.Name</label>
+                </Body>
+            </Panel>
+        </div>
+        <div class="col-6">
+            <Panel>
+                <Header>
+                    Spirits and Starting Boards
+                </Header>
+                <Body>
+                    @foreach (var board in setup.Setup.BoardSetups)
+                    {
+                        <label>board <span class="si-tag">@board.Board.Name</span> - @(board.Spirit == null ? "No Spirit" : board.Spirit.Name)</label><br>
+                    }
+                </Body>
+            </Panel>
+        </div>
+        <div class="col-6">
+            <Panel>
+                <Header>
+                    Scenario
+                </Header>
+                <Body>
+                    <label>@setup.Setup.Scenario.Name</label>
+                </Body>
+            </Panel>
+        </div>
+        <div class="col-6">
+            <Panel>
+                <Header>
+                    Adversary
+                </Header>
+                <Body>
+                    <label>@setup.Setup.LeadingAdversary.Adversary.Name - @setup.Setup.LeadingAdversary.Name</label><br>
+                    @if(@setup.Setup.SupportingAdversary != null)
+                    {
+                        <label>Supported by:</label><br>
+                        <label>@setup.Setup.SupportingAdversary.Adversary.Name - @setup.Setup.SupportingAdversary.Name</label>
+                    }
+                </Body>
+            </Panel>
+        </div>
         <div class="col-12">
-            @setup.Setup.Map.Name
-            <br>
-            @setup.Setup.Scenario.Name
-            <br>
-            @setup.Setup.LeadingAdversary.Adversary.Name @setup.Setup.LeadingAdversary.Level
-
-            @if(@setup.Setup.SupportingAdversary != null)
-            {
-                <br>
-                @setup.Setup.SupportingAdversary.Adversary.Name @setup.Setup.SupportingAdversary.Level
-            }
-
-            @foreach (var board in setup.Setup.BoardSetups)
-            {
-                <br>
-                @board.Board.Name                
-                <br>
-                @(board.Spirit == null ? "No Spirit" : board.Spirit.Name);
-                <br>
-            }
-
-            <br>
-            @setup.DifficultyOptionsConsidered            
-            <br>
-            @setup.BoardSetupOptionsConsidered
+            <Panel>
+                <Header>
+                    Stats
+                </Header>
+                <Body>
+                    <label><span class="si-tag">@setup.DifficultyOptionsConsidered</span> valid configurations for the selected difficulty range
+                        multiplied by <span class="si-tag">@setup.BoardSetupOptionsConsidered</span> valid board/spirit options equals 
+                        <span class="si-tag">@(setup.BoardSetupOptionsConsidered*setup.DifficultyOptionsConsidered)</span> total combinations.</label>
+                </Body>
+            </Panel>
         </div>
     </div>
 
