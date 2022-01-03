@@ -110,7 +110,7 @@ namespace SiRandomizer.Data
         /// But the second approach makes the intent clearer to the reader.
         /// </summary>
         /// <value></value>
-        public IReadOnlyList<SelectableComponentBase> Levels { get; protected set; }
+        public IReadOnlyList<AdversaryLevel> Levels { get; protected set; }
 
         private Adversary(){   
             if(Levels != null && Levels.Count > 0)

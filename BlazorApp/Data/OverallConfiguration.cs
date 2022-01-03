@@ -45,7 +45,7 @@ namespace SiRandomizer.Data
             // Link each of the adversary levels back to thier parent adversary record.
             Adversary.All.ForEach(a => 
             {
-                foreach(var level in a.Levels.Cast<AdversaryLevel>())
+                foreach(var level in a.Levels)
                 {
                     level.Adversary = a;
                 }

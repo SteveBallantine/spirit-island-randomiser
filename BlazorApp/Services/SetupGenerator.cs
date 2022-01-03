@@ -136,7 +136,7 @@ namespace SiRandomizer.Services
                 .Where(s => s.Selected).Cast<Map>();
             var adversaryLevels = config.Adversaries
                 .Where(s => s.Selected).Cast<Adversary>()
-                .SelectMany(a => a.Levels.Cast<AdversaryLevel>());
+                .SelectMany(a => a.Levels);
             // Get the possible supporting adversaries.
             List<AdversaryLevel> supportingAdversaryLevels = new List<AdversaryLevel>() { null };
             if(config.AllowCombinedAdversaries) {

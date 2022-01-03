@@ -83,7 +83,6 @@ namespace SiRandomizer.tests
                 .ToDictionary(b => b.Name, b => 0);
             var selectedAdversaries = Adversary.All
                 .SelectMany(a => a.Levels)
-                .Cast<AdversaryLevel>()
                 .ToDictionary(l => l.Adversary.Name + l.Level, b => 0);
             var selectedScenarios = Scenario.All
                 .ToDictionary(s => s.Name, s => 0);
