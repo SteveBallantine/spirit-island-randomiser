@@ -79,7 +79,7 @@ namespace SiRandomizer.tests
         public void Generate_SmoothDistribution()
         {
             var selectedBoards = Board.All
-                .Where(b => b.Thmeatic == false)
+                .Where(b => b.Thematic == false)
                 .ToDictionary(b => b.Name, b => 0);
             var selectedAdversaries = Adversary.All
                 .SelectMany(a => a.Levels)

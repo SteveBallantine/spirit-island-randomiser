@@ -45,10 +45,33 @@ else if (setup == null)
             <div class="col-4">
                 <Panel>
                     <Header>
-                        Allow Combined Adversaries
+                        Options
                     </Header>
                     <Body>
-                        <label>Allow?<input type="checkbox" @bind="config.AllowCombinedAdversaries"></label>
+                        <label>
+                            <InputSelect @bind-Value="@config.CombinedAdversaries" >                            
+                                @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
+                                {                                
+                                    <option value="@choice">@choice</option>
+                                }
+                            </InputSelect> Combined Adversaries
+                        </label>
+                        <label>
+                            <InputSelect @bind-Value="@config.RandomThematicBoards" >                            
+                                @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
+                                {                                
+                                    <option value="@choice">@choice</option>
+                                }
+                            </InputSelect> Random Thematic Boards
+                        </label>
+                        <label>
+                            <InputSelect @bind-Value="@config.AdditionalBoard" >                            
+                                @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
+                                {                                
+                                    <option value="@choice">@choice</option>
+                                }
+                            </InputSelect> Additional Board
+                        </label>
                     </Body>
                 </Panel>
             </div>
@@ -134,7 +157,7 @@ else
                 <Body>
                     @foreach (var board in setup.Setup.BoardSetups)
                     {
-                        <label>board <span class="si-tag">@board.Board.Name</span> - @(board.Spirit == null ? "No Spirit" : board.Spirit.Name)</label><br>
+                        <label>Board <span class="si-tag">@board.Board.Name</span> - @(board.Spirit == null ? "No Spirit" : board.Spirit.Name)</label><br>
                     }
                 </Body>
             </Panel>
@@ -156,7 +179,7 @@ else
                 </Header>
                 <Body>
                     <label>@setup.Setup.LeadingAdversary.Adversary.Name - @setup.Setup.LeadingAdversary.Name</label><br>
-                    @if(@setup.Setup.SupportingAdversary != null)
+                    @if(@setup.Setup.HasSupportingAdversary)
                     {
                         <label>Supported by:</label><br>
                         <label>@setup.Setup.SupportingAdversary.Adversary.Name - @setup.Setup.SupportingAdversary.Name</label>

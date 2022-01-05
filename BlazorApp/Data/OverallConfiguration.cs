@@ -25,10 +25,26 @@ namespace SiRandomizer.Data
         [Required]
         [Range(0, 20, ErrorMessage = "Maximum difficulty must be 0 - 20")]
         public int MaxDifficulty {get;set;}
-        [Required]
-        public int MaxAdditionalBoards {get;set;}
-        public bool AllowCombinedAdversaries {get;set;}
-        public bool AllowRandomnThematicBoards {get;set;}
+        public OptionChoice AdditionalBoard {get;set;} = OptionChoice.Block;
+        public OptionChoice CombinedAdversaries {get;set;} = OptionChoice.Block;
+        public OptionChoice RandomThematicBoards {get;set;} = OptionChoice.Block;
+
+        public int MaxAdditionalBoards 
+        {
+            get 
+            {
+                switch (AdditionalBoard)
+                {
+                    case OptionChoice.Allow:
+                    case OptionChoice.Force:
+                        return 1;
+                    case OptionChoice.Block:
+                        return 0;
+                    default:
+                        throw new Exception("Unexpected value");
+                }
+            }
+        }
 
         public OverallConfiguration() {
             Init();
@@ -71,7 +87,7 @@ namespace SiRandomizer.Data
             if(Players + MaxAdditionalBoards > Boards.Count(b => b.Selected))
             {
                 yield return new ValidationResult("Player count + max additional boards must be no bigger than the number of selected boards",
-                    new[] { nameof(MaxAdditionalBoards) });
+                    new[] { nameof(Boards) });
             }
             if(Scenarios.All(s => s.Selected) == false)
             {

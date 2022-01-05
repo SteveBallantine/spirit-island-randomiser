@@ -15,12 +15,21 @@ namespace SiRandomizer.Data
 
         public int AdditionalBoards { get; set; }
 
+        public bool HasSupportingAdversary
+        {
+            get 
+            {
+                return SupportingAdversary != null &&
+                    SupportingAdversary.Adversary.Name != Adversary.NoAdversary.Name;
+            }
+        }
+
         public int Difficulty {
             get {
-                int maxAdversary = SupportingAdversary == null ? LeadingAdversary.DifficultyModifier :
+                int maxAdversary = HasSupportingAdversary == false ? LeadingAdversary.DifficultyModifier :
                     Math.Max(LeadingAdversary.DifficultyModifier, 
                         SupportingAdversary.DifficultyModifier);
-                int minAdversary = SupportingAdversary == null ? 0 :
+                int minAdversary = HasSupportingAdversary == false ? 0 :
                     Math.Min(LeadingAdversary.DifficultyModifier, 
                         SupportingAdversary.DifficultyModifier);
 

@@ -8,4 +8,12 @@ namespace SiRandomizer.Data
         High,
         VeryHigh
     }
+
+    public enum OptionChoice
+    {
+        Allow,
+        Block,
+        Force
+    }
+
 }
