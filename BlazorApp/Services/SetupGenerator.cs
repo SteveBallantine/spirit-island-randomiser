@@ -223,7 +223,7 @@ namespace SiRandomizer.Services
             foreach(var entry in input)
             {
                 // If leading adversary is 'no adversary' then supporting adversary MUST be 'no adversary'.
-                if(entry.LeadingAdversary.Adversary.Name == Adversary.NoAdversary.Name)
+                if(entry.LeadingAdversary.Adversary == Adversary.NoAdversary)
                 {
                     entry.SupportingAdversary = Adversary.NoAdversary.Levels.First();
                     // If forceSupportingAdversary flag is set then don't return values where 
@@ -237,10 +237,10 @@ namespace SiRandomizer.Services
                 {
                     // Otherwise, supporting adversary MUST be different to leading adverary.
                     foreach(var adversaryLevel in supportingAdversaries
-                        .Where(s => s.Adversary.Name != entry.LeadingAdversary.Adversary.Name &&
+                        .Where(s => s.Adversary != entry.LeadingAdversary.Adversary &&
                             // If forceSupportingAdversary flag is set then don't return values where 
                             // supporting adversary is 'NoAdversary'
-                            (forceSupportingAdversary == false || s.Adversary.Name != Adversary.NoAdversary.Name)))
+                            (forceSupportingAdversary == false || s.Adversary != Adversary.NoAdversary)))
                     {
                         yield return new GameSetup()
                         {

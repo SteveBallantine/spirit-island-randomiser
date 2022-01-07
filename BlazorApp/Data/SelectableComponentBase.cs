@@ -14,6 +14,7 @@ namespace SiRandomizer.Data
         where T : SelectableComponentBase<T>
     {
         private static List<T> _all;
+
         public static List<T> All { get {
             if(_all == null) {
                 _all = new List<T>();
@@ -29,8 +30,10 @@ namespace SiRandomizer.Data
         } }
     }
 
-    public abstract class SelectableComponentBase : INotifyPropertyChanged, INamedComponent
+    public abstract class SelectableComponentBase : 
+        INotifyPropertyChanged, INamedComponent
     {
+
         // Use to inform watchers about this component's selected property being changed
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -39,7 +42,13 @@ namespace SiRandomizer.Data
                 PropertyChangedEventArgs(propertyName));
         }
 
-        public string Name {get; protected set;}
+        public string Name { get; protected set; }
+
+        /// <summary>
+        /// If set to true, this component will never be displayed in the UI
+        /// </summary>
+        /// <value></value>
+        public bool Hide { get; protected set; }
         
         private bool _selected = false;
         public bool Selected 
@@ -52,10 +61,25 @@ namespace SiRandomizer.Data
             }
         }
 
-        // If true then this component will not be displayed in the UI
-        public bool Hide { get; set; }
+        public override bool Equals(object obj)
+        {
+            bool result = false;
+            if(obj is SelectableComponentBase other)
+            {
+                result = Name == other.Name;
+            }
+            return result;
+        }
 
-        public SelectableComponentBase() { }
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
     }
 }
 
