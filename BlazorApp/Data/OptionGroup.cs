@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace SiRandomizer.Data
@@ -34,7 +35,18 @@ namespace SiRandomizer.Data
             // update all children accordingly.
             if(args.PropertyName == nameof(Selected)) 
             {
-                foreach(var child in Children) 
+                foreach(var child in Children
+                    .Where((c) => 
+                    {
+                        // Make sure we're only selecting children that are
+                        // actually available based on the selected expansions.
+                        bool available = true;
+                        if(c is IExpansionContent item) {
+                            available = item.Expansion == null ||
+                                item.Expansion.Selected;
+                        }
+                        return available;
+                    })) 
                 {
                     child.Selected = Selected;
                 }
