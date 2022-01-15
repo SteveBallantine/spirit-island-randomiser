@@ -4,15 +4,21 @@ namespace SiRandomizer.Data
 {
     public class Expansion : SelectableComponentBase<Expansion>, INamedComponent
     {
-        public static Expansion BranchAndClaw = new Expansion() { Name = "Branch and Claw", Tag = "BC" };
-        public static Expansion JaggedEarth = new Expansion() { Name = "Jagged Earth", Tag = "JE" };
-        public static Expansion Promo1 = new Expansion() { Name = "Promo Pack 1", Tag = "P1" };
-        public static Expansion Promo2 = new Expansion() { Name = "Promo Pack 2", Tag = "P2" };
-        public static Expansion Apocrypha = new Expansion() { Name = "Apocrypha", Tag = "Ax" };
-        public static Expansion Custom = new Expansion() { Name = "Custom", Tag = "Cx" };
+        public const string BranchAndClaw = "Branch and Claw";
+        public const string JaggedEarth = "Jagged Earth";
+        public const string Promo1 = "Promo Pack 1";
+        public const string Promo2 = "Promo Pack 2";
+        public const string Apocrypha = "Apocrypha";
+        public const string Custom = "Custom";        
         
-        public string Tag {get; set;}
+        public string Tag { get; private set; }
 
-        private Expansion() {}
+        public Expansion(
+            string name, 
+            string tag) 
+            : base(name) 
+        {
+            Tag = tag;
+        }
     }
 }

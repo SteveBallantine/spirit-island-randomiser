@@ -40,7 +40,7 @@ namespace SiRandomizer.Services
             var setup = setups.PickRandom(1).Single();
 
             // Pick spirits
-            var spirits = config.Spirits.Where(s => s.Selected).Cast<Spirit>().ToList();
+            var spirits = config.Spirits.Where(s => s.Selected).ToList();
             var spiritCombinations = spirits.GetCombinations(config.Players);
             spirits = spirits.PickRandom(config.Players).ToList();
             // Get a set of boards to match the number of spirits + any additional boards
@@ -82,9 +82,9 @@ namespace SiRandomizer.Services
             var totalBoards = config.Players + 
                 gameSetup.AdditionalBoards;   
 
-            if(gameSetup.Map == Map.Thematic || gameSetup.Map == Map.ThematicTokens) 
+            if(gameSetup.Map.Name == Map.ThematicNoTokens || gameSetup.Map.Name == Map.ThematicTokens) 
             {
-                var thematicBoards = Board.All.Where(b => b.Thematic).ToList();
+                var thematicBoards = config.Boards.Where(b => b.Thematic).ToList();
 
                 bool useDefinitiveBoards = false;
                 switch (config.RandomThematicBoards)
@@ -148,8 +148,7 @@ namespace SiRandomizer.Services
             else 
             {
                 var possibleBoards = config.Boards
-                    .Where(s => s.Selected)
-                    .Cast<Board>();
+                    .Where(s => s.Thematic == false && s.Selected);
                 boardCombinations = possibleBoards.GetCombinations(totalBoards);
 
                 selectedBoards = possibleBoards
@@ -170,11 +169,11 @@ namespace SiRandomizer.Services
         {
             // Get the possible scenarios, maps and adversaries.
             var scenarios = config.Scenarios
-                .Where(s => s.Selected).Cast<Scenario>();
+                .Where(s => s.Selected);
             var maps = config.Maps
-                .Where(s => s.Selected).Cast<Map>();
+                .Where(s => s.Selected);
             var adversaryLevels = config.Adversaries
-                .Where(s => s.Selected).Cast<Adversary>()
+                .Where(s => s.Selected)
                 .SelectMany(a => a.Levels);
             // Get the possible supporting adversaries.
             List<AdversaryLevel> supportingAdversaryLevels = adversaryLevels.ToList();
@@ -196,7 +195,7 @@ namespace SiRandomizer.Services
                     Scenario = j.Scenario,
                     Map = j.Map,
                     LeadingAdversary = j.LeadingAdversary,
-                    SupportingAdversary = Adversary.NoAdversary.Levels.First(),
+                    SupportingAdversary = config.Adversaries[Adversary.NoAdversary].Levels.Single(),
                     AdditionalBoards = j.AdditionalBoards
                 });
             // Adding a supporting adversary is a little trickier as we want some logic to ensure that:
@@ -207,7 +206,9 @@ namespace SiRandomizer.Services
             if(config.CombinedAdversaries == OptionChoice.Allow ||
                 config.CombinedAdversaries == OptionChoice.Force)
             {
-                setups = AddSupportingAdversaryOptions(setups, supportingAdversaryLevels, 
+                setups = AddSupportingAdversaryOptions(setups,
+                    config.Adversaries[Adversary.NoAdversary].Levels.Single(), 
+                    supportingAdversaryLevels, 
                     config.CombinedAdversaries == OptionChoice.Force);
             }
 
@@ -217,15 +218,16 @@ namespace SiRandomizer.Services
 
         private IEnumerable<GameSetup> AddSupportingAdversaryOptions(
             IEnumerable<GameSetup> input, 
+            AdversaryLevel noAdversary,
             List<AdversaryLevel> supportingAdversaries,
             bool forceSupportingAdversary)
         {
             foreach(var entry in input)
             {
                 // If leading adversary is 'no adversary' then supporting adversary MUST be 'no adversary'.
-                if(entry.LeadingAdversary.Adversary == Adversary.NoAdversary)
+                if(entry.LeadingAdversary.Adversary.Name == Adversary.NoAdversary)
                 {
-                    entry.SupportingAdversary = Adversary.NoAdversary.Levels.First();
+                    entry.SupportingAdversary = noAdversary;
                     // If forceSupportingAdversary flag is set then don't return values where 
                     // supporting adversary is 'NoAdversary'
                     if(forceSupportingAdversary == false)
@@ -240,7 +242,7 @@ namespace SiRandomizer.Services
                         .Where(s => s.Adversary != entry.LeadingAdversary.Adversary &&
                             // If forceSupportingAdversary flag is set then don't return values where 
                             // supporting adversary is 'NoAdversary'
-                            (forceSupportingAdversary == false || s.Adversary != Adversary.NoAdversary)))
+                            (forceSupportingAdversary == false || s.Adversary.Name != Adversary.NoAdversary)))
                     {
                         yield return new GameSetup()
                         {

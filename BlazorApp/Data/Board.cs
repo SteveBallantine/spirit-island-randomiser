@@ -4,31 +4,24 @@ using System.Collections.Generic;
 namespace SiRandomizer.Data
 {
     public class Board : SelectableComponentBase<Board>, INamedComponent, IExpansionContent
-    {
-        public static Board A = new Board() { Name = "A" };
-        public static Board B = new Board() { Name = "B" };
-        public static Board C = new Board() { Name = "C" };
-        public static Board D = new Board() { Name = "D" };
-        public static Board E = new Board() { Name = "E", Expansion = Expansion.JaggedEarth };
-        public static Board F = new Board() { Name = "F", Expansion = Expansion.JaggedEarth };
-        public static Board NEast = new Board() { Name = "NE.", Thematic = true, Hide = true,
-            ThematicDefinitivePlayerCounts = new List<int>() { 1, 3, 4, 5, 6 }, ThematicNeighbours = new List<Board>() { NWest, East } };
-        public static Board NWest = new Board() { Name = "NW.", Thematic = true, Hide = true, 
-            ThematicDefinitivePlayerCounts = new List<int>() { 4, 5, 6 }, ThematicNeighbours = new List<Board>() { NEast, West }};
-        public static Board East = new Board() { Name = "E.", Thematic = true, Hide = true, 
-            ThematicDefinitivePlayerCounts = new List<int>() { 2, 3, 4, 5, 6 }, ThematicNeighbours = new List<Board>() { NEast, West, SEast } };
-        public static Board West = new Board() { Name = "W.", Thematic = true, Hide = true, 
-            ThematicDefinitivePlayerCounts = new List<int>() { 2, 3, 4, 5, 6 }, ThematicNeighbours = new List<Board>() { NWest, East, SWest } };
-        public static Board SEast = new Board() { Name = "SE.", Thematic = true, Hide = true, Expansion = Expansion.JaggedEarth,
-            ThematicDefinitivePlayerCounts = new List<int>() { 5, 6 }, ThematicNeighbours = new List<Board>() { SWest, East } };
-        public static Board SWest = new Board() { Name = "SW.", Thematic = true, Hide = true, Expansion = Expansion.JaggedEarth,
-            ThematicDefinitivePlayerCounts = new List<int>() { 6 }, ThematicNeighbours = new List<Board>() { SEast, West } };
+    {        
+        public const string A = "A";
+        public const string B = "B";
+        public const string C = "C";
+        public const string D = "D";
+        public const string E = "E";
+        public const string F = "F";
 
-        public Expansion Expansion {get; set;}
+        public const string NEast = "NE.";
+        public const string NWest = "NW.";
+        public const string East = "E.";
+        public const string West = "W.";
+        public const string SEast = "SE.";
+        public const string SWest = "SW.";
 
-        private Board(){} 
+        public Expansion Expansion { get; private set; }
 
-        public bool Thematic { get; set; }
+        public bool Thematic { get; private set; }
 
         /// <summary>
         /// Only relevant if the Thematic flag is true.
@@ -46,5 +39,16 @@ namespace SiRandomizer.Data
         /// </summary>
         /// <value></value>
         public List<Board> ThematicNeighbours { get; set; }
+        
+        public Board(
+            string name, 
+            Expansion expansion,
+            bool thematic,
+            bool hide = false) 
+            : base(name, hide) 
+        { 
+            Expansion = expansion;
+            Thematic = thematic;
+        }
     }
 }

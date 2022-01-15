@@ -30,7 +30,7 @@ namespace SiRandomizer.tests
         [ExpectedException(typeof(SiException))]
         public void Generate_NoneSelected()
         {
-            OverallConfiguration config = new OverallConfiguration();            
+            OverallConfiguration config = new ConfigurationService().GetConfigurationAsync().Result;          
             _generator.Generate(config);
         }
 
@@ -41,15 +41,12 @@ namespace SiRandomizer.tests
         [TestMethod]
         public void Generate_SingleOptions()
         {
-            OverallConfiguration config = new OverallConfiguration();
-            // The default configuration components are all singletons
-            // so changes to the originals will be reflected in the 
-            // configuration object as well.
-            Adversary.NoAdversary.Selected = true;
-            Scenario.NoScenario.Selected = true;
-            Map.Standard.Selected = true;
-            Spirit.Green.Selected = true;
-            Board.A.Selected = true;
+            OverallConfiguration config = new ConfigurationService().GetConfigurationAsync().Result;
+            config.Adversaries[Adversary.NoAdversary].Selected = true;
+            config.Scenarios[Scenario.NoScenario].Selected = true;
+            config.Maps[Map.Standard].Selected = true;
+            config.Spirits[Spirit.Green].Selected = true;
+            config.Boards[Board.A].Selected = true;
 
             config.MinDifficulty = 0;
             config.MaxDifficulty = 0;
@@ -60,15 +57,14 @@ namespace SiRandomizer.tests
             Assert.AreEqual(1, result.BoardSetupOptionsConsidered);
             Assert.AreEqual(1, result.DifficultyOptionsConsidered);
             Assert.AreEqual(0, result.Setup.AdditionalBoards);
-            Assert.AreEqual(Adversary.NoAdversary.Levels.First(), result.Setup.LeadingAdversary);
-            Assert.AreEqual(Adversary.NoAdversary, result.Setup.LeadingAdversary.Adversary);
-            Assert.IsNull(result.Setup.SupportingAdversary);
-            Assert.AreEqual(Map.Standard, result.Setup.Map);
-            Assert.AreEqual(Scenario.NoScenario, result.Setup.Scenario);
+            Assert.AreEqual(Adversary.NoAdversary, result.Setup.LeadingAdversary.Adversary.Name);
+            Assert.AreEqual(Adversary.NoAdversary, result.Setup.SupportingAdversary.Adversary.Name);
+            Assert.AreEqual(Map.Standard, result.Setup.Map.Name);
+            Assert.AreEqual(Scenario.NoScenario, result.Setup.Scenario.Name);
 
             Assert.AreEqual(1, result.Setup.BoardSetups.Count());
-            Assert.AreEqual(Board.A, result.Setup.BoardSetups.First().Board);
-            Assert.AreEqual(Spirit.Green, result.Setup.BoardSetups.First().Spirit);
+            Assert.AreEqual(Board.A, result.Setup.BoardSetups.First().Board.Name);
+            Assert.AreEqual(Spirit.Green, result.Setup.BoardSetups.First().Spirit.Name);
         }
 
         /// <summary>
@@ -78,27 +74,30 @@ namespace SiRandomizer.tests
         [TestMethod]
         public void Generate_SmoothDistribution()
         {
-            var selectedBoards = Board.All
+            // This config is just used 
+            OverallConfiguration config = new ConfigurationService().GetConfigurationAsync().Result;
+            var selectedBoards = config.Boards
                 .Where(b => b.Thematic == false)
                 .ToDictionary(b => b.Name, b => 0);
-            var selectedAdversaries = Adversary.All
+            var selectedAdversaries = config.Adversaries
                 .SelectMany(a => a.Levels)
                 .ToDictionary(l => l.Adversary.Name + l.Level, b => 0);
-            var selectedScenarios = Scenario.All
+            var selectedScenarios = config.Scenarios
                 .ToDictionary(s => s.Name, s => 0);
-            var selectedSpirits = Spirit.All
+            var selectedSpirits = config.Spirits
                 .ToDictionary(s => s.Name, s => 0);
 
             for(var i = 0; i < 1000; i++)
             {
-                OverallConfiguration config = new OverallConfiguration();
+                config = new ConfigurationService().GetConfigurationAsync().Result;
                 // Select all components
+                config.Expansions.Selected = true;
                 config.Boards.Selected = true;
                 config.Adversaries.Selected = true;
                 config.Scenarios.Selected = true;
                 config.Spirits.Selected = true;
                 // Just the standard map
-                Map.Standard.Selected = true;
+                config.Maps[Map.Standard].Selected = true;
 
                 config.MinDifficulty = 0;
                 config.MaxDifficulty = 20;

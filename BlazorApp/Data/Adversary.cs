@@ -7,95 +7,19 @@ namespace SiRandomizer.Data
 {
     public class Adversary : SelectableComponentBase<Adversary>, IComponentCollection<INamedComponent>, IExpansionContent
     {
-        public static Adversary NoAdversary = new Adversary() { 
-            Name = "No Adversary", 
-            Levels = new List<AdversaryLevel>() {                
-                new AdversaryLevel("Level 0"){ Level = 0, DifficultyModifier = 0 },
-            }};
-        public static Adversary England = new Adversary() { 
-            Name = "England", 
-            Levels = new List<AdversaryLevel>() {
-                new AdversaryLevel("Level 0"){ Level = 0, DifficultyModifier = 1 },
-                new AdversaryLevel("Level 1"){ Level = 1, DifficultyModifier = 3 },
-                new AdversaryLevel("Level 2"){ Level = 2, DifficultyModifier = 4 },
-                new AdversaryLevel("Level 3"){ Level = 3, DifficultyModifier = 6 },
-                new AdversaryLevel("Level 4"){ Level = 4, DifficultyModifier = 7 },
-                new AdversaryLevel("Level 5"){ Level = 5, DifficultyModifier = 9 },
-                new AdversaryLevel("Level 6"){ Level = 6, DifficultyModifier = 11 }
-            }};
-        public static Adversary BrandenburgPrussia = new Adversary() { 
-            Name = "Brandenburg Prussia", 
-            Levels = new List<AdversaryLevel>() {
-                new AdversaryLevel("Level 0"){ Level = 0, DifficultyModifier = 1 },
-                new AdversaryLevel("Level 1"){ Level = 1, DifficultyModifier = 2 },
-                new AdversaryLevel("Level 2"){ Level = 2, DifficultyModifier = 4 },
-                new AdversaryLevel("Level 3"){ Level = 3, DifficultyModifier = 6 },
-                new AdversaryLevel("Level 4"){ Level = 4, DifficultyModifier = 7 },
-                new AdversaryLevel("Level 5"){ Level = 5, DifficultyModifier = 9 },
-                new AdversaryLevel("Level 6"){ Level = 6, DifficultyModifier = 10 }
-            }};
-        public static Adversary Sweden = new Adversary() { 
-            Name = "Sweden", 
-            Levels = new List<AdversaryLevel>() {
-                new AdversaryLevel("Level 0"){ Level = 0, DifficultyModifier = 1 },
-                new AdversaryLevel("Level 1"){ Level = 1, DifficultyModifier = 2 },
-                new AdversaryLevel("Level 2"){ Level = 2, DifficultyModifier = 3 },
-                new AdversaryLevel("Level 3"){ Level = 3, DifficultyModifier = 5 },
-                new AdversaryLevel("Level 4"){ Level = 4, DifficultyModifier = 6 },
-                new AdversaryLevel("Level 5"){ Level = 5, DifficultyModifier = 7 },
-                new AdversaryLevel("Level 6"){ Level = 6, DifficultyModifier = 8 }
-            }};
-        public static Adversary France = new Adversary() { 
-            Name = "France", 
-            Expansion = Expansion.BranchAndClaw,
-            Levels = new List<AdversaryLevel>() {
-                new AdversaryLevel("Level 0"){ Level = 0, DifficultyModifier = 2 },
-                new AdversaryLevel("Level 1"){ Level = 1, DifficultyModifier = 3 },
-                new AdversaryLevel("Level 2"){ Level = 2, DifficultyModifier = 5 },
-                new AdversaryLevel("Level 3"){ Level = 3, DifficultyModifier = 7 },
-                new AdversaryLevel("Level 4"){ Level = 4, DifficultyModifier = 8 },
-                new AdversaryLevel("Level 5"){ Level = 5, DifficultyModifier = 9 },
-                new AdversaryLevel("Level 6"){ Level = 6, DifficultyModifier = 10 }
-            }};
-        public static Adversary Habsburg = new Adversary() { 
-            Name = "Habsburg", 
-            Expansion = Expansion.JaggedEarth,
-            Levels = new List<AdversaryLevel>() {
-                new AdversaryLevel("Level 0"){ Level = 0, DifficultyModifier = 2 },
-                new AdversaryLevel("Level 1"){ Level = 1, DifficultyModifier = 3 },
-                new AdversaryLevel("Level 2"){ Level = 2, DifficultyModifier = 5 },
-                new AdversaryLevel("Level 3"){ Level = 3, DifficultyModifier = 6 },
-                new AdversaryLevel("Level 4"){ Level = 4, DifficultyModifier = 8 },
-                new AdversaryLevel("Level 5"){ Level = 5, DifficultyModifier = 9 },
-                new AdversaryLevel("Level 6"){ Level = 6, DifficultyModifier = 10 }
-            }};
-        public static Adversary Russia = new Adversary() { 
-            Name = "Russia", 
-            Expansion = Expansion.JaggedEarth,
-            Levels = new List<AdversaryLevel>() {
-                new AdversaryLevel("Level 0"){ Level = 0, DifficultyModifier = 1 },
-                new AdversaryLevel("Level 1"){ Level = 1, DifficultyModifier = 3 },
-                new AdversaryLevel("Level 2"){ Level = 2, DifficultyModifier = 4 },
-                new AdversaryLevel("Level 3"){ Level = 3, DifficultyModifier = 6 },
-                new AdversaryLevel("Level 4"){ Level = 4, DifficultyModifier = 7 },
-                new AdversaryLevel("Level 5"){ Level = 5, DifficultyModifier = 9 },
-                new AdversaryLevel("Level 6"){ Level = 6, DifficultyModifier = 11 }
-            }};
-        public static Adversary Scotland = new Adversary() { 
-            Name = "Scotland", 
-            Expansion = Expansion.Promo2,
-            Levels = new List<AdversaryLevel>() {
-                new AdversaryLevel("Level 0"){ Level = 0, DifficultyModifier = 1 },
-                new AdversaryLevel("Level 1"){ Level = 1, DifficultyModifier = 3 },
-                new AdversaryLevel("Level 2"){ Level = 2, DifficultyModifier = 4 },
-                new AdversaryLevel("Level 3"){ Level = 3, DifficultyModifier = 6 },
-                new AdversaryLevel("Level 4"){ Level = 4, DifficultyModifier = 7 },
-                new AdversaryLevel("Level 5"){ Level = 5, DifficultyModifier = 8 },
-                new AdversaryLevel("Level 6"){ Level = 6, DifficultyModifier = 10 }
-            }};
+        public const string NoAdversary = "No Adversary";
+        public const string England = "England";
+        public const string BrandenburgPrussia = "Brandenburg Prussia";
+        public const string Sweden = "Sweden";
+        public const string France = "France";
+        public const string Habsburg = "Habsburg";
+        public const string Russia = "Russia";
+        public const string Scotland = "Scotland";
+
 
         public Expansion Expansion {get; set;}
 
+        private List<AdversaryLevel> _levels = new List<AdversaryLevel>();
         /// <summary>
         /// Don't need this to be public, as the class implements 
         /// IComponentCollection and exposes the levels as an IEnumerable
@@ -110,17 +34,22 @@ namespace SiRandomizer.Data
         /// But the second approach makes the intent clearer to the reader.
         /// </summary>
         /// <value></value>
-        public IReadOnlyList<AdversaryLevel> Levels { get; protected set; }
+        public IReadOnlyList<AdversaryLevel> Levels => _levels;
 
-        private Adversary(){   
-            if(Levels != null && Levels.Count > 0)
-            {     
-                foreach(var level in Levels)
-                {
-                    level.PropertyChanged += AdversaryLevelUpdated;
-                }
-            }
+        public Adversary(
+            string name, 
+            Expansion expansion)
+            : base (name)
+        {   
+            Expansion = expansion;
             PropertyChanged += ThisUpdated;
+        }
+
+        public void AddLevel(AdversaryLevel level)
+        {
+            level.Adversary = this;
+            level.PropertyChanged += AdversaryLevelUpdated;
+            _levels.Add(level);
         }
 
         public IEnumerator<INamedComponent> GetEnumerator()

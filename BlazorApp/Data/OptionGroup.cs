@@ -7,16 +7,31 @@ using System.Runtime.CompilerServices;
 
 namespace SiRandomizer.Data
 {
-    public class OptionGroup : SelectableComponentBase, IComponentCollection<SelectableComponentBase>
+    public class OptionGroup<T> : SelectableComponentBase<T>, IComponentCollection<T>
+        where T : SelectableComponentBase<T>
     {
-        protected List<SelectableComponentBase> Children {get; set;}        
+        /// <summary>
+        /// The child components that are in this group.
+        /// The key is the name of the component.
+        /// </summary>
+        /// <value></value>
+        protected IReadOnlyDictionary<string, T> Children { get; set; }    
+
+        public T this[string name] 
+        {
+            get 
+            {
+                return Children[name];
+            }
+        }
 
         public OptionGroup(
             string name,
-            List<SelectableComponentBase> children)
+            List<T> children)
+            : base(name)
         {
             Name = name;
-            Children = children;
+            Children = children.ToDictionary(c => c.Name, c => c);
             foreach(var child in children)
             {
                 child.PropertyChanged += ChildUpdated;
@@ -35,7 +50,7 @@ namespace SiRandomizer.Data
             // update all children accordingly.
             if(args.PropertyName == nameof(Selected)) 
             {
-                foreach(var child in Children
+                foreach(var child in Children.Values
                     .Where((c) => 
                     {
                         // Make sure we're only selecting children that are
@@ -53,14 +68,14 @@ namespace SiRandomizer.Data
             }
         }
 
-        public IEnumerator<SelectableComponentBase> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
-            return Children.GetEnumerator();
+            return Children.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return Children.GetEnumerator();
+            return Children.Values.GetEnumerator();
         }
     }
 }

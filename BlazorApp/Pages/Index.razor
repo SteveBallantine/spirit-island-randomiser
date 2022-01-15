@@ -79,40 +79,40 @@ else if (setup == null)
 
         <div class="row">
             <div class="col-12">
-                <CascadingValue Value="expansions" Name="Group">
-                    <SelectableGroup />
+                <CascadingValue Value="config.Expansions" Name="Group">
+                    <SelectableGroup T=Expansion />
                 </CascadingValue>
             </div>
         </div>
         
         <div class="row">
             <div class="col-12">
-                <CascadingValue Value="spirits" Name="Group">
-                    <SelectableGroup />
+                <CascadingValue Value="config.Spirits" Name="Group">
+                    <SelectableGroup T=Spirit />
                 </CascadingValue>
             </div>
         </div>
         
         <div class="row">
             <div class="col-6">
-                <CascadingValue Value="maps" Name="Group">
-                    <SelectableGroup />
+                <CascadingValue Value="config.Maps" Name="Group">
+                    <SelectableGroup T=Map />
                 </CascadingValue>
-                <CascadingValue Value="boards" Name="Group">
-                    <SelectableGroup />
+                <CascadingValue Value="config.Boards" Name="Group">
+                    <SelectableGroup T=Board />
                 </CascadingValue>
             </div>
             <div class="col-6">
-                <CascadingValue Value="scenarios" Name="Group">
-                    <SelectableGroup />
+                <CascadingValue Value="config.Scenarios" Name="Group">
+                    <SelectableGroup T=Scenario />
                 </CascadingValue>
             </div>
         </div>
         
         <div class="row">
             <div class="col-12">
-                <CascadingValue Value="adversaries" Name="Group">
-                    <SelectableGroup />
+                <CascadingValue Value="config.Adversaries" Name="Group">
+                    <SelectableGroup T=Adversary />
                 </CascadingValue>
             </div>
         </div>
@@ -216,25 +216,12 @@ else
 
 @code {
     private OverallConfiguration config;
-    private OptionGroup expansions;
-    private OptionGroup spirits;
-    private OptionGroup adversaries;
-    private OptionGroup boards;    
-    private OptionGroup maps;
-    private OptionGroup scenarios;
     private SetupResult setup;
 
     protected override async Task OnInitializedAsync()
     {
         config = await ConfigurationService.GetConfigurationAsync();
-        expansions = config.Expansions;
-        spirits = config.Spirits;
-        adversaries = config.Adversaries;
-        boards = config.Boards;
-        maps = config.Maps;
-        scenarios = config.Scenarios;
-
-        expansions.PropertyChanged += (sender, args) => InvokeAsync(StateHasChanged);        
+        config.Expansions.PropertyChanged += (sender, args) => InvokeAsync(StateHasChanged);        
     }
 
     protected void GenerateSetup()

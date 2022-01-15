@@ -34,10 +34,11 @@
     </Body>
 </Panel>
 
+@typeparam T where T : SelectableComponentBase<T>
 @code {
     [CascadingParameter(Name = "Group")]
-    public OptionGroup Group { get; set; }
+    public OptionGroup<T> Group { get; set; }
 
     [CascadingParameter(Name = "Expansions")]
-    public OptionGroup Expansions { get; set; }
+    public OptionGroup<T> Expansions { get; set; }
 }

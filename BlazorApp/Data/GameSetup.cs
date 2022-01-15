@@ -20,7 +20,7 @@ namespace SiRandomizer.Data
             get 
             {
                 return SupportingAdversary != null &&
-                    SupportingAdversary.Adversary != Adversary.NoAdversary;
+                    SupportingAdversary.Adversary.Name != Adversary.NoAdversary;
             }
         }
 
