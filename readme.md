@@ -11,7 +11,6 @@ The purpose of this app is to experiment with Blazor in a 'real world' scenario 
 
 # Todo
 
-- Fix a bug that can cause the generation to fail as thematic neighbours will be populated with 'null' if they refer to a board that has not yet been created.
 - Add tests to ensure the various options are working properly
 - Add tests and ensure invalid edge cases are handled correctly (e.g. 'no adversary' is not selected, but secondary adversary is 'blocked') 
 - Get validation working
