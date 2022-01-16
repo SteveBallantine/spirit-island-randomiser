@@ -212,8 +212,8 @@ namespace SiRandomizer.Services
             var maps = config.Maps
                 .Where(s => s.Selected);
             var adversaryLevels = config.Adversaries
-                .Where(s => s.Selected)
-                .SelectMany(a => a.Levels);
+                .SelectMany(a => a.Levels)
+                .Where(l => l.Selected);
             // Get the possible supporting adversaries.
             List<AdversaryLevel> supportingAdversaryLevels = adversaryLevels.ToList();
             // Get the possible numbers of additional boards.

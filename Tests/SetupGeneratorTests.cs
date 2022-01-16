@@ -209,6 +209,57 @@ namespace SiRandomizer.tests
         }
 
         /// <summary>
+        /// Verify that the 'combined adversaries' option is behaving as expected.
+        /// </summary>
+        [DataTestMethod]
+        // We allow the use of an additional adversary to be determined randomly.
+        // Notation: E = Enagland, B = BrandenburgPrussia, N = No Adversary.
+        // This means that there are:
+        // - 5 possible difficulty combinations (N, B, E, B + E, E + B)
+        [DataRow(OptionChoice.Allow, 5)]
+        // We block the use of an additional adversary.
+        // This means that there are:
+        // - 3 possible difficulty combinations (N, B, E)
+        [DataRow(OptionChoice.Block, 3)]
+        // We force the use of an additional adversary.
+        // This means that there are:
+        // - 2 possible difficulty combinations (B + E, E + B)
+        [DataRow(OptionChoice.Force, 2)]
+        public void Generate_CombinedAdversaries(
+            OptionChoice combinedAdversariesChoice, 
+            int expectedDifficultyOptions)
+        {
+            SetupMinimalOptions(true);
+            // Slect the first level for two adversaries to allow them to be combined.
+            _config.Adversaries[Adversary.BrandenburgPrussia].Levels.First().Selected = true;
+            _config.Adversaries[Adversary.England].Levels.First().Selected = true;
+            _config.CombinedAdversaries = combinedAdversariesChoice;
+
+            List<SetupResult> setups = new List<SetupResult>();
+
+            var validAdversaries = new HashSet<string>() { Adversary.BrandenburgPrussia, Adversary.England };
+            if(_config.RandomThematicBoards != OptionChoice.Force)
+            {
+                validAdversaries.Add(Adversary.NoAdversary);
+            }
+
+            for(var i = 0; i < 1000; i++)
+            {
+                var result = _generator.Generate(_config);
+                setups.Add(result);
+                
+                // Verify the selected boards were only the valid ones.
+                Assert.IsTrue(validAdversaries.Contains(result.Setup.LeadingAdversary.Adversary.Name), 
+                    $"Invalid adversary - {result.Setup.LeadingAdversary.Adversary.Name}");
+                Assert.IsTrue(validAdversaries.Contains(result.Setup.SupportingAdversary.Adversary.Name),
+                    $"Invalid adversary - {result.Setup.SupportingAdversary.Adversary.Name}");
+                // Verify the number of options considered is correct.
+                Assert.AreEqual(1, result.BoardSetupOptionsConsidered);
+                Assert.AreEqual(expectedDifficultyOptions, result.DifficultyOptionsConsidered);
+            }
+        }
+
+        /// <summary>
         /// Generate 1000 random setups and verify that the spread of selected
         /// options in each category is fairly smooth.
         /// </summary>
@@ -267,12 +318,6 @@ namespace SiRandomizer.tests
         /// <param name="frequencyTable"></param>
         private void VerifySelectionFrequency(Dictionary<string, int> frequencyTable)
         {
-            StringBuilder message = new StringBuilder();
-            foreach(var entry in frequencyTable)
-            {
-                message.AppendLine($"{entry.Key}: {entry.Value}");
-            }
-
             var values = frequencyTable.Select(v => v.Value);
             var average = (int)values.Average();
             var std = StdDev(values);
@@ -280,8 +325,14 @@ namespace SiRandomizer.tests
             var min = average - std * 4;
             if(min < 1) { min = 1; }
 
-            Assert.IsTrue(frequencyTable.All(v => 
-                v.Value <= max && v.Value >= min),
+            var componentsOusideRange = frequencyTable.Where(v => 
+                v.Value > max || v.Value < min);
+            StringBuilder message = new StringBuilder();
+            foreach(var entry in componentsOusideRange)
+            {
+                message.AppendLine($"{entry.Key}: {entry.Value}");
+            }
+            Assert.IsFalse(componentsOusideRange.Any(),
                 $"Number of selections is outside expected range " +
                 $"({min}-{max}).{Environment.NewLine}" + message.ToString());
         }
