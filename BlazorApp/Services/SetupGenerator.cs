@@ -12,15 +12,35 @@ namespace SiRandomizer.Services
         private static readonly Random _rng = new Random();
 
         // Stores the number of possible combinations for each 
-        // board count. I.e. if picking 1 board then there are
-        // 6 valid options. 2 boards there are 7 options, etc.
-        // When getting the combinations for thematic map, we 
-        // need to take account of the valid neighbours for 
-        // each board.
+        // board count and number of picks. 
+        // The first index is the number of boards available
+        // to pick from (-1), the second is the number of boards
+        // being picked (-1).
+        // For example, THEMATIC_BOARD_COMBINATIONS[5, 1] would 
+        // give the number of combinations assuming all 6 thematic 
+        // boards are available and 2 of them are being picked.
+        //
+        // It's done this way because when getting the combinations 
+        // for thematic map, we need to take account of the valid 
+        // neighbours for each board.
         // This means we can't use the usual combinations 
         // calulation. It seems easier to just store the values
         // in a lookup table.
-        private static readonly int[] THEMATIC_BOARD_COMBINATIONS = new int [] { 6, 7, 10, 10, 6, 1 };
+        //
+        // Note that to simplify things slightly, we only consider
+        // cases where the selected boards are all adjacent.
+        // e.g. if won't be quite right if someone selects NE, NW and SE
+        // and is picking two boards, as the only real valid option 
+        // is NE + NW
+        private static readonly int[,] THEMATIC_BOARD_COMBINATIONS = new int [,] 
+        { 
+            { 1, 0, 0, 0, 0, 0 },
+            { 2, 1, 0, 0, 0, 0 },
+            { 3, 2, 1, 0, 0, 0 },
+            { 4, 4, 4, 1, 0, 0 },
+            { 5, 5, 6, 3, 1, 0 },
+            { 6, 7, 10, 10, 6, 1 }
+        };
 
         public SetupResult Generate(OverallConfiguration config) 
         {
@@ -78,13 +98,27 @@ namespace SiRandomizer.Services
             out long boardCombinations) 
         {
             List<Board> selectedBoards = new List<Board>();
+            boardCombinations = 0;
 
             var totalBoards = config.Players + 
-                gameSetup.AdditionalBoards;   
+                gameSetup.AdditionalBoards;
 
             if(gameSetup.Map.Name == Map.ThematicNoTokens || gameSetup.Map.Name == Map.ThematicTokens) 
             {
-                var thematicBoards = config.Boards.Where(b => b.Thematic).ToList();
+                var thematicBoards = config.Boards
+                    .Where(b => b.Thematic && b.Selected).ToList();
+
+                Func<int> GetNonDefinitiveCombinations = () =>
+                {    
+                    int result = 0;
+                    for(int i = config.MinAdditionalBoards; i <= config.MaxAdditionalBoards; i++)
+                    {
+                        // If there might be different numbers of boards (due to the 'allow additionl boards' option)
+                        // We add the combinations for each possible numbers of boards in order to get the total.
+                        result += THEMATIC_BOARD_COMBINATIONS[thematicBoards.Count - 1, config.Players + i - 1];
+                    }
+                    return result;
+                };
 
                 bool useDefinitiveBoards = false;
                 switch (config.RandomThematicBoards)
@@ -93,18 +127,18 @@ namespace SiRandomizer.Services
                         useDefinitiveBoards = _rng.NextDouble() >= 0.5;
                         // Although we may or may not be using the definitive map,
                         // we use the the combinations for the non-definitive map as 
-                        // that is a possibility.
-                        boardCombinations = THEMATIC_BOARD_COMBINATIONS[totalBoards + 1];
+                        // that is the greatest number of options at this point.
+                        boardCombinations = GetNonDefinitiveCombinations();
                         break;
                     case OptionChoice.Force:
                         useDefinitiveBoards = false;
-                        boardCombinations = THEMATIC_BOARD_COMBINATIONS[totalBoards + 1];
+                        boardCombinations = GetNonDefinitiveCombinations();
                         break;
                     case OptionChoice.Block:
                         useDefinitiveBoards = true;
                         // There is only 1 valid set of boards for any given number of
                         // spirits (+additional boards).
-                        boardCombinations = 1;
+                        boardCombinations = config.MaxAdditionalBoards - config.MinAdditionalBoards + 1;
                         break;
                     default:
                         throw new Exception($"Unknown option {config.RandomThematicBoards}");
@@ -144,12 +178,17 @@ namespace SiRandomizer.Services
                         selectedBoards.Add(board);
                     }                    
                 } 
-            } 
+            }
             else 
             {
                 var possibleBoards = config.Boards
                     .Where(s => s.Thematic == false && s.Selected);
-                boardCombinations = possibleBoards.GetCombinations(totalBoards);
+                // Get the total board combinations by adding the number of combinations
+                // for each possible number of boards.
+                for(int i = config.MinAdditionalBoards; i <= config.MaxAdditionalBoards; i++)
+                {
+                    boardCombinations += possibleBoards.GetCombinations(config.Players + i);
+                }
 
                 selectedBoards = possibleBoards
                     .PickRandom(totalBoards)
@@ -179,7 +218,7 @@ namespace SiRandomizer.Services
             List<AdversaryLevel> supportingAdversaryLevels = adversaryLevels.ToList();
             // Get the possible numbers of additional boards.
             var additionalBoards = new List<int>();
-            for(int i = 0; i <= config.MaxAdditionalBoards; i++) 
+            for(int i = config.MinAdditionalBoards; i <= config.MaxAdditionalBoards; i++) 
             {
                 additionalBoards.Add(i);
             }

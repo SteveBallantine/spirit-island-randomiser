@@ -46,6 +46,14 @@ namespace SiRandomizer.Data
             }
         }
 
+        public int MinAdditionalBoards 
+        {
+            get
+            {
+                return AdditionalBoard == OptionChoice.Force ? 1 : 0;
+            }
+        }
+
         public OverallConfiguration(
             OptionGroup<Adversary> adversaries,
             OptionGroup<Board> boards,

@@ -14,11 +14,50 @@ namespace SiRandomizer.tests
     public class SetupGeneratorTests
     {
         private SetupGenerator _generator;
+        private OverallConfiguration _config;
 
         [TestInitialize]
         public void Init()
         {
             _generator = new SetupGenerator();
+            _config = new ConfigurationService().GetConfigurationAsync().Result;
+        }
+
+        private void SetupMinimalOptions(bool thematic)
+        {
+            _config.Adversaries[Adversary.NoAdversary].Selected = true;
+            _config.Scenarios[Scenario.NoScenario].Selected = true;
+            _config.Spirits[Spirit.Green].Selected = true;
+            if(thematic)
+            {
+                _config.Maps[Map.ThematicTokens].Selected = true;
+                _config.Boards[Board.NEast].Selected = true;
+            }
+            else
+            {
+                _config.Maps[Map.Standard].Selected = true;
+                _config.Boards[Board.A].Selected = true;
+            }
+
+            _config.MinDifficulty = 0;
+            _config.MaxDifficulty = 10;
+            _config.Players = 1;
+        }
+
+        private void SetupAllOptions()
+        {
+            // Select all components
+            _config.Expansions.Selected = true;
+            _config.Boards.Selected = true;
+            _config.Adversaries.Selected = true;
+            _config.Scenarios.Selected = true;
+            _config.Spirits.Selected = true;
+            // Just the non-thematic maps
+            // (This avoids changes in the results from picking thematic vs standard for this test.)
+            _config.Maps
+                .Where(m => m.Name.Contains("Thematic") == false && 
+                    _config.Players <= m.MaxCount && _config.Players >= m.MinCount).ToList()
+                .ForEach(m => m.Selected = true);
         }
 
         /// <summary>
@@ -41,18 +80,9 @@ namespace SiRandomizer.tests
         [TestMethod]
         public void Generate_SingleOptions()
         {
-            OverallConfiguration config = new ConfigurationService().GetConfigurationAsync().Result;
-            config.Adversaries[Adversary.NoAdversary].Selected = true;
-            config.Scenarios[Scenario.NoScenario].Selected = true;
-            config.Maps[Map.Standard].Selected = true;
-            config.Spirits[Spirit.Green].Selected = true;
-            config.Boards[Board.A].Selected = true;
+            SetupMinimalOptions(false);
 
-            config.MinDifficulty = 0;
-            config.MaxDifficulty = 0;
-            config.Players = 1;
-
-            var result = _generator.Generate(config);
+            var result = _generator.Generate(_config);
 
             Assert.AreEqual(1, result.BoardSetupOptionsConsidered);
             Assert.AreEqual(1, result.DifficultyOptionsConsidered);
@@ -68,42 +98,147 @@ namespace SiRandomizer.tests
         }
 
         /// <summary>
+        /// Verify that the 'additional board' option is behaving as expected.
+        /// </summary>
+        [DataTestMethod]
+        // We allow the inclusion of an additional board to be determined randomly.
+        // This means that there are:
+        // - 3 possible board combinations (A, B or A + B)
+        // - 2 difficulty options (with additional board or without)
+        [DataRow(OptionChoice.Allow, 3, 2, 1, 0)]
+        // We block the inclusion of an additional board.
+        // This means that there are:
+        // - 2 possible board combinations (A or B)
+        // - 1 difficulty options (without additional board)
+        [DataRow(OptionChoice.Block, 2, 1, 0, 0)]
+        // We force the inclusion of an additional board.
+        // This means that there are:
+        // - 1 possible board combinations (A + B)
+        // - 1 difficulty options (with additional board)
+        [DataRow(OptionChoice.Force, 1, 1, 1, 1)]
+        public void Generate_AdditionalBoard(
+            OptionChoice additionalBoardChoice, 
+            int expectedBoardOptions,
+            int expectedDifficultyOptions,
+            int expectedMaxAdditionalBoards,
+            int expectedMinAdditionalBoards)
+        {
+            SetupMinimalOptions(false);
+            // Need to add board B to support the additional board option.
+            _config.Boards[Board.B].Selected = true;
+            _config.AdditionalBoard = additionalBoardChoice;
+
+            List<SetupResult> setups = new List<SetupResult>();
+
+            for(var i = 0; i < 1000; i++)
+            {
+                var result = _generator.Generate(_config);
+                setups.Add(result);
+            }
+
+            // Verify all selected boards were only the selected ones.
+            var validBoardNames = new HashSet<string>() { Board.A, Board.B };
+            Assert.IsTrue(setups.All(s => s.Setup.BoardSetups.All(b => validBoardNames.Contains(b.Board.Name))));
+            // Verify the number of options considered is correct.
+            Assert.IsTrue(setups.All(s => s.BoardSetupOptionsConsidered == expectedBoardOptions));
+            Assert.IsTrue(setups.All(s => s.DifficultyOptionsConsidered == expectedDifficultyOptions));
+            // Verify the number of additional boards are as expected.
+            Assert.IsTrue(setups.All(s => 
+                s.Setup.AdditionalBoards >= expectedMinAdditionalBoards &&
+                s.Setup.AdditionalBoards <= expectedMaxAdditionalBoards));
+            Assert.IsTrue(setups.All(s =>
+                s.Setup.BoardSetups.Count() >= expectedMinAdditionalBoards + 1 &&
+                s.Setup.BoardSetups.Count() <= expectedMaxAdditionalBoards + 1));
+            // Ensure that if the number of additional boards is variable, each possible
+            // number of additional boards has been selected at some point.
+            if(expectedMinAdditionalBoards != expectedMaxAdditionalBoards)
+            {
+                var validValues = Enumerable.Range(expectedMinAdditionalBoards, expectedMaxAdditionalBoards);                
+                Assert.IsTrue(
+                    validValues.All(v => setups.Any(s => s.Setup.AdditionalBoards == v)));
+            }
+        }
+
+        /// <summary>
+        /// Verify that the 'random thematic' option is behaving as expected.
+        /// </summary>
+        [DataTestMethod]
+        // We allow the use of random thematic boards to be determined randomly.
+        // This means that there are:
+        // - 2 possible board combinations (NE. or NW.)
+        [DataRow(OptionChoice.Allow, 2)]
+        // We block the use of random thematic boards.
+        // This means that there are:
+        // - 1 possible board combinations (NE.)
+        [DataRow(OptionChoice.Block, 1)]
+        // We force the use of random thematic boards.
+        // This means that there are:
+        // - 2 possible board combinations (NE. or NW.)
+        [DataRow(OptionChoice.Force, 2)]
+        public void Generate_RandomThematic(
+            OptionChoice randomThematicChoice, 
+            int expectedBoardOptions)
+        {
+            SetupMinimalOptions(true);
+            // Need to add board NW. to give the random option 
+            // something to pick from.
+            _config.Boards[Board.NWest].Selected = true;
+            _config.RandomThematicBoards = randomThematicChoice;
+
+            List<SetupResult> setups = new List<SetupResult>();
+
+            var validBoardNames = new HashSet<string>() { Board.NEast };
+            if(_config.RandomThematicBoards == OptionChoice.Allow ||
+                _config.RandomThematicBoards == OptionChoice.Force)
+            {
+                validBoardNames.Add(Board.NWest);
+            }
+
+            for(var i = 0; i < 1000; i++)
+            {
+                var result = _generator.Generate(_config);
+                setups.Add(result);
+                
+                // Verify the selected boards were only the valid ones.
+                Assert.IsTrue(result.Setup.BoardSetups.All(b => validBoardNames.Contains(b.Board.Name)),
+                    $"Invalid board selected ({result.Setup.BoardSetups.Single().Board.Name})");
+                // Verify the number of options considered is correct.
+                Assert.AreEqual(expectedBoardOptions, result.BoardSetupOptionsConsidered);
+                Assert.AreEqual(1, result.DifficultyOptionsConsidered);
+            }
+        }
+
+        /// <summary>
         /// Generate 1000 random setups and verify that the spread of selected
         /// options in each category is fairly smooth.
         /// </summary>
         [TestMethod]
         public void Generate_SmoothDistribution()
         {
+            _config.MinDifficulty = 0;
+            _config.MaxDifficulty = 20;
+            _config.Players = 2;
+            SetupAllOptions();
+
             // This config is just used 
-            OverallConfiguration config = new ConfigurationService().GetConfigurationAsync().Result;
-            var selectedBoards = config.Boards
+            var selectedBoards = _config.Boards
                 .Where(b => b.Thematic == false)
                 .ToDictionary(b => b.Name, b => 0);
-            var selectedAdversaries = config.Adversaries
+            var selectedAdversaries = _config.Adversaries
                 .SelectMany(a => a.Levels)
                 .ToDictionary(l => l.Adversary.Name + l.Level, b => 0);
-            var selectedScenarios = config.Scenarios
+            var selectedScenarios = _config.Scenarios
                 .ToDictionary(s => s.Name, s => 0);
-            var selectedSpirits = config.Spirits
+            var selectedSpirits = _config.Spirits
+                .ToDictionary(s => s.Name, s => 0);
+            var selectedMaps = _config.Maps
+                .Where(m => m.Name.Contains("Thematic") == false && 
+                    _config.Players <= m.MaxCount && _config.Players >= m.MinCount)
                 .ToDictionary(s => s.Name, s => 0);
 
             for(var i = 0; i < 1000; i++)
             {
-                config = new ConfigurationService().GetConfigurationAsync().Result;
-                // Select all components
-                config.Expansions.Selected = true;
-                config.Boards.Selected = true;
-                config.Adversaries.Selected = true;
-                config.Scenarios.Selected = true;
-                config.Spirits.Selected = true;
-                // Just the standard map
-                config.Maps[Map.Standard].Selected = true;
-
-                config.MinDifficulty = 0;
-                config.MaxDifficulty = 20;
-                config.Players = 2;
-
-                var result = _generator.Generate(config);
+                var result = _generator.Generate(_config);
 
                 foreach(var boardSetup in result.Setup.BoardSetups)
                 {
@@ -112,12 +247,14 @@ namespace SiRandomizer.tests
                 }
                 selectedScenarios[result.Setup.Scenario.Name]++;
                 selectedAdversaries[result.Setup.LeadingAdversary.Adversary.Name + result.Setup.LeadingAdversary.Level]++;
+                selectedMaps[result.Setup.Map.Name]++;
             }
 
             VerifySelectionFrequency(selectedBoards);
             VerifySelectionFrequency(selectedSpirits);
             VerifySelectionFrequency(selectedScenarios);
             VerifySelectionFrequency(selectedAdversaries);
+            VerifySelectionFrequency(selectedMaps);
         }
 
         /// <summary>
