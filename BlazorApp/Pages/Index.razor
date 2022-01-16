@@ -17,9 +17,11 @@
   </div>
 }
 else if (setup == null)
-{  
-    <EditForm Model=@config>
-        <DataAnnotationsValidator/>
+{    
+    <EditForm Model=@config OnValidSubmit="GenerateSetup">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
         <div class="row">
             <div class="col-4">
                 <Panel>
@@ -86,7 +88,7 @@ else if (setup == null)
         </div>
         
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 @config.SpiritsPanelClass">
                 <CascadingValue Value="config.Spirits" Name="Group">
                     <SelectableGroup T=Spirit />
                 </CascadingValue>
@@ -94,15 +96,17 @@ else if (setup == null)
         </div>
         
         <div class="row">
-            <div class="col-6">
+            <div class="col-6 @config.MapsPanelClass">
                 <CascadingValue Value="config.Maps" Name="Group">
                     <SelectableGroup T=Map />
                 </CascadingValue>
+            </div>
+            <div class="col-6 @config.BoardsPanelClass">
                 <CascadingValue Value="config.Boards" Name="Group">
                     <SelectableGroup T=Board />
                 </CascadingValue>
             </div>
-            <div class="col-6">
+            <div class="col-6 @config.ScenariosPanelClass">
                 <CascadingValue Value="config.Scenarios" Name="Group">
                     <SelectableGroup T=Scenario />
                 </CascadingValue>
@@ -110,16 +114,18 @@ else if (setup == null)
         </div>
         
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 @config.AdversariesPanelClass">
                 <CascadingValue Value="config.Adversaries" Name="Group">
                     <SelectableGroup T=Adversary />
                 </CascadingValue>
             </div>
         </div>
 
+        <ValidationSummary />
+
         <div class="row">
             <div class="col-12">
-                <button @onclick="GenerateSetup">
+                <button type="submit">
                     Generate
                 </button>
             </div>
@@ -221,16 +227,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         config = await ConfigurationService.GetConfigurationAsync();
-        config.Expansions.PropertyChanged += (sender, args) => InvokeAsync(StateHasChanged);        
+        config.Expansions.PropertyChanged += (sender, args) => InvokeAsync(StateHasChanged);
     }
 
     protected void GenerateSetup()
     {
-        var context = new EditContext(config);
-        if(context.Validate())
-        {
-            setup = SetupGenerator.Generate(config);
-        }
+        setup = SetupGenerator.Generate(config);
     }
     protected void ClearSetup()
     {

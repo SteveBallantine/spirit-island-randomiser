@@ -70,8 +70,20 @@ namespace SiRandomizer.Data
             Scenarios = scenarios;
         }
 
+        public string ScenariosPanelClass = "";
+        public string SpiritsPanelClass = "";
+        public string MapsPanelClass = "";
+        public string AdversariesPanelClass = "";
+        public string BoardsPanelClass = "";
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            ScenariosPanelClass = "";
+            SpiritsPanelClass = "";
+            MapsPanelClass = "";
+            AdversariesPanelClass = "";
+            BoardsPanelClass = "";
+
             if(MaxDifficulty < MinDifficulty)
             {
                 yield return new ValidationResult("Maximum difficulty must be geater than or equal to minimum difficulty",
@@ -79,23 +91,28 @@ namespace SiRandomizer.Data
             }
             if(Players + MaxAdditionalBoards > Boards.Count(b => b.Selected))
             {
+                BoardsPanelClass = "panel-invalid";
                 yield return new ValidationResult("Player count + max additional boards must be no bigger than the number of selected boards",
                     new[] { nameof(Boards) });
             }
             if(Scenarios.All(s => s.Selected) == false)
             {
+                ScenariosPanelClass = "panel-invalid";
                 yield return new ValidationResult("Must pick at least one scenario", new[] { nameof(Scenarios) });
             }
-            if(Adversaries.All(s => s.Selected) == false)
+            if(Adversaries.SelectMany(a => a.Levels).All(s => s.Selected) == false)
             {
+                AdversariesPanelClass = "panel-invalid";
                 yield return new ValidationResult("Must pick at least one adversary", new[] { nameof(Adversaries) });
             }
             if(Maps.All(s => s.Selected) == false)
             {
+                MapsPanelClass = "panel-invalid";
                 yield return new ValidationResult("Must pick at least one maps", new[] { nameof(Maps) });
             }
             if(Spirits.Count(s => s.Selected) < Players)
             {
+                SpiritsPanelClass = "panel-invalid";
                 yield return new ValidationResult($"Must pick at least {Players} spirits for {Players} players", new[] { nameof(Spirits) });
             }
         }

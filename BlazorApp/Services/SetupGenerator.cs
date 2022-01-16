@@ -8,7 +8,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SiRandomizer.Services
 {
-    public class SetupGenerator {
+    public class SetupGenerator 
+    {
         private static readonly Random _rng = new Random();
 
         // Stores the number of possible combinations for each 
