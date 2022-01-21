@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/BlazorApp/bin/Debug/net5.0/spirit-island-randomiser.dll",
+            "program": "${workspaceFolder}/BlazorApp/bin/Debug/net6.0/spirit-island-randomiser.dll",
             "args": [],
             "cwd": "${workspaceFolder}/BlazorApp",
             "stopAtEntry": false,
