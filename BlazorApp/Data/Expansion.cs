@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
@@ -11,7 +12,10 @@ namespace SiRandomizer.Data
         public const string Apocrypha = "Apocrypha";
         public const string Custom = "Custom";        
         
+        [JsonIgnore]
         public string Tag { get; private set; }
+
+        public Expansion() {}
 
         public Expansion(
             string name, 

@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
@@ -22,9 +23,14 @@ namespace SiRandomizer.Data
         public const string Caldera = "Caldera";
 
             
+        [JsonIgnore]
         public int MinCount { get; private set; }
+        [JsonIgnore]
         public int MaxCount { get; private set; }
+        [JsonIgnore]
         public int DifficultyModifier { get; private set; }   
+
+        public Map() {}
 
         public Map(
             string name, 

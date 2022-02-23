@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using SiRandomizer.Data;
 
 namespace SiRandomizer.Data
@@ -29,6 +30,7 @@ namespace SiRandomizer.Data
         public OptionChoice CombinedAdversaries {get;set;} = OptionChoice.Block;
         public OptionChoice RandomThematicBoards {get;set;} = OptionChoice.Block;
 
+        [JsonIgnore]
         public int MaxAdditionalBoards 
         {
             get 
@@ -46,6 +48,7 @@ namespace SiRandomizer.Data
             }
         }
 
+        [JsonIgnore]
         public int MinAdditionalBoards 
         {
             get
@@ -53,6 +56,8 @@ namespace SiRandomizer.Data
                 return AdditionalBoard == OptionChoice.Force ? 1 : 0;
             }
         }
+
+        public OverallConfiguration() {}
 
         public OverallConfiguration(
             OptionGroup<Adversary> adversaries,
@@ -68,6 +73,21 @@ namespace SiRandomizer.Data
             Expansions = expansions;
             Spirits = spirits;
             Scenarios = scenarios;
+        }
+
+        /// <summary>
+        /// Update the user-configurable settings on this configuration object
+        /// with those from the supplied configuration object.
+        /// </summary>
+        /// <param name="other"></param>
+        public void TakeSettingsFrom(OverallConfiguration other)
+        {
+            this.AdditionalBoard = other.AdditionalBoard;
+            this.CombinedAdversaries = other.CombinedAdversaries;
+            this.MaxDifficulty = other.MaxDifficulty;
+            this.MinDifficulty = other.MinDifficulty;
+            this.Players = other.Players;
+            this.RandomThematicBoards = other.RandomThematicBoards;
         }
 
         public string ScenariosPanelClass = "";

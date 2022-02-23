@@ -2,8 +2,12 @@
 
 @using SiRandomizer.Data
 @using SiRandomizer.Services
+@using System.Text.Json
+@using System.Text.Json.Serialization
+
 @inject ConfigurationService ConfigurationService
 @inject SetupGenerator SetupGenerator
+@inject IJSRuntime JSRuntime
 
 <h2>Spirit Island Randomizer</h2>
 
@@ -18,7 +22,7 @@
 }
 else if (setup == null)
 {    
-    <EditForm Model=@config OnValidSubmit="GenerateSetup">
+    <EditForm Model=@config OnValidSubmit="GenerateSetupAsync">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
@@ -212,7 +216,7 @@ else
             <button @onclick="ClearSetup">
                 Edit Setup
             </button>
-            <button @onclick="GenerateSetup">
+            <button @onclick="GenerateSetupAsync">
                 Re-Generate
             </button>
         </div>
@@ -224,16 +228,44 @@ else
     private OverallConfiguration config;
     private SetupResult setup;
 
+    private const string StorageName = "si-randomizer-config";
+
     protected override async Task OnInitializedAsync()
     {
         config = await ConfigurationService.GetConfigurationAsync();
         config.Expansions.PropertyChanged += (sender, args) => InvokeAsync(StateHasChanged);
     }
 
-    protected void GenerateSetup()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if(firstRender)
+        {
+            // Try to get configuration from local storage
+            var jsonConfig = await JSRuntime.InvokeAsync<string>("localStorage.getItem", StorageName);
+            if(string.IsNullOrEmpty(jsonConfig) == false)
+            {
+                try
+                {
+                    var savedSettings = JsonSerializer.Deserialize<OverallConfiguration>(jsonConfig);
+                    config.TakeSettingsFrom(savedSettings);
+                    // configuration has changed so let the system know to re-render.
+                    await InvokeAsync(StateHasChanged);
+                }
+                catch(Exception)
+                {
+                    // Don't worry about the error - we'll just use the new config instead.
+                }
+            }
+        }
+    }
+
+    protected async Task GenerateSetupAsync()
+    {
+        var jsonConfig = JsonSerializer.Serialize(config);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", StorageName, jsonConfig);
         setup = SetupGenerator.Generate(config);
     }
+
     protected void ClearSetup()
     {
         setup = null;

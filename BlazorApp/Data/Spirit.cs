@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
@@ -30,8 +31,12 @@ namespace SiRandomizer.Data
         public const string Finder = "Finder of Paths Unseen";
         public const string Rot = "Spreading Rot Renews the Earth";        
 
+        [JsonIgnore]
         public Complexity BaseComplexity {get; set;}
+        [JsonIgnore]
         public Expansion Expansion {get; set;}
+
+        public Spirit() {}
 
         public Spirit(
             string name,

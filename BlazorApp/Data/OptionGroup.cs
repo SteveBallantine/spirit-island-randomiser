@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-
+using System.Text.Json.Serialization;
 namespace SiRandomizer.Data
 {
+    [JsonConverter(typeof(OptionGroupConverter))]
     public class OptionGroup<T> : SelectableComponentBase<T>, IComponentCollection<T>
         where T : SelectableComponentBase<T>
     {
@@ -15,29 +16,31 @@ namespace SiRandomizer.Data
         /// The key is the name of the component.
         /// </summary>
         /// <value></value>
-        protected IReadOnlyDictionary<string, T> Children { get; set; }    
+        private Dictionary<string, T> _children = new Dictionary<string, T>(); 
 
+        [JsonIgnore]
         public T this[string name] 
         {
             get 
             {
-                return Children[name];
+                return _children[name];
+            }
+            set
+            {
+                Add(value);
             }
         }
 
-        public OptionGroup(
-            string name,
-            List<T> children)
-            : base(name)
+        public OptionGroup() 
         {
-            Name = name;
-            Children = children.ToDictionary(c => c.Name, c => c);
-            foreach(var child in children)
-            {
-                child.PropertyChanged += ChildUpdated;
-            }
             PropertyChanged += ThisUpdated;
-        } 
+        }
+
+        public void Add(T entry)
+        {
+            _children.Add(entry.Name, entry);
+            entry.PropertyChanged += ChildUpdated;
+        }
         
         public void ChildUpdated (object sender, PropertyChangedEventArgs args) {
             // When child is updated, trigger the property changed
@@ -50,7 +53,7 @@ namespace SiRandomizer.Data
             // update all children accordingly.
             if(args.PropertyName == nameof(Selected)) 
             {
-                foreach(var child in Children.Values
+                foreach(var child in _children.Values
                     .Where((c) => 
                     {
                         // Make sure we're only selecting children that are
@@ -70,12 +73,12 @@ namespace SiRandomizer.Data
 
         public IEnumerator<T> GetEnumerator()
         {
-            return Children.Values.GetEnumerator();
+            return _children.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return Children.Values.GetEnumerator();
+            return _children.Values.GetEnumerator();
         }
     }
 }

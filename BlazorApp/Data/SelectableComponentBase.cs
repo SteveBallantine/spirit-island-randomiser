@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {    
@@ -15,7 +16,9 @@ namespace SiRandomizer.Data
     {
         private static List<string> _all;
 
-        protected SelectableComponentBase(string name, bool hide = false) 
+        public SelectableComponentBase() {}
+
+        public SelectableComponentBase(string name, bool hide = false) 
             : base(name, hide)
         {
         }
@@ -55,12 +58,13 @@ namespace SiRandomizer.Data
                 PropertyChangedEventArgs(propertyName));
         }
 
-        public string Name { get; protected set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// If set to true, this component will never be displayed in the UI
         /// </summary>
         /// <value></value>
+        [JsonIgnore]
         public bool Hide { get; protected set; }
         
         private bool _selected = false;
@@ -74,6 +78,8 @@ namespace SiRandomizer.Data
             }
         }
 
+        public SelectableComponentBase() {}
+
         /// <summary>
         /// Constructor
         /// </summary>  
@@ -83,7 +89,7 @@ namespace SiRandomizer.Data
         {
             Name = name;
             Hide = hide;
-        }
+        }        
 
         public override bool Equals(object obj)
         {

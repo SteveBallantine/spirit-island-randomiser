@@ -1,4 +1,5 @@
 @using Data
+@using System.Collections;
 
 <input type="checkbox" @bind="Item.Selected" >@Item.Name
 
@@ -24,13 +25,25 @@
 
 @code {
     [CascadingParameter(Name = "Item")]
-    public INamedComponent Item { 
-        set {
-            if(value is IComponentCollection<INamedComponent> collection) {
-                children = collection;
+    public INamedComponent Item 
+    { 
+        set 
+        {
+            var type = value.GetType();
+            // If this item is an enumerable that contains INamedComponent instances
+            // then set the 'children' variable to ensure they are rendered too.
+            if(type.IsAssignableTo(typeof(IEnumerable)) &&
+                type.GetInterfaces()
+                    .Any(i => i.IsGenericType && 
+                        i.IsAssignableTo(typeof(IEnumerable)) &&
+                        i.GenericTypeArguments[0].IsAssignableTo(typeof(INamedComponent))))
+            {
+                children = (value as IEnumerable).Cast<INamedComponent>();
             }
-            values = value; }
-        get { return values; } }
+            values = value; 
+        }
+        get { return values; } 
+    }
 
     private INamedComponent values;
     private IEnumerable<INamedComponent> children;        

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
@@ -20,9 +21,13 @@ namespace SiRandomizer.Data
         public const string ADiversityOfSpirits = "A Diversity of Spirits";
         public const string VariedTerrains = "Varied Terrains";
         
-        public Expansion Expansion {get; set;}
+        [JsonIgnore]
+        public Expansion Expansion { get; set; }
 
-        public int DifficultyModifier {get;set;}
+        [JsonIgnore]
+        public int DifficultyModifier { get; set; }
+
+        public Scenario() {}
 
         public Scenario(
             string name,

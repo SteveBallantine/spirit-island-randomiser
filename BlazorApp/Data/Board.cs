@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
@@ -19,8 +20,10 @@ namespace SiRandomizer.Data
         public const string SEast = "SE.";
         public const string SWest = "SW.";
 
+        [JsonIgnore]
         public Expansion Expansion { get; private set; }
 
+        [JsonIgnore]
         public bool Thematic { get; private set; }
 
         /// <summary>
@@ -31,6 +34,7 @@ namespace SiRandomizer.Data
         /// Spirit Island manual. 
         /// </summary>
         /// <value></value>
+        [JsonIgnore]
         public List<int> ThematicDefinitivePlayerCounts { get; set; }
 
         /// <summary>
@@ -38,8 +42,11 @@ namespace SiRandomizer.Data
         /// A list of the thematic boards that directly neighbour this one.
         /// </summary>
         /// <value></value>
+        [JsonIgnore]
         public List<Board> ThematicNeighbours { get; set; }
         
+        public Board() {}
+
         public Board(
             string name, 
             Expansion expansion,

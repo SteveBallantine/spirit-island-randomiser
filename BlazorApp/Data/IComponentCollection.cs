@@ -6,5 +6,6 @@ namespace SiRandomizer.Data
     public interface IComponentCollection<T> : IEnumerable<T>
         where T : INamedComponent
     {   
+        void Add(T item);
     }
 }

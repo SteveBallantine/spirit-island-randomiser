@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
-    public class Adversary : SelectableComponentBase<Adversary>, IComponentCollection<INamedComponent>, IExpansionContent
+    [JsonConverter(typeof(AdversaryConverter))]
+    public class Adversary : SelectableComponentBase<Adversary>, IComponentCollection<AdversaryLevel>, IExpansionContent
     {
         public const string NoAdversary = "No Adversary";
         public const string England = "England";
@@ -16,8 +18,8 @@ namespace SiRandomizer.Data
         public const string Russia = "Russia";
         public const string Scotland = "Scotland";
 
-
-        public Expansion Expansion {get; set;}
+        [JsonIgnore]
+        public Expansion Expansion { get; set; }
 
         private List<AdversaryLevel> _levels = new List<AdversaryLevel>();
         /// <summary>
@@ -34,7 +36,10 @@ namespace SiRandomizer.Data
         /// But the second approach makes the intent clearer to the reader.
         /// </summary>
         /// <value></value>
+        [JsonIgnore]
         public IReadOnlyList<AdversaryLevel> Levels => _levels;
+
+        public Adversary() {}
 
         public Adversary(
             string name, 
@@ -45,14 +50,14 @@ namespace SiRandomizer.Data
             PropertyChanged += ThisUpdated;
         }
 
-        public void AddLevel(AdversaryLevel level)
+        public void Add(AdversaryLevel level)
         {
             level.Adversary = this;
             level.PropertyChanged += AdversaryLevelUpdated;
             _levels.Add(level);
         }
 
-        public IEnumerator<INamedComponent> GetEnumerator()
+        public IEnumerator<AdversaryLevel> GetEnumerator()
         {
             return Levels.GetEnumerator();
         }
@@ -61,7 +66,7 @@ namespace SiRandomizer.Data
         {
             return Levels.GetEnumerator();
         }
-        
+
         public void AdversaryLevelUpdated (object sender, PropertyChangedEventArgs args) {
             // When child is updated, trigger the property changed
             // event on the group.

@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Forms;
 using SiRandomizer.Data;
 
 namespace SiRandomizer.Services
@@ -25,7 +22,11 @@ namespace SiRandomizer.Services
 
         public OptionGroup<Expansion> CreateExpansions()
         {
-            var expansions = new List<Expansion>();
+            var expansions = new OptionGroup<Expansion>()
+            {
+                Name = "Expansions"
+            };
+            
             expansions.Add(new Expansion(Expansion.BranchAndClaw, "BC"));
             expansions.Add(new Expansion(Expansion.JaggedEarth, "JE"));
             expansions.Add(new Expansion(Expansion.Promo1, "P1"));
@@ -33,12 +34,15 @@ namespace SiRandomizer.Services
             expansions.Add(new Expansion(Expansion.Apocrypha, "Ax"));
             expansions.Add(new Expansion(Expansion.Custom, "Cx"));
 
-            return new OptionGroup<Expansion>("Expansions", expansions);
+            return expansions;
         }
 
         public OptionGroup<Scenario> CreateScenarios(OptionGroup<Expansion> expansions)
         {
-            var scenarios = new List<Scenario>();
+            var scenarios = new OptionGroup<Scenario>()
+            {
+                Name = "Scenarios"
+            };
 
             scenarios.Add(new Scenario(Scenario.NoScenario, null, 0));
             scenarios.Add(new Scenario(Scenario.Blitz, null, 0));
@@ -55,12 +59,16 @@ namespace SiRandomizer.Services
             scenarios.Add(new Scenario(Scenario.ADiversityOfSpirits, expansions[Expansion.Promo2], 0));
             scenarios.Add(new Scenario(Scenario.VariedTerrains, expansions[Expansion.Promo2], 2));
 
-            return new OptionGroup<Scenario>("Scenarios", scenarios);
+            return scenarios;
         }
 
         public OptionGroup<Spirit> CreateSpirits(OptionGroup<Expansion> expansions)
         {
-            var spirits = new List<Spirit>();
+            var spirits = new OptionGroup<Spirit>()
+            {
+                Name = "Spirits"
+            };
+
             spirits.Add(new Spirit(Spirit.Lightning, null, Complexity.Low));
             spirits.Add(new Spirit(Spirit.Shadows, null, Complexity.Low));
             spirits.Add(new Spirit(Spirit.Earth, null, Complexity.Low));
@@ -85,15 +93,19 @@ namespace SiRandomizer.Services
             spirits.Add(new Spirit(Spirit.Fractured, expansions[Expansion.JaggedEarth], Complexity.VeryHigh));
             spirits.Add(new Spirit(Spirit.Downpour, expansions[Expansion.Promo2], Complexity.High));
             spirits.Add(new Spirit(Spirit.Finder, expansions[Expansion.Promo2], Complexity.VeryHigh));
-            return new OptionGroup<Spirit>("Spirits", spirits);
+            
+            return spirits;
         }
 
         public OptionGroup<Adversary> CreateAdversaries(OptionGroup<Expansion> expansions)
         {
-            var adversaries = new List<Adversary>();
+            var adversaries = new OptionGroup<Adversary>()
+            {
+                Name = "Adversaries"
+            };
 
             var adversary = new Adversary(Adversary.NoAdversary, null);
-            adversary.AddLevel(new AdversaryLevel("Level 0", 0, 0));
+            adversary.Add(new AdversaryLevel("Level 0", 0, 0));
             adversaries.Add(adversary);
             adversary = new Adversary(Adversary.England, null);
             AddAdversaryLevels(adversary, new int[] { 1, 3, 4, 6, 7, 9, 11 });
@@ -117,7 +129,7 @@ namespace SiRandomizer.Services
             AddAdversaryLevels(adversary, new int[] { 1, 3, 4, 6, 7, 8, 10 });
             adversaries.Add(adversary);
             
-            return new OptionGroup<Adversary>("Adversaries", adversaries);
+            return adversaries;
         }
 
         private void AddAdversaryLevels(Adversary adversary,
@@ -125,13 +137,16 @@ namespace SiRandomizer.Services
         {
             for(int level = 0; level < difficulties.Length; level++)
             {
-                adversary.AddLevel(new AdversaryLevel($"Level {level}", level, difficulties[level]));
+                adversary.Add(new AdversaryLevel($"Level {level}", level, difficulties[level]));
             }        
         }
 
         public OptionGroup<Map> CreateMaps()
-        {        
-            var maps = new List<Map>();
+        {
+            var maps = new OptionGroup<Map>()
+            {
+                Name = "Maps"
+            };
 
             maps.Add(new Map(Map.Standard, 1, 6, 0));
             maps.Add(new Map("Thematic (+tokens)", 1, 6, 1));
@@ -150,12 +165,16 @@ namespace SiRandomizer.Services
             maps.Add(new Map("Flower", 6, 6, 0));
             maps.Add(new Map("Caldera", 6, 6, 0));  
 
-            return new OptionGroup<Map>("Maps", maps);          
+            return maps;
         }
 
         public OptionGroup<Board> CreateBoards(OptionGroup<Expansion> expansions)
         {
-            var boards = new List<Board>();
+            var boards = new OptionGroup<Board>()
+            {
+                Name = "Boards"
+            };
+
             var jaggedEarth = expansions[Expansion.JaggedEarth];
 
             var a = new Board(Board.A, null, false);
@@ -211,7 +230,7 @@ namespace SiRandomizer.Services
             boards.Add(se);
             boards.Add(sw);
 
-            return new OptionGroup<Board>("Boards", boards);
+            return boards;
         }
 
     }
