@@ -7,6 +7,9 @@ using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
+    /// <summary>
+    /// Handles serialisation/deserialisation of <see cref="Adversary"> instances.
+    /// </summary>
     public class AdversaryConverter : ComponentCollectionConverterBase<Adversary, AdversaryLevel> 
     {
         public AdversaryConverter()

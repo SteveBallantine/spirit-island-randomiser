@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
-using SiRandomizer.Data;
+using SiRandomizer.Extensions;
 
 namespace SiRandomizer.Data
 {
     public class OverallConfiguration : IValidatableObject
     {
-        public OptionGroup<Adversary> Adversaries { get; private set; }
-        public OptionGroup<Board> Boards { get; private set; }
-        public OptionGroup<Map> Maps { get; private set; }
-        public OptionGroup<Expansion> Expansions { get; private set; }
-        public OptionGroup<Spirit> Spirits { get; private set; }
-        public OptionGroup<Scenario> Scenarios { get; private set; }
+        public OptionGroup<Adversary> Adversaries { get; set; }
+        public OptionGroup<Board> Boards { get; set; }
+        public OptionGroup<Map> Maps { get; set; }
+        public OptionGroup<Expansion> Expansions { get; set; }
+        public OptionGroup<Spirit> Spirits { get; set; }
+        public OptionGroup<Scenario> Scenarios { get; set; }
 
         [Required]
         [Range(1, 6, ErrorMessage = "Number of players must be 1 - 6")]
@@ -88,6 +87,53 @@ namespace SiRandomizer.Data
             this.MinDifficulty = other.MinDifficulty;
             this.Players = other.Players;
             this.RandomThematicBoards = other.RandomThematicBoards;
+
+            TakeSettingsFrom(Expansions, other.Expansions);
+            // Adversaries is a collection (of AdversaryLevels) so need to specify
+            // the child type in order for this to work properly.
+            // This is all a bit clunky, but gets the job done.
+            TakeSettingsFrom<Adversary, AdversaryLevel>(Adversaries, other.Adversaries);
+            TakeSettingsFrom(Boards, other.Boards);
+            TakeSettingsFrom(Maps, other.Maps);
+            TakeSettingsFrom(Scenarios, other.Scenarios);
+            TakeSettingsFrom(Spirits, other.Spirits);
+        }
+
+        private void TakeSettingsFrom<TItem>(
+            IComponentCollection<TItem> destination, 
+            IComponentCollection<TItem> source)
+            where TItem : INamedComponent
+        {
+            // We call the alternative signature for the method, passing the 
+            // item type as the child type.
+            // The checks in the other method will handle whether TItem is
+            // actually a collection class or not.
+            TakeSettingsFrom<TItem, TItem>(destination, source);
+        }
+
+        private void TakeSettingsFrom<TItem, TChild>(
+            IComponentCollection<TItem> destination, 
+            IComponentCollection<TItem> source)
+            where TItem : INamedComponent
+            where TChild : INamedComponent
+        {
+            if(source != null)
+            {
+                var itemsAreCollections = typeof(TItem).IsNamedComponentCollection();
+
+                destination.Selected = source.Selected;
+                foreach(var sourceItem in source)
+                {         
+                    var destinationItem = destination.Single(i => i.Name == sourceItem.Name);       
+                    destinationItem.Selected = sourceItem.Selected;
+                    if(itemsAreCollections)
+                    {
+                        TakeSettingsFrom(
+                            destinationItem as IComponentCollection<TChild>, 
+                            sourceItem as IComponentCollection<TChild>);
+                    }
+                }
+            }
         }
 
         public string ScenariosPanelClass = "";

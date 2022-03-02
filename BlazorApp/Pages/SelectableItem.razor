@@ -1,5 +1,6 @@
 @using Data
 @using System.Collections;
+@using SiRandomizer.Extensions;
 
 <input type="checkbox" @bind="Item.Selected" >@Item.Name
 
@@ -30,13 +31,9 @@
         set 
         {
             var type = value.GetType();
-            // If this item is an enumerable that contains INamedComponent instances
+            // If this item is a collection of INamedComponent instances
             // then set the 'children' variable to ensure they are rendered too.
-            if(type.IsAssignableTo(typeof(IEnumerable)) &&
-                type.GetInterfaces()
-                    .Any(i => i.IsGenericType && 
-                        i.IsAssignableTo(typeof(IEnumerable)) &&
-                        i.GenericTypeArguments[0].IsAssignableTo(typeof(INamedComponent))))
+            if(type.IsNamedComponentCollection())
             {
                 children = (value as IEnumerable).Cast<INamedComponent>();
             }

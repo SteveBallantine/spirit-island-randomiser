@@ -7,12 +7,29 @@ using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
+    /// <summary>
+    /// Contains the shared logic for serialisation/deserialisation of 
+    /// <see cref="OptionGroup{T}"> and <see cref="Adversary"> instances.
+    /// This is needed because the built-in Json serialisation cannot cope with 
+    /// classes that implement <see cref="IEnumerable{T}">.
+    /// </summary>
     public abstract class ComponentCollectionConverterBase<TCollection, TItem> : JsonConverter<TCollection> 
         where TItem : SelectableComponentBase<TItem>
         where TCollection : IComponentCollection<TItem>, new()
     {
+        /// <summary>
+        /// The converter to use for items that are stored in the collection to be converted.
+        /// </summary>
         private readonly JsonConverter<TItem> _itemConverter;
+        /// <summary>
+        /// The types of the items that are stored in the collection to be converted.
+        /// </summary>
         private readonly Type _itemType;
+        /// <summary>
+        /// Details of the properties on the collection object that this converter will
+        /// be serialising/deserialising.
+        /// The key is the name of the property.
+        /// </summary>
         private readonly Dictionary<string, PropertyInfo> _properties;
 
         public ComponentCollectionConverterBase()
@@ -52,7 +69,7 @@ namespace SiRandomizer.Data
                 
                 try
                 {
-                    // Read the property values for the group
+                    // Read this property value and set it on the result object
                     if(_properties.TryGetValue(propertyName, out var propertyInfo))
                     {
                         reader.Read();                    
@@ -103,11 +120,12 @@ namespace SiRandomizer.Data
         {            
             writer.WriteStartObject();
 
-            // Write entries for the properties on this group
+            // Write entries for the properties on this collection
             foreach(var property in _properties)
             {
                 writer.WritePropertyName(property.Key);
                 var valueObj = property.Value.GetValue(value);
+                // Write booleans as booleans. Everything else is converted to string.
                 if(property.Value.PropertyType == typeof(bool))
                 {
                     writer.WriteBooleanValue((bool)valueObj);
