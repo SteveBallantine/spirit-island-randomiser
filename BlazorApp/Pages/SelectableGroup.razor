@@ -9,7 +9,7 @@
             @{
                 var rows = Group
                     .Where((x) => {
-                        bool display = true;
+                        bool display = x.Hide == false;
                         if(x is IExpansionContent item) {
                             display = item.Expansion == null ||
                                 item.Expansion.Selected;

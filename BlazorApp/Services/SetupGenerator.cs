@@ -104,7 +104,7 @@ namespace SiRandomizer.Services
             var totalBoards = config.Players + 
                 gameSetup.AdditionalBoards;
 
-            if(gameSetup.Map.Name == Map.ThematicNoTokens || gameSetup.Map.Name == Map.ThematicTokens) 
+            if(gameSetup.Map.Thematic) 
             {
                 var thematicBoards = config.Boards
                     .Where(b => b.Thematic && b.Selected).ToList();
@@ -225,19 +225,20 @@ namespace SiRandomizer.Services
             }
 
             // Join the various options so that we have all possible permutations.
-            var joined1 = scenarios.Join(maps, s => true, m => true, 
-                (s, m) => new { Scenario = s, Map = m });
-            var joined2 = joined1.Join(adversaryLevels, j => true, a => true, 
-                (j, a) => new { Scenario = j.Scenario, Map = j.Map, LeadingAdversary = a });            
-            var setups = joined2.Join(additionalBoards, j => true, a => true, 
-                (j, b) => new { Scenario = j.Scenario, Map = j.Map, LeadingAdversary = j.LeadingAdversary, AdditionalBoards = b })
+            var joined1 = scenarios.Join(additionalBoards, s => true, b => true, 
+                (s, b) => new { Scenario = s, AdditionalBoards = b });
+            var joined2 = joined1.Join(maps, s => true, m => true,
+                (j, m) => new { Scenario = j.Scenario, AdditionalBoards = j.AdditionalBoards, Map = m });          
+            var setups = joined2.Join(adversaryLevels, j => true, a => true, 
+                (j, a) => new { Scenario = j.Scenario, Map = j.Map, AdditionalBoards = j.AdditionalBoards, LeadingAdversary = a })
                 .Select(j => new GameSetup() {
                     Scenario = j.Scenario,
                     Map = j.Map,
                     LeadingAdversary = j.LeadingAdversary,
                     SupportingAdversary = config.Adversaries[Adversary.NoAdversary].Levels.Single(),
                     AdditionalBoards = j.AdditionalBoards
-                });
+                // Eliminate any setups that are invalid.
+                }).Where(s => s.IsValid(config.Players));
             // Adding a supporting adversary is a little trickier as we want some logic to ensure that:
             // 1. If leading adversary is 'no adversary' then supporting adversary MUST be 'no adversary'.
             // 2. Otherwise, supporting adversary MUST be different to leading adverary.

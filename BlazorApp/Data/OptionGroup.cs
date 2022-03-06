@@ -57,13 +57,14 @@ namespace SiRandomizer.Data
                     .Where((c) => 
                     {
                         // Make sure we're only selecting children that are
-                        // actually available based on the selected expansions.
+                        // actually enabled and available based on the selected 
+                        // expansions.
                         bool available = true;
                         if(c is IExpansionContent item) {
                             available = item.Expansion == null ||
                                 item.Expansion.Selected;
                         }
-                        return available;
+                        return available && c.Disabled == false;
                     })) 
                 {
                     child.Selected = Selected;

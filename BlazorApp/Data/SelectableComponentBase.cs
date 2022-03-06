@@ -67,6 +67,13 @@ namespace SiRandomizer.Data
         [JsonIgnore]
         public bool Hide { get; protected set; }
         
+        /// <summary>
+        /// If set to true, this component will be greyed out in the UI
+        /// </summary>
+        /// <value></value>
+        [JsonIgnore]
+        public bool Disabled { get; set; }
+
         private bool _selected = false;
         public bool Selected 
         {

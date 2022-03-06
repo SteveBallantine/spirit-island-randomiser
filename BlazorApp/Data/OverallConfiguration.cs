@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using SiRandomizer.Extensions;
 
@@ -16,16 +18,35 @@ namespace SiRandomizer.Data
         public OptionGroup<Spirit> Spirits { get; set; }
         public OptionGroup<Scenario> Scenarios { get; set; }
 
+        private int _players;
         [Required]
         [Range(1, 6, ErrorMessage = "Number of players must be 1 - 6")]
-        public int Players {get;set;}
+        public int Players 
+        {
+            get { return _players; }
+            set 
+            { 
+                _players = value;
+                UpdateValidMaps(); 
+            }
+        }
         [Required]
         [Range(0, 20, ErrorMessage = "Minimum difficulty must be 0 - 20")]
         public int MinDifficulty {get;set;}
         [Required]
         [Range(0, 20, ErrorMessage = "Maximum difficulty must be 0 - 20")]
         public int MaxDifficulty {get;set;}
-        public OptionChoice AdditionalBoard {get;set;} = OptionChoice.Block;
+
+        private OptionChoice _additionalBoard = OptionChoice.Block;
+        public OptionChoice AdditionalBoard 
+        {
+            get { return _additionalBoard; }
+            set 
+            { 
+                _additionalBoard = value;
+                UpdateValidMaps(); 
+            }
+        }
         public OptionChoice CombinedAdversaries {get;set;} = OptionChoice.Block;
         public OptionChoice RandomThematicBoards {get;set;} = OptionChoice.Block;
 
@@ -72,6 +93,28 @@ namespace SiRandomizer.Data
             Expansions = expansions;
             Spirits = spirits;
             Scenarios = scenarios;
+        }
+                
+        private void UpdateValidMaps()
+        {
+            var maxBoards = Players + MaxAdditionalBoards;
+            var minBoards = Players + MinAdditionalBoards;
+            List<int> boardsCounts = new List<int>();
+            for(int c = minBoards; c <= maxBoards; c++)
+            {
+                boardsCounts.Add(c);
+            }
+            // Mark all maps as enabled.
+            foreach(var map in Maps)
+            {
+                map.Disabled = false;
+            }
+            // Now disable the ones that are invalid for all possible numbers of players + extra boards.
+            foreach(var map in Maps.Where(m => boardsCounts
+                .All(c => m.ValidForBoardCount(c) == false)))
+            {
+                map.Disabled = true;
+            }
         }
 
         /// <summary>
@@ -160,7 +203,7 @@ namespace SiRandomizer.Data
                 BoardsPanelClass = "panel-invalid";
                 yield return new ValidationResult("Player count + max additional boards must be no bigger than the number of selected boards",
                     new[] { nameof(Boards) });
-            }
+            }            
             if(Scenarios.All(s => s.Selected == false))
             {
                 ScenariosPanelClass = "panel-invalid";
@@ -180,7 +223,7 @@ namespace SiRandomizer.Data
             {
                 SpiritsPanelClass = "panel-invalid";
                 yield return new ValidationResult($"Must pick at least {Players} spirits for {Players} players", new[] { nameof(Spirits) });
-            }
+            }            
         }
     }
 }

@@ -28,7 +28,9 @@ namespace SiRandomizer.Data
         [JsonIgnore]
         public int MaxCount { get; private set; }
         [JsonIgnore]
-        public int DifficultyModifier { get; private set; }   
+        public int DifficultyModifier { get; private set; }  
+        [JsonIgnore]
+        public bool Thematic { get; private set; } 
 
         public Map() {}
 
@@ -36,12 +38,24 @@ namespace SiRandomizer.Data
             string name, 
             int minPlayerCount,
             int maxPlayerCount,
-            int difficultyModifier) 
+            int difficultyModifier,
+            bool thematic = false) 
             : base(name) 
         { 
             MinCount = minPlayerCount;
             MaxCount = maxPlayerCount;
             DifficultyModifier = difficultyModifier;
+            Thematic = thematic;
         }     
+
+        /// <summary>
+        /// Return true if this map can be used when playing with the specified number of boards.
+        /// </summary>
+        /// <param name="boardCount"></param>
+        /// <returns></returns>
+        public bool ValidForBoardCount(int boardCount)
+        {
+            return boardCount >= MinCount && boardCount <= MaxCount;
+        }
     }
 }

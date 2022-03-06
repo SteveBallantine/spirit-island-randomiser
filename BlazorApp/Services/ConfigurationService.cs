@@ -32,7 +32,7 @@ namespace SiRandomizer.Services
             expansions.Add(new Expansion(Expansion.Promo1, "P1"));
             expansions.Add(new Expansion(Expansion.Promo2, "P2"));
             expansions.Add(new Expansion(Expansion.Apocrypha, "Ax"));
-            expansions.Add(new Expansion(Expansion.Custom, "Cx"));
+            expansions.Add(new Expansion(Expansion.Homebrew, "Hx"));
 
             return expansions;
         }
@@ -69,6 +69,7 @@ namespace SiRandomizer.Services
                 Name = "Spirits"
             };
 
+            // Base
             spirits.Add(new Spirit(Spirit.Lightning, null, Complexity.Low));
             spirits.Add(new Spirit(Spirit.Shadows, null, Complexity.Low));
             spirits.Add(new Spirit(Spirit.Earth, null, Complexity.Low));
@@ -77,11 +78,17 @@ namespace SiRandomizer.Services
             spirits.Add(new Spirit(Spirit.Green, null, Complexity.Moderate));
             spirits.Add(new Spirit(Spirit.Ocean, null, Complexity.High));
             spirits.Add(new Spirit(Spirit.Bringer, null, Complexity.High));
+            // Branch and claw
             spirits.Add(new Spirit(Spirit.Keeper, expansions[Expansion.BranchAndClaw], Complexity.Moderate));
             spirits.Add(new Spirit(Spirit.Fangs, expansions[Expansion.BranchAndClaw], Complexity.Moderate));
+            // Promo 1
             spirits.Add(new Spirit(Spirit.Wildfire, expansions[Expansion.Promo1], Complexity.High));
-            spirits.Add(new Spirit(Spirit.Volcano, expansions[Expansion.JaggedEarth], Complexity.Moderate));
             spirits.Add(new Spirit(Spirit.Snek, expansions[Expansion.Promo1], Complexity.High));
+            // Promo 2
+            spirits.Add(new Spirit(Spirit.Downpour, expansions[Expansion.Promo2], Complexity.High));
+            spirits.Add(new Spirit(Spirit.Finder, expansions[Expansion.Promo2], Complexity.VeryHigh));
+            // Jagged Earth
+            spirits.Add(new Spirit(Spirit.Volcano, expansions[Expansion.JaggedEarth], Complexity.Moderate));
             spirits.Add(new Spirit(Spirit.Lure, expansions[Expansion.JaggedEarth], Complexity.Moderate));
             spirits.Add(new Spirit(Spirit.ManyMinds, expansions[Expansion.JaggedEarth], Complexity.Moderate));
             spirits.Add(new Spirit(Spirit.Memory, expansions[Expansion.JaggedEarth], Complexity.Moderate));
@@ -91,8 +98,8 @@ namespace SiRandomizer.Services
             spirits.Add(new Spirit(Spirit.Mist, expansions[Expansion.JaggedEarth], Complexity.High));
             spirits.Add(new Spirit(Spirit.Starlight, expansions[Expansion.JaggedEarth], Complexity.VeryHigh));
             spirits.Add(new Spirit(Spirit.Fractured, expansions[Expansion.JaggedEarth], Complexity.VeryHigh));
-            spirits.Add(new Spirit(Spirit.Downpour, expansions[Expansion.Promo2], Complexity.High));
-            spirits.Add(new Spirit(Spirit.Finder, expansions[Expansion.Promo2], Complexity.VeryHigh));
+            // Apocrypha
+            spirits.Add(new Spirit(Spirit.Rot, expansions[Expansion.Apocrypha], Complexity.High));
             
             return spirits;
         }
@@ -149,21 +156,21 @@ namespace SiRandomizer.Services
             };
 
             maps.Add(new Map(Map.Standard, 1, 6, 0));
-            maps.Add(new Map("Thematic (+tokens)", 1, 6, 1));
-            maps.Add(new Map("Thematic (no tokens)", 1, 6, 3));
-            maps.Add(new Map("Archipelago", 2, 6, 1));
-            maps.Add(new Map("Fragment", 2, 2, 0));
-            maps.Add(new Map("Opposite Shores", 2, 2, 0));
-            maps.Add(new Map("Coastline", 2, 6, 0));
-            maps.Add(new Map("Sunrise", 3, 3, 0));
-            maps.Add(new Map("Leaf", 4, 4, 0));
-            maps.Add(new Map("Snake", 3, 6, 0));
-            maps.Add(new Map("V", 5, 5, 0));
-            maps.Add(new Map("Snail", 5, 5, 0));
-            maps.Add(new Map("Peninsula", 5, 5, 0));
-            maps.Add(new Map("Star", 6, 6, 0));
-            maps.Add(new Map("Flower", 6, 6, 0));
-            maps.Add(new Map("Caldera", 6, 6, 0));  
+            maps.Add(new Map(Map.ThematicTokens, 1, 6, 1, true));
+            maps.Add(new Map(Map.ThematicNoTokens, 1, 6, 3, true));
+            maps.Add(new Map(Map.Archipelago, 2, 6, 1));
+            maps.Add(new Map(Map.Fragment, 2, 2, 0));
+            maps.Add(new Map(Map.OppositeShores, 2, 2, 0));
+            maps.Add(new Map(Map.Coastline, 2, 6, 0));
+            maps.Add(new Map(Map.Sunrise, 3, 3, 0));
+            maps.Add(new Map(Map.Leaf, 4, 4, 0));
+            maps.Add(new Map(Map.Snake, 3, 6, 0));
+            maps.Add(new Map(Map.V, 5, 5, 0));
+            maps.Add(new Map(Map.Snail, 5, 5, 0));
+            maps.Add(new Map(Map.Peninsula, 5, 5, 0));
+            maps.Add(new Map(Map.Star, 6, 6, 0));
+            maps.Add(new Map(Map.Flower, 6, 6, 0));
+            maps.Add(new Map(Map.Caldera, 6, 6, 0));  
 
             return maps;
         }
@@ -184,27 +191,27 @@ namespace SiRandomizer.Services
             var e = new Board(Board.E, jaggedEarth, false);
             var f = new Board(Board.F, jaggedEarth, false);
 
-            var ne = new Board(Board.NEast, null, true, true) 
+            var ne = new Board(Board.NEast, null, true) 
             {
                 ThematicDefinitivePlayerCounts = new List<int>() { 1, 3, 4, 5, 6 }
             };
-            var nw = new Board(Board.NWest, null, true, true) 
+            var nw = new Board(Board.NWest, null, true) 
             {
                 ThematicDefinitivePlayerCounts = new List<int>() { 4, 5, 6 }
             };
-            var east = new Board(Board.East, null, true, true) 
+            var east = new Board(Board.East, null, true) 
             {
                 ThematicDefinitivePlayerCounts = new List<int>() { 2, 3, 4, 5, 6 }
             };
-            var west = new Board(Board.West, null, true, true) 
+            var west = new Board(Board.West, null, true) 
             {
                 ThematicDefinitivePlayerCounts = new List<int>() { 2, 3, 4, 5, 6 }
             };
-            var se = new Board(Board.SEast, jaggedEarth, true, true) 
+            var se = new Board(Board.SEast, jaggedEarth, true) 
             {
                 ThematicDefinitivePlayerCounts = new List<int>() { 5, 6 }
             };
-            var sw = new Board(Board.SWest, jaggedEarth, true, true) 
+            var sw = new Board(Board.SWest, jaggedEarth, true) 
             {
                 ThematicDefinitivePlayerCounts = new List<int>() { 6 }
             };
