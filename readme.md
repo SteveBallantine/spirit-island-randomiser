@@ -11,8 +11,6 @@ The purpose of this app is to experiment with Blazor in a 'real world' scenario 
 
 # Todo
 
-- Refactor to use Hide property for items not included in selected expansions and disabled maps
-  - When things are hidden also deselect them
 - Refactor joins to simplify. Use existing logic for checking valid maps
 - Add allow/block/force option for mismatched arcade boards
 - Add tooltips to explain some options (e.g. block/force/allow)

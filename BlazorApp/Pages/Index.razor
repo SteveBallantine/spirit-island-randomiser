@@ -111,17 +111,20 @@ else if (setup == null)
                     <SelectableGroup T=Board />
                 </CascadingValue>
             </div>
-            <div class="col-6 @config.ScenariosPanelClass">
+        </div>
+        
+        <div class="row">
+            <div class="col-12 @config.ScenariosPanelClass">
                 <CascadingValue Value="config.Scenarios" Name="Group">
                     <SelectableGroup T=Scenario />
                 </CascadingValue>
             </div>
         </div>
-        
+
         <div class="row">
             <div class="col-12 @config.AdversariesPanelClass">
                 <CascadingValue Value="config.Adversaries" Name="Group">
-                    <SelectableGroup T=Adversary />
+                    <SelectableGroup T=Adversary Columns=4 />
                 </CascadingValue>
             </div>
         </div>

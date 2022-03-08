@@ -11,7 +11,7 @@
                     .Where(x => x.IsVisible(Config))
                     // Split the contents into two columns
                     .Select((x, i) => new { x, i })
-                    .GroupBy(p => (p.i / 2), p => p.x);
+                    .GroupBy(p => (p.i / Columns), p => p.x);
             }
             @foreach(var row in rows)
             {
@@ -35,4 +35,7 @@
 
     [CascadingParameter(Name = "Config")]
     public OverallConfiguration Config { get; set; }
+
+    [Parameter]
+    public int Columns { get; set; } = 2;
 }
