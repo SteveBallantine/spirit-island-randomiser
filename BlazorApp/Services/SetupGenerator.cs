@@ -183,7 +183,7 @@ namespace SiRandomizer.Services
             else 
             {
                 var possibleBoards = config.Boards
-                    .Where(s => s.Thematic == false && s.Selected);
+                    .Where(b => b.Thematic == false && b.Selected);
                 // Get the total board combinations by adding the number of combinations
                 // for each possible number of boards.
                 for(int i = config.MinAdditionalBoards; i <= config.MaxAdditionalBoards; i++)
@@ -211,7 +211,7 @@ namespace SiRandomizer.Services
             var scenarios = config.Scenarios
                 .Where(s => s.Selected);
             var maps = config.Maps
-                .Where(s => s.Selected);
+                .Where(m => m.Selected);
             var adversaryLevels = config.Adversaries
                 .SelectMany(a => a.Levels)
                 .Where(l => l.Selected);

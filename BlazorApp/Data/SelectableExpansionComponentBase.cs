@@ -31,7 +31,13 @@ namespace SiRandomizer.Data
             {
                 throw new ArgumentNullException(nameof(config));
             }
-            return Expansion == null || config.Expansions[Expansion.Name].Selected;
+            var visible = Expansion == null || config.Expansions[Expansion.Name].Selected;
+            // If this component is not visible then also ensure it is not selected.
+            if(visible == false)
+            {
+                Selected = false;
+            }
+            return visible;
         }
     }
 }
