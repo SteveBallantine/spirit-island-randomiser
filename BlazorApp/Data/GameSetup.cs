@@ -50,7 +50,7 @@ namespace SiRandomizer.Data
                 // +3 difficulty if difficulty is 3
                 // +4 difficulty if difficulty is 6
                 int additionalBoardDifficulty = 
-                    baseDifficulty <= 0 ? 2 : baseDifficulty <= 3 ? 3 : 4;
+                    baseDifficulty <= 1 ? 2 : baseDifficulty <= 4 ? 3 : 4;
 
                 return baseDifficulty + 
                     (AdditionalBoards * additionalBoardDifficulty);

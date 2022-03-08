@@ -11,7 +11,6 @@ The purpose of this app is to experiment with Blazor in a 'real world' scenario 
 
 # Todo
 
-- Add tooltips to explain some options (e.g. block/force/allow)
 - Add support for aspects
 - Add support for custom spirits & adversaries
 - Add tests and ensure invalid edge cases are handled correctly (e.g. 'no adversary' is not selected, but secondary adversary is 'blocked')

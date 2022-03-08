@@ -28,7 +28,7 @@ else if (setup == null)
         <ValidationSummary />
 
         <div class="row">
-            <div class="col-4">
+            <div class="col-2">
                 <Panel>
                     <Header>
                         Player Count
@@ -41,7 +41,7 @@ else if (setup == null)
             <div class="col-4">
                 <Panel>
                     <Header>
-                        Difficulty
+                        Difficulty <Tooltip Text="Select the difficulty range of the game you want to play">?</Tooltip>
                     </Header>
                     <Body>
                         <span>Min<InputNumber class="numeric-2" @bind-Value=config.MinDifficulty/></span>
@@ -49,10 +49,10 @@ else if (setup == null)
                     </Body>
                 </Panel>
             </div>
-            <div class="col-4">
+            <div class="col-6">
                 <Panel>
                     <Header>
-                        Options
+                        Options <Tooltip Text="Each of these options can be configured as Allow, Block or Force. Allow means it might be used when randomising the game setup. Block means it will not be used. Force means it will be used">?</Tooltip>
                     </Header>
                     <Body>
                         <label>
@@ -61,31 +61,34 @@ else if (setup == null)
                                 {                                
                                     <option value="@choice">@choice</option>
                                 }
-                            </InputSelect> Combined Adversaries
+                            </InputSelect> Combined Adversaries <Tooltip Text="Control the addition of a second adversary in combination with the first. This is an additional setup option described in the Jagged Earth rule book. It suggests that the second adversary contributes 50%-75% of its full difficulty. We need a definite figure, so 60% is used. This is then rounded to the nearest whole number.">?</Tooltip>
                         </label>
+                        <br/>
                         <label>
                             <InputSelect @bind-Value="@config.RandomThematicBoards" >                            
                                 @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
                                 {                                
                                     <option value="@choice">@choice</option>
                                 }
-                            </InputSelect> Random Thematic Boards
+                            </InputSelect> Random Thematic Boards <Tooltip Text="The thematic boards have specific recommended boards for each number of players in order to provide the 'definitive' experience. This option allows you to fully randomise selection of thematic boards (with the caveat that invalid combinations such as West + North East will not be selected)">?</Tooltip>
                         </label>
+                        <br/>
                         <label>
                             <InputSelect @bind-Value="@config.AdditionalBoard" >                            
                                 @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
                                 {                                
-                                    <option value="@choice">@choice</option>
+                                    <option value="@choice">@choice</option> 
                                 }
-                            </InputSelect> Additional Board
+                            </InputSelect> Additional Board <Tooltip Text="Controls the addition of an extra board. This is an additional setup option described in the Jagged Earth rule book. It suggests the extra board adds rougly '+2 at difficulty 0, +3 at difficulty 3 and +4 at difficulty 6'. To be precise, the algorithm used here adds 2 for difficulty <= 1, 3 for difficulty <= 4 and 4 otherwise">?</Tooltip>
                         </label>
+                        <br/>
                         <label>
                             <InputSelect @bind-Value="@config.ImbalancedArcadeBoards" >                            
                                 @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
                                 {                                
-                                    <option value="@choice">@choice</option>
+                                    <option value="@choice">@choice</option> 
                                 }
-                            </InputSelect> Imbalanced Arcade Boards
+                            </InputSelect> Imbalanced Arcade Boards <Tooltip Text="Certain boards that come with Jagged Earth are recommended not to be used with specific other boards for games using <= 4 boards. This website respects that recommendation by default, but changing this option to Allow or Force will ignore it and allow imbalanced arcade boards to be selected.">?</Tooltip>
                         </label>
                     </Body>
                 </Panel>
@@ -95,7 +98,7 @@ else if (setup == null)
         <div class="row">
             <div class="col-12">
                 <CascadingValue Value="config.Expansions" Name="Group">
-                    <SelectableGroup T=Expansion />
+                    <SelectableGroup T=Expansion Columns=3 />
                 </CascadingValue>
             </div>
         </div>
