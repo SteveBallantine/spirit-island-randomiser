@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
-    public class Scenario : SelectableComponentBase<Scenario>, INamedComponent, IExpansionContent, IDifficultyModifier
+    public class Scenario : SelectableExpansionComponentBase<Scenario>, IDifficultyModifier
     {
         public const string NoScenario = "No Scenario";
         public const string Blitz = "Blitz";
@@ -22,9 +22,6 @@ namespace SiRandomizer.Data
         public const string VariedTerrains = "Varied Terrains";
         
         [JsonIgnore]
-        public Expansion Expansion { get; set; }
-
-        [JsonIgnore]
         public int DifficultyModifier { get; set; }
 
         public Scenario() {}
@@ -33,9 +30,8 @@ namespace SiRandomizer.Data
             string name,
             Expansion expansion,
             int difficultyModifier) 
-            : base(name) 
-        { 
-            Expansion = expansion;
+            : base(name, expansion) 
+        {
             DifficultyModifier = difficultyModifier;
         }
     }

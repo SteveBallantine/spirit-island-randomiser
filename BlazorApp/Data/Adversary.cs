@@ -7,7 +7,7 @@ using System.Text.Json.Serialization;
 namespace SiRandomizer.Data
 {
     [JsonConverter(typeof(AdversaryConverter))]
-    public class Adversary : SelectableComponentBase<Adversary>, IComponentCollection<AdversaryLevel>, IExpansionContent
+    public class Adversary : SelectableExpansionComponentBase<Adversary>, IComponentCollection<AdversaryLevel>
     {
         public const string NoAdversary = "No Adversary";
         public const string England = "England";
@@ -17,9 +17,6 @@ namespace SiRandomizer.Data
         public const string Habsburg = "Habsburg";
         public const string Russia = "Russia";
         public const string Scotland = "Scotland";
-
-        [JsonIgnore]
-        public Expansion Expansion { get; set; }
 
         private List<AdversaryLevel> _levels = new List<AdversaryLevel>();
         /// <summary>
@@ -44,9 +41,8 @@ namespace SiRandomizer.Data
         public Adversary(
             string name, 
             Expansion expansion)
-            : base (name)
-        {   
-            Expansion = expansion;
+            : base (name, expansion)
+        {
             PropertyChanged += ThisUpdated;
         }
 

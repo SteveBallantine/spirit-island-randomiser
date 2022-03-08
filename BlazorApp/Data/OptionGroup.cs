@@ -53,19 +53,7 @@ namespace SiRandomizer.Data
             // update all children accordingly.
             if(args.PropertyName == nameof(Selected)) 
             {
-                foreach(var child in _children.Values
-                    .Where((c) => 
-                    {
-                        // Make sure we're only selecting children that are
-                        // actually enabled and available based on the selected 
-                        // expansions.
-                        bool available = true;
-                        if(c is IExpansionContent item) {
-                            available = item.Expansion == null ||
-                                item.Expansion.Selected;
-                        }
-                        return available && c.Disabled == false;
-                    })) 
+                foreach(var child in _children.Values)
                 {
                     child.Selected = Selected;
                 }
@@ -80,6 +68,11 @@ namespace SiRandomizer.Data
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _children.Values.GetEnumerator();
+        }
+
+        public override bool IsVisible(OverallConfiguration config)
+        {
+            return true;
         }
     }
 }

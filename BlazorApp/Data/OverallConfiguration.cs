@@ -18,18 +18,9 @@ namespace SiRandomizer.Data
         public OptionGroup<Spirit> Spirits { get; set; }
         public OptionGroup<Scenario> Scenarios { get; set; }
 
-        private int _players;
         [Required]
         [Range(1, 6, ErrorMessage = "Number of players must be 1 - 6")]
-        public int Players 
-        {
-            get { return _players; }
-            set 
-            { 
-                _players = value;
-                UpdateValidMaps(); 
-            }
-        }
+        public int Players {get;set;}
         [Required]
         [Range(0, 20, ErrorMessage = "Minimum difficulty must be 0 - 20")]
         public int MinDifficulty {get;set;}
@@ -37,16 +28,7 @@ namespace SiRandomizer.Data
         [Range(0, 20, ErrorMessage = "Maximum difficulty must be 0 - 20")]
         public int MaxDifficulty {get;set;}
 
-        private OptionChoice _additionalBoard = OptionChoice.Block;
-        public OptionChoice AdditionalBoard 
-        {
-            get { return _additionalBoard; }
-            set 
-            { 
-                _additionalBoard = value;
-                UpdateValidMaps(); 
-            }
-        }
+        public OptionChoice AdditionalBoard  {get;set;} = OptionChoice.Block;
         public OptionChoice CombinedAdversaries {get;set;} = OptionChoice.Block;
         public OptionChoice RandomThematicBoards {get;set;} = OptionChoice.Block;
 
@@ -93,29 +75,7 @@ namespace SiRandomizer.Data
             Expansions = expansions;
             Spirits = spirits;
             Scenarios = scenarios;
-        }
-                
-        private void UpdateValidMaps()
-        {
-            var maxBoards = Players + MaxAdditionalBoards;
-            var minBoards = Players + MinAdditionalBoards;
-            List<int> boardsCounts = new List<int>();
-            for(int c = minBoards; c <= maxBoards; c++)
-            {
-                boardsCounts.Add(c);
-            }
-            // Mark all maps as enabled.
-            foreach(var map in Maps)
-            {
-                map.Disabled = false;
-            }
-            // Now disable the ones that are invalid for all possible numbers of players + extra boards.
-            foreach(var map in Maps.Where(m => boardsCounts
-                .All(c => m.ValidForBoardCount(c) == false)))
-            {
-                map.Disabled = true;
-            }
-        }
+        }                
 
         /// <summary>
         /// Update the user-configurable settings on this configuration object

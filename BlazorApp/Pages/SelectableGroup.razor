@@ -8,14 +8,8 @@
         <table>
             @{
                 var rows = Group
-                    .Where((x) => {
-                        bool display = x.Hide == false;
-                        if(x is IExpansionContent item) {
-                            display = item.Expansion == null ||
-                                item.Expansion.Selected;
-                        }
-                        return display;
-                    })
+                    .Where(x => x.IsVisible(Config))
+                    // Split the contents into two columns
                     .Select((x, i) => new { x, i })
                     .GroupBy(p => (p.i / 2), p => p.x);
             }
@@ -39,6 +33,6 @@
     [CascadingParameter(Name = "Group")]
     public OptionGroup<T> Group { get; set; }
 
-    [CascadingParameter(Name = "Expansions")]
-    public OptionGroup<T> Expansions { get; set; }
+    [CascadingParameter(Name = "Config")]
+    public OverallConfiguration Config { get; set; }
 }

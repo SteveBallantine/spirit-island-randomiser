@@ -6,7 +6,7 @@ namespace SiRandomizer.Data
     {
         string Name {get;}
         bool Selected { get; set; }
-        bool Hide { get; }
-        bool Disabled { get; set; }
+        
+        bool IsVisible(OverallConfiguration config);
     }
 }

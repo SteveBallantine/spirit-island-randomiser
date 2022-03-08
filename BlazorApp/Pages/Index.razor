@@ -22,6 +22,7 @@
 }
 else if (setup == null)
 {    
+    <CascadingValue Value="config" Name="Config">
     <EditForm Model=@config OnValidSubmit="GenerateSetupAsync">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -135,6 +136,7 @@ else if (setup == null)
             </div>
         </div>
     </EditForm>
+    </CascadingValue>
 } 
 else
 {

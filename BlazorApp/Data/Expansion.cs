@@ -24,5 +24,10 @@ namespace SiRandomizer.Data
         {
             Tag = tag;
         }
+
+        public override bool IsVisible(OverallConfiguration config)
+        {
+            return true;
+        }
     }
 }

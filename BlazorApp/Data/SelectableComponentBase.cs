@@ -18,8 +18,8 @@ namespace SiRandomizer.Data
 
         public SelectableComponentBase() {}
 
-        public SelectableComponentBase(string name, bool hide = false) 
-            : base(name, hide)
+        public SelectableComponentBase(string name) 
+            : base(name)
         {
         }
 
@@ -60,20 +60,6 @@ namespace SiRandomizer.Data
 
         public string Name { get; set; }
 
-        /// <summary>
-        /// If set to true, this component will never be displayed in the UI
-        /// </summary>
-        /// <value></value>
-        [JsonIgnore]
-        public bool Hide { get; protected set; }
-        
-        /// <summary>
-        /// If set to true, this component will be greyed out in the UI
-        /// </summary>
-        /// <value></value>
-        [JsonIgnore]
-        public bool Disabled { get; set; }
-
         private bool _selected = false;
         public bool Selected 
         {
@@ -91,11 +77,9 @@ namespace SiRandomizer.Data
         /// Constructor
         /// </summary>  
         /// <param name="name"></param>
-        /// <param name="hide"></param>
-        public SelectableComponentBase(string name, bool hide = false)
+        public SelectableComponentBase(string name)
         {
             Name = name;
-            Hide = hide;
         }        
 
         public override bool Equals(object obj)
@@ -117,6 +101,8 @@ namespace SiRandomizer.Data
         {
             return Name.GetHashCode();
         }
+
+        public abstract bool IsVisible(OverallConfiguration config);
     }
 }
 

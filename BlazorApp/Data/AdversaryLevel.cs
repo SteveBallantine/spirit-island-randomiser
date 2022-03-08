@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
-    public class AdversaryLevel : SelectableComponentBase<AdversaryLevel>, INamedComponent, IDifficultyModifier
+    public class AdversaryLevel : SelectableComponentBase<AdversaryLevel>, IDifficultyModifier
     {
         [JsonIgnore]
         public int Level {get; private set;}
@@ -21,6 +21,12 @@ namespace SiRandomizer.Data
         {
             Level = level;
             DifficultyModifier = difficultyModifier;
-        }    
+        }
+
+        public override bool IsVisible(OverallConfiguration config)
+        {
+            // Levels are always visible if the parent adversary is visible.
+            return true;
+        }
     }
 }

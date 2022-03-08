@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
-    public class Spirit : SelectableComponentBase<Spirit>, INamedComponent, IExpansionContent
+    public class Spirit : SelectableExpansionComponentBase<Spirit>
     {
         public const string Lightning = "Lightning's Swift Strike";
         public const string River = "River Surges in Sunlight";
@@ -33,8 +33,6 @@ namespace SiRandomizer.Data
 
         [JsonIgnore]
         public Complexity BaseComplexity {get; set;}
-        [JsonIgnore]
-        public Expansion Expansion {get; set;}
 
         public Spirit() {}
 
@@ -42,7 +40,7 @@ namespace SiRandomizer.Data
             string name,
             Expansion expansion,
             Complexity baseComplexity) 
-            : base(name) 
+            : base(name, expansion) 
         { 
             Expansion = expansion;
             BaseComplexity = baseComplexity;

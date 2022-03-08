@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
@@ -56,6 +58,24 @@ namespace SiRandomizer.Data
         public bool ValidForBoardCount(int boardCount)
         {
             return boardCount >= MinCount && boardCount <= MaxCount;
+        }
+
+        public override bool IsVisible(OverallConfiguration config)
+        {
+            if(config == null) 
+            {
+                throw new ArgumentNullException(nameof(config));
+            }
+            var visible = false;            
+            var maxBoards = config.Players + config.MaxAdditionalBoards;
+            var minBoards = config.Players + config.MinAdditionalBoards;
+            // This map should be visible if it is valid for any possible
+            // number of boards based on the current configuration.
+            for(int c = minBoards; c <= maxBoards; c++)
+            {
+                visible |= ValidForBoardCount(c);
+            }
+            return visible;
         }
     }
 }

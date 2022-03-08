@@ -11,9 +11,12 @@ The purpose of this app is to experiment with Blazor in a 'real world' scenario 
 
 # Todo
 
-- Add tests and ensure invalid edge cases are handled correctly (e.g. 'no adversary' is not selected, but secondary adversary is 'blocked') 
+- Refactor to use Hide property for items not included in selected expansions and disabled maps
+  - When things are hidden also deselect them
+- Refactor joins to simplify. Use existing logic for checking valid maps
+- Add allow/block/force option for mismatched arcade boards
 - Add tooltips to explain some options (e.g. block/force/allow)
 - Add support for aspects
 - Add support for custom spirits & adversaries
-- Prevent selection of boards that are not recommended to be used together in small games
+- Add tests and ensure invalid edge cases are handled correctly (e.g. 'no adversary' is not selected, but secondary adversary is 'blocked')
 

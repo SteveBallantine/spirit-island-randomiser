@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
-    public class Board : SelectableComponentBase<Board>, INamedComponent, IExpansionContent
+    public class Board : SelectableExpansionComponentBase<Board>
     {        
         public const string A = "A";
         public const string B = "B";
@@ -19,9 +19,6 @@ namespace SiRandomizer.Data
         public const string West = "W.";
         public const string SEast = "SE.";
         public const string SWest = "SW.";
-
-        [JsonIgnore]
-        public Expansion Expansion { get; private set; }
 
         [JsonIgnore]
         public bool Thematic { get; private set; }
@@ -50,11 +47,9 @@ namespace SiRandomizer.Data
         public Board(
             string name, 
             Expansion expansion,
-            bool thematic,
-            bool hide = false) 
-            : base(name, hide) 
+            bool thematic) 
+            : base(name, expansion) 
         { 
-            Expansion = expansion;
             Thematic = thematic;
         }
     }
