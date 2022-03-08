@@ -11,10 +11,9 @@ The purpose of this app is to experiment with Blazor in a 'real world' scenario 
 
 # Todo
 
-- Refactor joins to simplify. Use existing logic for checking valid maps
-- Add allow/block/force option for mismatched arcade boards
 - Add tooltips to explain some options (e.g. block/force/allow)
 - Add support for aspects
 - Add support for custom spirits & adversaries
 - Add tests and ensure invalid edge cases are handled correctly (e.g. 'no adversary' is not selected, but secondary adversary is 'blocked')
+- Update the 'board combinations' calculation to take imbalanced arcade board pairs into account.
 

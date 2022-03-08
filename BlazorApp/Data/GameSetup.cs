@@ -26,8 +26,9 @@ namespace SiRandomizer.Data
             // Check if the setup is valid.
             // Some maps must have a specific number of boards so check this against
             // player count and number of additional boards
-            return playerCount >= Map.MinCount && playerCount <= Map.MaxCount;
+            return Map.ValidForBoardCount(playerCount);
         }
+
         public int Difficulty {
             get {
                 int maxAdversary = HasSupportingAdversary == false ? LeadingAdversary.DifficultyModifier :

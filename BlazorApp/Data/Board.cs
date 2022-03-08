@@ -41,6 +41,15 @@ namespace SiRandomizer.Data
         /// <value></value>
         [JsonIgnore]
         public List<Board> ThematicNeighbours { get; set; }
+
+        /// <summary>
+        /// Certain pairs of arcade boards are considered imbalanced when used together 
+        /// at low player counts.
+        /// This property is a list of the boards that this board is imbalanced with. 
+        /// </summary>
+        /// <value></value>
+        [JsonIgnore]
+        public List<Board> ImbalancedWith { get; set; }
         
         public Board() {}
 

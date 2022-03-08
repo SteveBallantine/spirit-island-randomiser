@@ -191,9 +191,38 @@ namespace SiRandomizer.Services
                     boardCombinations += possibleBoards.GetCombinations(config.Players + i);
                 }
 
-                selectedBoards = possibleBoards
-                    .PickRandom(totalBoards)
-                    .ToList();
+                if(totalBoards <= 4 && 
+                    config.ImbalancedArcadeBoards == OptionChoice.Block)
+                {
+                    // If we're picking 4 or fewer boards and imbalanced arcade boards 
+                    // are blocked then ensure that we do not return a set of boards that
+                    // are imbalanced.
+                    var boardList = possibleBoards.ToList();
+                    selectedBoards = new List<Board>();
+                    // Repeat until we've got the number of boards that we need.
+                    while(selectedBoards.Count < totalBoards)
+                    {
+                        // Get a random board.
+                        var nextBoard = boardList.PickRandom(1).Single();
+                        boardList.Remove(nextBoard);
+                        // If this board is balanced with all the existing selected boards
+                        // then add it.
+                        if(selectedBoards.All(b => 
+                            (b.ImbalancedWith == null ||
+                            b.ImbalancedWith.Contains(nextBoard) == false) &&
+                            (nextBoard.ImbalancedWith == null ||
+                            nextBoard.ImbalancedWith.Contains(b) == false)))
+                        {
+                            selectedBoards.Add(nextBoard);
+                        }
+                    }
+                } 
+                else 
+                {
+                    selectedBoards = possibleBoards
+                        .PickRandom(totalBoards)
+                        .ToList();
+                }
             }
 
             return selectedBoards;
@@ -228,7 +257,9 @@ namespace SiRandomizer.Services
             var joined1 = scenarios.Join(additionalBoards, s => true, b => true, 
                 (s, b) => new { Scenario = s, AdditionalBoards = b });
             var joined2 = joined1.Join(maps, s => true, m => true,
-                (j, m) => new { Scenario = j.Scenario, AdditionalBoards = j.AdditionalBoards, Map = m });          
+                (j, m) => new { Scenario = j.Scenario, AdditionalBoards = j.AdditionalBoards, Map = m });  
+            // Add all possible adversary levels as the leading adversary.
+            // Set Supporting adversary to       
             var setups = joined2.Join(adversaryLevels, j => true, a => true, 
                 (j, a) => new { Scenario = j.Scenario, Map = j.Map, AdditionalBoards = j.AdditionalBoards, LeadingAdversary = a })
                 .Select(j => new GameSetup() {

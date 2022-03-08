@@ -79,6 +79,14 @@ else if (setup == null)
                                 }
                             </InputSelect> Additional Board
                         </label>
+                        <label>
+                            <InputSelect @bind-Value="@config.ImbalancedArcadeBoards" >                            
+                                @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
+                                {                                
+                                    <option value="@choice">@choice</option>
+                                }
+                            </InputSelect> Imbalanced Arcade Boards
+                        </label>
                     </Body>
                 </Panel>
             </div>

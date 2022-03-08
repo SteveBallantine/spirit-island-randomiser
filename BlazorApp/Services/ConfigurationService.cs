@@ -188,8 +188,16 @@ namespace SiRandomizer.Services
             var b = new Board(Board.B, null, false);
             var c = new Board(Board.C, null, false);
             var d = new Board(Board.D, null, false);
-            var e = new Board(Board.E, jaggedEarth, false);
-            var f = new Board(Board.F, jaggedEarth, false);
+            var e = new Board(Board.E, jaggedEarth, false) 
+            {
+                ImbalancedWith = new List<Board>() { b }
+            };
+            var f = new Board(Board.F, jaggedEarth, false)
+            {
+                ImbalancedWith = new List<Board>() { d }
+            };
+
+
 
             var ne = new Board(Board.NEast, null, true) 
             {
