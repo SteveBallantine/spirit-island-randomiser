@@ -26,7 +26,7 @@ namespace SiRandomizer.Data
         public override bool IsVisible(OverallConfiguration config)
         {
             // Levels are always visible if the parent adversary is visible.
-            return true;
+            return Adversary.IsVisible(config);
         }
     }
 }
