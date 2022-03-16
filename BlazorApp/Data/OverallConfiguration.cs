@@ -60,23 +60,7 @@ namespace SiRandomizer.Data
             }
         }
 
-        public OverallConfiguration() {}
-
-        public OverallConfiguration(
-            OptionGroup<Adversary> adversaries,
-            OptionGroup<Board> boards,
-            OptionGroup<Map> maps,
-            OptionGroup<Expansion> expansions,
-            OptionGroup<Spirit> spirits,
-            OptionGroup<Scenario> scenarios) 
-        {
-            Adversaries = adversaries;
-            Boards = boards;
-            Maps = maps;
-            Expansions = expansions;
-            Spirits = spirits;
-            Scenarios = scenarios;
-        }                
+        public OverallConfiguration() {}         
 
         /// <summary>
         /// Update the user-configurable settings on this configuration object
@@ -101,7 +85,7 @@ namespace SiRandomizer.Data
             TakeSettingsFrom(Boards, other.Boards);
             TakeSettingsFrom(Maps, other.Maps);
             TakeSettingsFrom(Scenarios, other.Scenarios);
-            TakeSettingsFrom(Spirits, other.Spirits);
+            TakeSettingsFrom<Spirit, SpiritAspect>(Spirits, other.Spirits);
         }
 
         private void TakeSettingsFrom<TItem>(

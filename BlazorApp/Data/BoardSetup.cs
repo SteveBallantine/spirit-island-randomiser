@@ -1,12 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
 namespace SiRandomizer.Data
 {
     public class BoardSetup
     {
         public Board Board { get; set; }
-        public Spirit Spirit { get; set; }
+        public SpiritAspect SpiritAspect { get; set; }
+
+        public string SpiritDisplayName 
+        {
+            get 
+            {
+                if(SpiritAspect == null) return "No Spirit";
+                return SpiritAspect.ToString();
+            }
+        }
     }
 }

@@ -4,9 +4,9 @@ namespace SiRandomizer.Data
 {
     public interface INamedComponent
     {
-        string Name {get;}
+        string Name { get; }
         bool Selected { get; set; }
         
-        bool IsVisible(OverallConfiguration config);
+        bool IsVisible();
     }
 }

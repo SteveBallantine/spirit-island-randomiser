@@ -12,12 +12,12 @@
 @if(Item is IDifficultyModifier difficultyMod) {
     <span class="si-tag">+@difficultyMod.DifficultyModifier</span>
 }
-@if(children != null) {
+@if(children != null && children.Count > 0) {
     <table>
         @foreach (var child in children) {
             <tr>
                 <CascadingValue Value="child" Name="Item">
-                    <td><SelectableItem /></td>
+                    <td class="child-item"><SelectableItem /></td>
                 </CascadingValue>
             </tr>
         }
@@ -35,7 +35,10 @@
             // then set the 'children' variable to ensure they are rendered too.
             if(type.IsNamedComponentCollection())
             {
-                children = (value as IEnumerable).Cast<INamedComponent>();
+                children = (value as IEnumerable)
+                    .Cast<INamedComponent>()
+                    .Where(x => x.IsVisible())
+                    .ToList();
             }
             values = value; 
         }
@@ -43,5 +46,5 @@
     }
 
     private INamedComponent values;
-    private IEnumerable<INamedComponent> children;        
+    private List<INamedComponent> children;        
 }

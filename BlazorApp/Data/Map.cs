@@ -37,12 +37,13 @@ namespace SiRandomizer.Data
         public Map() {}
 
         public Map(
-            string name, 
+            string name,  
+            OverallConfiguration config,
             int minPlayerCount,
             int maxPlayerCount,
             int difficultyModifier,
             bool thematic = false) 
-            : base(name) 
+            : base(name, config) 
         { 
             MinCount = minPlayerCount;
             MaxCount = maxPlayerCount;
@@ -60,15 +61,11 @@ namespace SiRandomizer.Data
             return boardCount >= MinCount && boardCount <= MaxCount;
         }
 
-        public override bool IsVisible(OverallConfiguration config)
+        public override bool IsVisible()
         {
-            if(config == null) 
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
             var visible = false;            
-            var maxBoards = config.Players + config.MaxAdditionalBoards;
-            var minBoards = config.Players + config.MinAdditionalBoards;
+            var maxBoards = Config.Players + Config.MaxAdditionalBoards;
+            var minBoards = Config.Players + Config.MinAdditionalBoards;
             // This map should be visible if it is valid for any possible
             // number of boards based on the current configuration.
             for(int c = minBoards; c <= maxBoards; c++)

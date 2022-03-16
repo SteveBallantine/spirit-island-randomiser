@@ -18,8 +18,8 @@ namespace SiRandomizer.Data
 
         public SelectableComponentBase() {}
 
-        public SelectableComponentBase(string name) 
-            : base(name)
+        public SelectableComponentBase(string name, OverallConfiguration config) 
+            : base(name, config)
         {
         }
 
@@ -61,7 +61,7 @@ namespace SiRandomizer.Data
         public string Name { get; set; }
 
         private bool _selected = false;
-        public bool Selected 
+        public virtual bool Selected 
         {
             get { return _selected; }
             set
@@ -71,15 +71,21 @@ namespace SiRandomizer.Data
             }
         }
 
+        [JsonIgnore]
+        public OverallConfiguration Config { get; private set; }
+
         public SelectableComponentBase() {}
 
         /// <summary>
         /// Constructor
         /// </summary>  
         /// <param name="name"></param>
-        public SelectableComponentBase(string name)
+        public SelectableComponentBase(
+            string name,
+            OverallConfiguration config)
         {
             Name = name;
+            Config = config;
         }        
 
         public override bool Equals(object obj)
@@ -102,7 +108,7 @@ namespace SiRandomizer.Data
             return Name.GetHashCode();
         }
 
-        public abstract bool IsVisible(OverallConfiguration config);
+        public abstract bool IsVisible();
     }
 }
 

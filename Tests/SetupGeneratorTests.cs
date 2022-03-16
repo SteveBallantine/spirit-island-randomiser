@@ -87,14 +87,14 @@ namespace SiRandomizer.tests
             Assert.AreEqual(1, result.BoardSetupOptionsConsidered);
             Assert.AreEqual(1, result.DifficultyOptionsConsidered);
             Assert.AreEqual(0, result.Setup.AdditionalBoards);
-            Assert.AreEqual(Adversary.NoAdversary, result.Setup.LeadingAdversary.Adversary.Name);
-            Assert.AreEqual(Adversary.NoAdversary, result.Setup.SupportingAdversary.Adversary.Name);
+            Assert.AreEqual(Adversary.NoAdversary, result.Setup.LeadingAdversary.Parent.Name);
+            Assert.AreEqual(Adversary.NoAdversary, result.Setup.SupportingAdversary.Parent.Name);
             Assert.AreEqual(Map.Standard, result.Setup.Map.Name);
             Assert.AreEqual(Scenario.NoScenario, result.Setup.Scenario.Name);
 
             Assert.AreEqual(1, result.Setup.BoardSetups.Count());
             Assert.AreEqual(Board.A, result.Setup.BoardSetups.First().Board.Name);
-            Assert.AreEqual(Spirit.Green, result.Setup.BoardSetups.First().Spirit.Name);
+            Assert.AreEqual(Spirit.Green, result.Setup.BoardSetups.First().SpiritAspect.Parent.Name);
         }
 
         /// <summary>
@@ -249,10 +249,10 @@ namespace SiRandomizer.tests
                 setups.Add(result);
                 
                 // Verify the selected boards were only the valid ones.
-                Assert.IsTrue(validAdversaries.Contains(result.Setup.LeadingAdversary.Adversary.Name), 
-                    $"Invalid adversary - {result.Setup.LeadingAdversary.Adversary.Name}");
-                Assert.IsTrue(validAdversaries.Contains(result.Setup.SupportingAdversary.Adversary.Name),
-                    $"Invalid adversary - {result.Setup.SupportingAdversary.Adversary.Name}");
+                Assert.IsTrue(validAdversaries.Contains(result.Setup.LeadingAdversary.Parent.Name), 
+                    $"Invalid adversary - {result.Setup.LeadingAdversary.Parent.Name}");
+                Assert.IsTrue(validAdversaries.Contains(result.Setup.SupportingAdversary.Parent.Name),
+                    $"Invalid adversary - {result.Setup.SupportingAdversary.Parent.Name}");
                 // Verify the number of options considered is correct.
                 Assert.AreEqual(1, result.BoardSetupOptionsConsidered);
                 Assert.AreEqual(expectedDifficultyOptions, result.DifficultyOptionsConsidered);
@@ -277,7 +277,7 @@ namespace SiRandomizer.tests
                 .ToDictionary(b => b.Name, b => 0);
             var selectedAdversaries = _config.Adversaries
                 .SelectMany(a => a.Levels)
-                .ToDictionary(l => l.Adversary.Name + l.Level, b => 0);
+                .ToDictionary(l => l.Parent.Name + l.Level, b => 0);
             var selectedScenarios = _config.Scenarios
                 .ToDictionary(s => s.Name, s => 0);
             var selectedSpirits = _config.Spirits
@@ -294,10 +294,10 @@ namespace SiRandomizer.tests
                 foreach(var boardSetup in result.Setup.BoardSetups)
                 {
                     selectedBoards[boardSetup.Board.Name]++;
-                    selectedSpirits[boardSetup.Spirit.Name]++;
+                    selectedSpirits[boardSetup.SpiritAspect.Parent.Name]++;
                 }
                 selectedScenarios[result.Setup.Scenario.Name]++;
-                selectedAdversaries[result.Setup.LeadingAdversary.Adversary.Name + result.Setup.LeadingAdversary.Level]++;
+                selectedAdversaries[result.Setup.LeadingAdversary.Parent.Name + result.Setup.LeadingAdversary.Level]++;
                 selectedMaps[result.Setup.Map.Name]++;
             }
 

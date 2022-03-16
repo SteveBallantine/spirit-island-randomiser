@@ -57,18 +57,24 @@ namespace SiRandomizer.Services
                     $"{config.MinDifficulty}-{config.MaxDifficulty}");
             }
 
-            // Pick the setup to use from the avaialble options
+            // Pick the setup to use from the available options
             var setup = setups.PickRandom(1).Single();
 
-            // Pick spirits
-            var spirits = config.Spirits.Where(s => s.Selected).ToList();
+            // Get the number of possible combinations based on the number of players and
+            // number of selected spirits. (Note - we can't easilly use selected aspects 
+            // because aspects cannot always be played together - e.g. immense lightning 
+            // + wind lightning is an invalid result)
+            var spirits = config.Spirits.Where(s => s.Selected);
             var spiritCombinations = spirits.GetCombinations(config.Players);
-            spirits = spirits.PickRandom(config.Players).ToList();
+            // Pick a random spirit and a random aspect for each selected spirit.
+            var aspects = spirits.PickRandom(config.Players)
+                .Select(s => s.Aspects.Where(s => s.Selected).PickRandom(1).Single()).ToList();
+            
             // Get a set of boards to match the number of spirits + any additional boards
             var boards = GetBoards(config, setup, out long boardCombinations).ToList();
 
             // Randomise spirit/board combos
-            setup.BoardSetups = GetBoardSetups(boards, spirits).ToList();
+            setup.BoardSetups = GetBoardSetups(boards, aspects).ToList();
 
             return new SetupResult() {
                 Setup = setup,
@@ -79,15 +85,15 @@ namespace SiRandomizer.Services
         }
 
 
-        private IEnumerable<BoardSetup> GetBoardSetups(List<Board> boards, List<Spirit> spirits) 
+        private IEnumerable<BoardSetup> GetBoardSetups(List<Board> boards, List<SpiritAspect> spirits) 
         {
             while(boards.Count > 0) {
                 var setup = new BoardSetup() {
                     Board = boards.PickRandom(1).Single(),
-                    Spirit = spirits.Count > 0 ? spirits.PickRandom(1).Single() : null
+                    SpiritAspect = spirits.Count > 0 ? spirits.PickRandom(1).Single() : null
                 };
                 boards.Remove(setup.Board);
-                spirits.Remove(setup.Spirit);
+                spirits.Remove(setup.SpiritAspect);
 
                 yield return setup;
             }
@@ -178,7 +184,7 @@ namespace SiRandomizer.Services
                         thematicBoards.Remove(board);
                         selectedBoards.Add(board);
                     }                    
-                } 
+                }
             }
             else 
             {
@@ -297,7 +303,7 @@ namespace SiRandomizer.Services
             foreach(var entry in input)
             {
                 // If leading adversary is 'no adversary' then supporting adversary MUST be 'no adversary'.
-                if(entry.LeadingAdversary.Adversary.Name == Adversary.NoAdversary)
+                if(entry.LeadingAdversary.Parent.Name == Adversary.NoAdversary)
                 {
                     entry.SupportingAdversary = noAdversary;
                     // If forceSupportingAdversary flag is set then don't return values where 
@@ -311,10 +317,10 @@ namespace SiRandomizer.Services
                 {
                     // Otherwise, supporting adversary MUST be different to leading adverary.
                     foreach(var adversaryLevel in supportingAdversaries
-                        .Where(s => s.Adversary != entry.LeadingAdversary.Adversary &&
+                        .Where(s => s.Parent != entry.LeadingAdversary.Parent &&
                             // If forceSupportingAdversary flag is set then don't return values where 
                             // supporting adversary is 'NoAdversary'
-                            (forceSupportingAdversary == false || s.Adversary.Name != Adversary.NoAdversary)))
+                            (forceSupportingAdversary == false || s.Parent.Name != Adversary.NoAdversary)))
                     {
                         yield return new GameSetup()
                         {

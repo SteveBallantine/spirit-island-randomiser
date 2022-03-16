@@ -97,3 +97,7 @@ table {
 .expansion-tag-P2 {
     background-color: rgb(223, 102, 223);
 }
+
+.child-item {
+    padding-right: 50px;
+}

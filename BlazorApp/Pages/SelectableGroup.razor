@@ -8,7 +8,7 @@
         <table>
             @{
                 var rows = Group
-                    .Where(x => x.IsVisible(Config))
+                    .Where(x => x.IsVisible())
                     // Split the contents into two columns
                     .Select((x, i) => new { x, i })
                     .GroupBy(p => (p.i / Columns), p => p.x);
@@ -32,9 +32,6 @@
 @code {
     [CascadingParameter(Name = "Group")]
     public OptionGroup<T> Group { get; set; }
-
-    [CascadingParameter(Name = "Config")]
-    public OverallConfiguration Config { get; set; }
 
     [Parameter]
     public int Columns { get; set; } = 2;

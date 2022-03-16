@@ -27,10 +27,11 @@ namespace SiRandomizer.Data
         public Scenario() {}
 
         public Scenario(
-            string name,
+            string name, 
+            OverallConfiguration config,
             Expansion expansion,
             int difficultyModifier) 
-            : base(name, expansion) 
+            : base(name, config, expansion) 
         {
             DifficultyModifier = difficultyModifier;
         }

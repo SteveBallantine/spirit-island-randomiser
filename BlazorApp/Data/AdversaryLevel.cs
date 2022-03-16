@@ -3,30 +3,53 @@ using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
-    public class AdversaryLevel : SelectableComponentBase<AdversaryLevel>, IDifficultyModifier
+    public class AdversaryLevel : SelectableComponentBase<AdversaryLevel>, IDifficultyModifier, IComponentWithParent<Adversary>
     {
         [JsonIgnore]
-        public int Level {get; private set;}
+        public int Level { get; private set; }
         [JsonIgnore]
-        public int DifficultyModifier {get; private set;} 
+        public int DifficultyModifier { get; private set; } 
         [JsonIgnore]
-        public Adversary Adversary {get; set;}  
+        public Adversary Parent { get; set; }
 
         public AdversaryLevel() {}
 
         public AdversaryLevel(
-            string name,
+            string name, 
+            OverallConfiguration config,
             int level,
-            int difficultyModifier) : base(name)
+            int difficultyModifier) 
+            : base(name, config)
         {
             Level = level;
             DifficultyModifier = difficultyModifier;
         }
 
-        public override bool IsVisible(OverallConfiguration config)
+        public override bool IsVisible()
         {
             // Levels are always visible if the parent adversary is visible.
-            return Adversary.IsVisible(config);
+            return Parent.IsVisible();
+        }
+
+        public override bool Equals(object obj)
+        {
+            bool result = base.Equals(obj);
+            if(result && obj is IComponentWithParent<Spirit> other)
+            {
+                result = Parent.Equals(other.Parent);
+            }
+            return result;
+        }
+
+        public override string ToString()
+        {
+            return $"{Parent.Name} - {Name}";
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode() ^ 
+                Parent.GetHashCode();
         }
     }
 }

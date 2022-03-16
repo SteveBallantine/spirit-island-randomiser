@@ -21,8 +21,7 @@
   </div>
 }
 else if (setup == null)
-{    
-    <CascadingValue Value="config" Name="Config">
+{
     <EditForm Model=@config OnValidSubmit="GenerateSetupAsync">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -150,7 +149,6 @@ else if (setup == null)
             </div>
         </div>
     </EditForm>
-    </CascadingValue>
 } 
 else
 {
@@ -183,7 +181,7 @@ else
                 <Body>
                     @foreach (var board in setup.Setup.BoardSetups)
                     {
-                        <label>Board <span class="si-tag">@board.Board.Name</span> - @(board.Spirit == null ? "No Spirit" : board.Spirit.Name)</label><br>
+                        <label>Board <span class="si-tag">@board.Board.Name</span> - @board.SpiritDisplayName</label><br>
                     }
                 </Body>
             </Panel>
@@ -204,11 +202,11 @@ else
                     Adversary
                 </Header>
                 <Body>
-                    <label>@setup.Setup.LeadingAdversary.Adversary.Name - @setup.Setup.LeadingAdversary.Name</label><br>
+                    <label>@setup.Setup.LeadingAdversary.ToString()</label><br>
                     @if(@setup.Setup.HasSupportingAdversary)
                     {
                         <label>Supported by:</label><br>
-                        <label>@setup.Setup.SupportingAdversary.Adversary.Name - @setup.Setup.SupportingAdversary.Name</label>
+                        <label>@setup.Setup.SupportingAdversary.ToString()</label>
                     }
                 </Body>
             </Panel>

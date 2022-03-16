@@ -18,7 +18,7 @@ namespace SiRandomizer.Data
             get 
             {
                 return SupportingAdversary != null &&
-                    SupportingAdversary.Adversary.Name != Adversary.NoAdversary;
+                    SupportingAdversary.Parent.Name != Adversary.NoAdversary;
             }
         }
         public bool IsValid(int playerCount)

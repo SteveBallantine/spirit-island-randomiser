@@ -1,9 +1,10 @@
-using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
 {
-    public class Spirit : SelectableExpansionComponentBase<Spirit>
+    [JsonConverter(typeof(SpiritConverter))]
+    public class Spirit : ComponentWithChildrenBase<Spirit, SpiritAspect>
     {
         public const string Lightning = "Lightning's Swift Strike";
         public const string River = "River Surges in Sunlight";
@@ -38,12 +39,29 @@ namespace SiRandomizer.Data
 
         public Spirit(
             string name,
+            OverallConfiguration config,
             Expansion expansion,
             Complexity baseComplexity) 
-            : base(name, expansion) 
+            : base(name, config, expansion) 
         { 
-            Expansion = expansion;
             BaseComplexity = baseComplexity;
+            // Add a 'base' aspect for all spirits.
+            // This allows us to keep the setup generation logic nice and general, rather
+            // than having to deal with Aspects as a specical case.
+            Add(new SpiritAspect(SpiritAspect.Base, config, expansion));
+        }
+
+        [JsonIgnore]
+        /// <summary>
+        /// Convenience property for accessing the SpiritAspect child elements
+        /// </summary>
+        /// <value></value>
+        public IEnumerable<SpiritAspect> Aspects 
+        {
+            get 
+            {
+                return this;
+            }
         }
     }
 }

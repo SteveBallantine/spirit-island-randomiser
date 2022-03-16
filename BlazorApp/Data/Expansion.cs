@@ -18,14 +18,15 @@ namespace SiRandomizer.Data
         public Expansion() {}
 
         public Expansion(
-            string name, 
+            string name,  
+            OverallConfiguration config,
             string tag) 
-            : base(name) 
+            : base(name, config) 
         {
             Tag = tag;
         }
 
-        public override bool IsVisible(OverallConfiguration config)
+        public override bool IsVisible()
         {
             return true;
         }

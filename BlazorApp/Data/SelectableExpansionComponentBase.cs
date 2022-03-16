@@ -19,19 +19,16 @@ namespace SiRandomizer.Data
 
         public SelectableExpansionComponentBase(
             string name,
+            OverallConfiguration config,
             Expansion expansion) 
-            : base(name)
+            : base(name, config)
         {
             Expansion = expansion;
         }
 
-        public override bool IsVisible(OverallConfiguration config)
+        public override bool IsVisible()
         {
-            if(config == null) 
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-            var visible = Expansion == null || config.Expansions[Expansion.Name].Selected;
+            var visible = Expansion == null || Config.Expansions[Expansion.Name].Selected;
             // If this component is not visible then also ensure it is not selected.
             if(visible == false)
             {
