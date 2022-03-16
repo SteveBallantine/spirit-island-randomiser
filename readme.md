@@ -11,7 +11,6 @@ The purpose of this app is to experiment with Blazor in a 'real world' scenario 
 
 # Todo
 
-- Use incognito mode to verify default settings.
 - Refactor to use 'IsValid' logic on GameSetup for thematic map as well. This will remove a lot of code and remove need to try and calculate number of board combinations.
 - On results page, add setup instructions for extra boards, adversaries, etc. Also add pictures for map setups.
 - Add support for custom spirits & adversaries
