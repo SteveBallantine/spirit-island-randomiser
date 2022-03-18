@@ -1,21 +1,21 @@
 .tooltip-wrapper {
     position: relative;
     display: inline-block;
-    border-bottom: 1px dotted black;
+    border-bottom: 1px solid black;
     cursor: help;
 }
 
 span {
     visibility: hidden;
     position: absolute;
-    width: 400px;
+    width: 260px;
     bottom: 100%;
     left: 50%;
-    margin-left: -200px;
+    margin-left: -130px;
     background-color: #363636;
     color: #fff;
     text-align: center;
-    padding: 5px 0;
+    padding: 5px;
     border-radius: 6px;
     z-index: 1;
     font-weight: normal;
@@ -26,7 +26,7 @@ span::after {
     position: absolute;
     top: 100%;
     left: 50%;
-    margin-left: -5px;
+    margin-left: -10px;
     border-width: 5px;
     border-style: solid;
     border-color: #555 transparent transparent transparent;
