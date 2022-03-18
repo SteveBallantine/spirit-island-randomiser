@@ -8,10 +8,10 @@
 span {
     visibility: hidden;
     position: absolute;
-    width: 260px;
+    width: 300px;
     bottom: 100%;
     left: 50%;
-    margin-left: -130px;
+    margin-left: -150px;
     background-color: #363636;
     color: #fff;
     text-align: center;
@@ -19,6 +19,18 @@ span {
     border-radius: 6px;
     z-index: 1;
     font-weight: normal;
+}
+/* On small screens, just center the tool tip on the screen */
+@media screen and (max-width: 600px) 
+{ 
+    span
+    {        
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(0, -50%);
+        bottom: auto;
+    }
 }
 
 span::after {
@@ -29,7 +41,15 @@ span::after {
     margin-left: -10px;
     border-width: 5px;
     border-style: solid;
-    border-color: #555 transparent transparent transparent;
+    border-color: #363636 transparent transparent transparent;
+}
+/* Hide the arrow on small screens */
+@media screen and (max-width: 600px) 
+{ 
+    span::after 
+    {
+        display: none;
+    }
 }
 
 .tooltip-wrapper {
