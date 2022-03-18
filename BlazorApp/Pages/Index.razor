@@ -210,6 +210,85 @@ else
                     }
                 </Body>
             </Panel>
+        </div>        
+        <div class="col-12">
+            <Panel>
+                <Header>
+                    Setup Instructions
+                </Header>
+                <Body>
+                    @if(setup.Setup.BoardSetups.Any(b => b.SpiritAspect == null))
+                    {
+                        <p>
+                            When setting up the game with an extra board:
+                        </p>
+                        <ul>
+                            <li>Blight on the blight card is based on the number of boards, not players.</li>
+                            <li>Add +1 fear tokens per player to the fear pool</li>
+                            <li>Do not place any additional blight or invaders indicated by adversary setup instructions on the extra board.</li>
+                            <li>Place starting invaders as indicated in the table below:</li>
+                        </ul>
+                        <table>
+                            <tr>
+                                <th>Players</th>
+                                <th>Invaders placed on the extra board during setup</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <th>None (not even the initial explore)</th>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <th>Initial explore only</th>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <th>Coastal city + initial explore</th>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <th>Inland town + initial explorer</th>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <th>As normal</th>
+                            </tr>
+                        </table>
+                    }
+                    @if(setup.Setup.HasSupportingAdversary)
+                    {
+                        <p>
+                            Use all game changes from both adversaries except: 
+                        </p>
+                        <ul>
+                            <li>For each terror level, use 3 fear cards + the extra cards added or subtracted by each adversary. (e.g. adversaries with fear decks 3-4-3 and 4-4-4 would result in a combined 4-5-4 fear deck)</li>
+                            <li>The supporting adversary's escalation effect applies to stage 3 invader cards. (If the effect is terrain specific, choose one of the terrains randomly)</li>
+                            <li>When constructing the invader deck, follow all instructions from the leading adversary in order, then all from the following adversary in order.</li>
+                            <li><b>FRANCE</b> If playing vs France level 2 or higher, increase the pool of towns by 1 per player for each level of the other adversary.</li>
+                            <li><b>SCOTLAND</b> If the other adversary's setup instructions would add a city to a coastal land other than land #2, instead add the city to an adjacent inland land.</li>
+                        </ul>
+                    }
+                    @if(setup.Setup.Map.Name != Map.Standard &&
+                        setup.Setup.Map.Name != Map.ThematicNoTokens &&
+                        setup.Setup.Map.Name != Map.ThematicTokens)
+                    {
+                        <p>
+                            The image below shows how to arrange the boards for the '@setup.Setup.Map.Name' map.
+                        </p>
+                    }
+                    @if(setup.Setup.Map.Name == Map.Archipelago)
+                    {
+                        <p>
+                            Archipelagos should be laid out with each islet having an ocean that roughly faces another. The following rules apply: 
+                        </p>
+                        <ul>
+                            <li>Coastal lands with facing oceans are considered to be range 2 from each other.</li>
+                            <li>Targeting a spirit with whom you do not share an islet costs 1 energy per ocean jump required to reach it. This is paid when the power is used (not when played).</li>
+                            <li>Archipelago maps are generally a bit harder (+1 <strong>at most</strong>). However, they can combine with particular scenarios or adversaries to make things significantly harder.</li>
+                        </ul>
+                    }
+                </Body>
+            </Panel>
         </div>
         <div class="col-12">
             <Panel>
