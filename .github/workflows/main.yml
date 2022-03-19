@@ -11,17 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-    # uses GitHub's checkout action to checkout code form the master branch
+    # uses checkout the current branch
     - uses: actions/checkout@v3.0.0
     
-    # sets up .NET Core SDK 6
+    # set up .NET Core SDK
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v2.0.0
         
-    # publishes Blazor project to the release-folder
+    # Publish project
     - name: Publish .NET Core Project
-      run: dotnet publish spirit-island-randomiser.csproj -c Release -o release --nologo
+      run: dotnet publish BlazorApp/spirit-island-randomiser.csproj -c Release -o release --nologo
       
+    # Update gh-pages branch with published site
     - name: Commit wwwroot to gh-pages
       uses: crazy-max/ghaction-github-pages@v2.6.0
       with:
