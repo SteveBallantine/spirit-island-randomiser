@@ -18,9 +18,21 @@ jobs:
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v2.0.0
         
+    # Run tests
+    - name: Run tests
+      run: dotnet test spirit-island-randomiser.sln
+      
     # Publish project
     - name: Publish .NET Core Project
       run: dotnet publish BlazorApp/spirit-island-randomiser.csproj -c Release -o release --nologo
+   
+    # Change the base-tag in index.html from '/' to 'spirit-island-randomiser' to match GitHub Pages repository subdirectory
+    - name: Change base-tag
+      run: sed -i 's/<base href="\/" \/>/<base href="\/spirit-island-randomiser\/" \/>/g' release/wwwroot/index.html
+          
+    # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project.
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
       
     # Update gh-pages branch with published site
     - name: Commit wwwroot to gh-pages
