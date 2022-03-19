@@ -66,8 +66,11 @@ namespace SiRandomizer.Data
             get { return _selected; }
             set
             {
-                _selected = value;
-                OnPropertyChanged(nameof(Selected));
+                if(_selected != value)
+                {
+                    _selected = value;
+                    OnPropertyChanged(nameof(Selected));
+                }
             }
         }
 

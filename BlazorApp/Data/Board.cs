@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace SiRandomizer.Data
@@ -61,6 +62,20 @@ namespace SiRandomizer.Data
             : base(name, config, expansion) 
         { 
             Thematic = thematic;
+        }
+
+        public override bool IsVisible()
+        {
+            // Show thematic boards if:
+            // 1. Any thematic map is selected.
+            // 2. The 'Random thematic boards' option is not blocked.
+            var showThematic = Config.Maps.Any(m => m.Selected && m.Thematic) && 
+                Config.RandomThematicBoards != OptionChoice.Block;
+            // Show arcade boards if any non-thematic map is selected.
+            var showArcade = Config.Maps.Any(m => m.Selected && m.Thematic == false);
+            // Only show this board if the conditions above are met and the base 
+            // conditions are satisfied (i.e. relevant exansion is selected)
+            return (Thematic ? showThematic : showArcade) && base.IsVisible();
         }
     }
 }
