@@ -13,15 +13,18 @@
     <span class="si-tag">+@difficultyMod.DifficultyModifier</span>
 }
 @if(children != null && children.Count > 0) {
-    <table>
-        @foreach (var child in children) {
-            <tr>
-                <CascadingValue Value="child" Name="Item">
-                    <td class="child-item"><SelectableItem /></td>
-                </CascadingValue>
-            </tr>
-        }
-    </table>
+    <div class="container slim">
+        <div class="row slim">
+            @foreach(var child in children)
+            {
+                <div class="col-12 child-item">
+                    <CascadingValue Value="child" Name="Item">
+                        <SelectableItem />
+                    </CascadingValue>
+                </div>
+            }
+        </div>
+    </div>
 }
 
 @code {

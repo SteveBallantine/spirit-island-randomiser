@@ -101,3 +101,12 @@ table {
 .child-item {
     padding-left: 16px;
 }
+
+.container.slim {
+    width: 100%;
+}
+.row.slim [class^="col"] {
+    float: left;
+    margin: 1px;
+    min-height: 0.0rem;
+}

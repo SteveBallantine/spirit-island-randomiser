@@ -5,26 +5,19 @@
         <input type="checkbox" @bind="Group.Selected" >@Group.Name
     </Header>
     <Body>
-        <table>
-            @{
-                var rows = Group
-                    .Where(x => x.IsVisible())
-                    // Split the contents into two columns
-                    .Select((x, i) => new { x, i })
-                    .GroupBy(p => (p.i / Columns), p => p.x);
-            }
-            @foreach(var row in rows)
-            {
-                <tr>
-                    @foreach (var item in row)
-                    {
+        <div class="container slim">
+            <div class="row slim">
+                @foreach(var item in Group
+                        .Where(x => x.IsVisible()))
+                {
+                    <div class="@ItemClass">
                         <CascadingValue Value="item" Name="Item">
-                            <td><SelectableItem /></td>
+                            <SelectableItem />
                         </CascadingValue>
-                    }
-                </tr>
-            }
-        </table>
+                    </div>
+                }
+            </div>
+        </div>
     </Body>
 </Panel>
 
@@ -34,5 +27,5 @@
     public OptionGroup<T> Group { get; set; }
 
     [Parameter]
-    public int Columns { get; set; } = 2;
+    public string ItemClass { get; set; } = "col-6";
 }
