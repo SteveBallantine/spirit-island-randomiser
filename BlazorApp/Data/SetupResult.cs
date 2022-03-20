@@ -15,16 +15,12 @@ namespace SiRandomizer.Data
             Setup.BoardSetups.Any(b => b.SpiritAspect == null);
         public bool ShowInstructionsAdditionalAdversary =>
             Setup.HasSupportingAdversary;
-        public bool ShowInstructionsMapImage =>
-            Setup.Map.Thematic == false &&
-            Setup.Map.Name != Map.Archipelago;
         public bool ShowInstructionsArchipelago =>
             Setup.Map.Name == Map.Archipelago;
 
         public bool ShowInstructions => 
             ShowInstructionsAdditionalAdversary ||
             ShowInstructionsAdditionalBoard ||
-            ShowInstructionsArchipelago ||
-            ShowInstructionsMapImage;
+            ShowInstructionsArchipelago;
     }
 }

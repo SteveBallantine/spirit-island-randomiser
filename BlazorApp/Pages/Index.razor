@@ -164,10 +164,25 @@ else
         <div class="col-6">
             <Panel>
                 <Header>
+                    Scenario
+                </Header>
+                <Body>
+                    <label>@setup.Setup.Scenario.Name</label>
+                </Body>
+            </Panel>
+        </div>
+        <div class="col-6">
+            <Panel>
+                <Header>
                     Map
                 </Header>
                 <Body>
                     <label>@setup.Setup.Map.Name</label>
+                    <br/>
+                    @if(setup.Setup.HasMapImage)
+                    {
+                        <img class="map-image" src="images/maps/@setup.Setup.MapImageFileName" />
+                    }
                 </Body>
             </Panel>
         </div>
@@ -181,16 +196,6 @@ else
                     {
                         <label>Board <span class="si-tag">@board.Board.Name</span> - @board.SpiritDisplayName</label><br>
                     }
-                </Body>
-            </Panel>
-        </div>
-        <div class="col-6">
-            <Panel>
-                <Header>
-                    Scenario
-                </Header>
-                <Body>
-                    <label>@setup.Setup.Scenario.Name</label>
                 </Body>
             </Panel>
         </div>
@@ -267,13 +272,6 @@ else
                                 <li><b>FRANCE</b> If playing vs France level 2 or higher, increase the pool of towns by 1 per player for each level of the other adversary.</li>
                                 <li><b>SCOTLAND</b> If the other adversary's setup instructions would add a city to a coastal land other than land #2, instead add the city to an adjacent inland land.</li>
                             </ul>
-                        }
-                        @if(setup.ShowInstructionsMapImage)
-                        {
-                            <p>
-                                The image below shows how to arrange the boards for the '@setup.Setup.Map.Name' map.
-                            </p>
-                            <img src="images/maps/@setup.Setup.Map.ImageFileName" />
                         }
                         @if(setup.ShowInstructionsArchipelago)
                         {

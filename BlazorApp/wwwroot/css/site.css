@@ -110,3 +110,8 @@ table {
     margin: 1px;
     min-height: 0.0rem;
 }
+
+.map-image {
+    max-width: 100%;
+    max-height: 100%;
+}
