@@ -268,11 +268,12 @@ else
                                 <li><b>SCOTLAND</b> If the other adversary's setup instructions would add a city to a coastal land other than land #2, instead add the city to an adjacent inland land.</li>
                             </ul>
                         }
-                        @if(setup.ShowInstructionsNonStandardMap)
+                        @if(setup.ShowInstructionsMapImage)
                         {
                             <p>
                                 The image below shows how to arrange the boards for the '@setup.Setup.Map.Name' map.
                             </p>
+                            <img src="images/maps/@setup.Setup.Map.ImageFileName" />
                         }
                         @if(setup.ShowInstructionsArchipelago)
                         {

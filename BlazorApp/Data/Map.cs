@@ -79,5 +79,7 @@ namespace SiRandomizer.Data
             }
             return visible;
         }
+
+        public string ImageFileName => $"{(Name == Coastline ? 2 : Config.Players)}-{Name.ToLower().Replace(" ", "-")}.png"; 
     }
 }
