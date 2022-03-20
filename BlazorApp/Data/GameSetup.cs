@@ -26,7 +26,7 @@ namespace SiRandomizer.Data
             // Check if the setup is valid.
             // Some maps must have a specific number of boards so check this against
             // player count and number of additional boards
-            return Map.ValidForBoardCount(playerCount);
+            return Map.ValidForBoardCount(playerCount + AdditionalBoards);
         }
 
         public int Difficulty {
@@ -56,5 +56,11 @@ namespace SiRandomizer.Data
                     (AdditionalBoards * additionalBoardDifficulty);
             }
         }
+
+        public bool HasMapImage =>
+            Map.Thematic == false &&
+            Map.Name != Map.Archipelago;
+
+        public string MapImageFileName => $"{(this.BoardSetups.Count())}-{Map.Name.ToLower().Replace(" ", "-")}.png";
     }
 }
