@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SiRandomizer.Data;
+using SiRandomizer.Exceptions;
 
 namespace SiRandomizer.Services
 {
@@ -37,10 +38,13 @@ namespace SiRandomizer.Services
 
         public OptionGroup<Scenario> CreateScenarios(OverallConfiguration config)
         {
+            if(config.Expansions == null) { throw new SiException("Must create expansions before scenarios"); }
+            if(config.Maps == null) { throw new SiException("Must create maps before scenarios"); }
+
             var expansions = config.Expansions;
             var scenarios = new OptionGroup<Scenario>()
             {
-                Name = OptionGroup<Scenario>.SPIRITS
+                Name = OptionGroup<Scenario>.SCENARIOS
             };
 
             scenarios.Add(new Scenario(Scenario.NoScenario, config, null, 0));
@@ -54,7 +58,7 @@ namespace SiRandomizer.Services
             scenarios.Add(new Scenario(Scenario.RitualsOfTheDestroyingFlame, config, expansions[Expansion.BranchAndClaw], 3));
             scenarios.Add(new Scenario(Scenario.ElementalInvocation, config, expansions[Expansion.JaggedEarth], 1));
             scenarios.Add(new Scenario(Scenario.DespicableTheft, config, expansions[Expansion.JaggedEarth], 2));
-            scenarios.Add(new Scenario(Scenario.TheGreatRiver, config, expansions[Expansion.JaggedEarth], 3));
+            scenarios.Add(new Scenario(Scenario.TheGreatRiver, config, expansions[Expansion.JaggedEarth], 3, new List<Map>() { config.Maps[Map.Coastline] }));
             scenarios.Add(new Scenario(Scenario.ADiversityOfSpirits, config, expansions[Expansion.Promo2], 0));
             scenarios.Add(new Scenario(Scenario.VariedTerrains, config, expansions[Expansion.Promo2], 2));
 
@@ -63,6 +67,8 @@ namespace SiRandomizer.Services
 
         public OptionGroup<Spirit> CreateSpirits(OverallConfiguration config)
         {
+            if(config.Expansions == null) { throw new SiException("Must create expansions before spirits"); }
+
             var expansions = config.Expansions;
             var spirits = new OptionGroup<Spirit>()
             {
@@ -121,6 +127,8 @@ namespace SiRandomizer.Services
 
         public OptionGroup<Adversary> CreateAdversaries(OverallConfiguration config)
         {
+            if(config.Expansions == null) { throw new SiException("Must create expansions before adversaries"); }
+
             var expansions = config.Expansions;
             var adversaries = new OptionGroup<Adversary>()
             {
@@ -167,6 +175,8 @@ namespace SiRandomizer.Services
 
         public OptionGroup<Map> CreateMaps(OverallConfiguration config)
         {
+            if(config.Expansions == null) { throw new SiException("Must create expansions before maps"); }
+
             var expansions = config.Expansions;
             var maps = new OptionGroup<Map>()
             {
@@ -195,6 +205,8 @@ namespace SiRandomizer.Services
 
         public OptionGroup<Board> CreateBoards(OverallConfiguration config)
         {
+            if(config.Expansions == null) { throw new SiException("Must create expansions before boards"); }
+
             var expansions = config.Expansions;
             var boards = new OptionGroup<Board>()
             {

@@ -24,16 +24,26 @@ namespace SiRandomizer.Data
         [JsonIgnore]
         public int DifficultyModifier { get; set; }
 
+        /// <summary>
+        /// A list of the maps that can be used with this scenario.
+        /// If this is null then the scneario can be used with any map.
+        /// </summary>
+        /// <value></value>
+        [JsonIgnore]
+        public List<Map> ValidMaps { get; set; }
+
         public Scenario() {}
 
         public Scenario(
             string name, 
             OverallConfiguration config,
             Expansion expansion,
-            int difficultyModifier) 
+            int difficultyModifier,
+            List<Map> validMaps = null) 
             : base(name, config, expansion) 
         {
             DifficultyModifier = difficultyModifier;
+            ValidMaps = validMaps;
         }
     }
 }

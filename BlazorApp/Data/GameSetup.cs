@@ -26,7 +26,8 @@ namespace SiRandomizer.Data
             // Check if the setup is valid.
             // Some maps must have a specific number of boards so check this against
             // player count and number of additional boards
-            return Map.ValidForBoardCount(playerCount + AdditionalBoards);
+            return Map.ValidForBoardCount(playerCount + AdditionalBoards) &&
+                (Scenario.ValidMaps == null || Scenario.ValidMaps.Any(m => m == Map));
         }
 
         public int Difficulty {
