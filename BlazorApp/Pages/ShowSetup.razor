@@ -1,0 +1,165 @@
+<div class="row">
+    <div class="col-6">
+        <Panel>
+            <Header>
+                Difficulty
+            </Header>
+            <Body>
+                <span class="si-tag">@setup.Setup.Difficulty</span>
+            </Body>
+        </Panel>
+    </div>
+    <div class="col-6">
+        <Panel>
+            <Header>
+                Scenario
+            </Header>
+            <Body>
+                <label>@setup.Setup.Scenario.Name</label>
+            </Body>
+        </Panel>
+    </div>
+    <div class="col-6">
+        <Panel>
+            <Header>
+                Map
+            </Header>
+            <Body>
+                <label>@setup.Setup.Map.Name</label>
+                <br/>
+                @if(setup.Setup.HasMapImage)
+                {
+                    <img class="map-image" src="images/maps/@setup.Setup.MapImageFileName" />
+                }
+            </Body>
+        </Panel>
+    </div>
+    <div class="col-6">
+        <Panel>
+            <Header>
+                Spirits and Starting Boards
+            </Header>
+            <Body>
+                @foreach (var board in setup.Setup.BoardSetups)
+                {
+                    <label>Board <span class="si-tag">@board.Board.Name</span> - @board.SpiritDisplayName</label><br>
+                }
+            </Body>
+        </Panel>
+    </div>
+    <div class="col-6">
+        <Panel>
+            <Header>
+                Adversary
+            </Header>
+            <Body>
+                <label>@setup.Setup.LeadingAdversary.ToString()</label><br>
+                @if(@setup.Setup.HasSupportingAdversary)
+                {
+                    <label>Supported by:</label><br>
+                    <label>@setup.Setup.SupportingAdversary.ToString()</label>
+                }
+            </Body>
+        </Panel>
+    </div>        
+    @if(setup.ShowInstructions)
+    {
+        <div class="col-12">
+            <Panel>
+                <Header>
+                    Setup Instructions
+                </Header>
+                <Body>
+                    @if(setup.ShowInstructionsAdditionalBoard)
+                    {
+                        <h4>Additional board</h4>
+                        <div class="child-item">
+                            <label>
+                                When setting up the game with an extra board:
+                            </label>
+                            <ul>
+                                <li>Blight on the blight card is based on the number of boards, not players.</li>
+                                <li>Add +1 fear tokens per player to the fear pool</li>
+                                <li>Do not place any additional blight or invaders indicated by adversary setup instructions on the extra board.</li>
+                                <li>Place starting invaders as indicated in the table below:</li>
+                            </ul>
+                            <table>
+                                <tr>
+                                    <th style="text-align: left" width="15%">Players</th>
+                                    <th style="text-align: left">Invaders placed on the extra board during setup</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>None (not even the initial explore)</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Initial explore only</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Coastal city + initial explore</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Inland town + initial explorer</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>As normal</td>
+                                </tr>
+                            </table>
+                        </div>
+                    }
+                    @if(setup.ShowInstructionsAdditionalAdversary)
+                    {
+                        <h4>Additional adversary</h4>
+                        <div class="child-item">
+                            <label>
+                                Use all game changes from both adversaries except: 
+                            </label>
+                            <ul>
+                                <li>For each terror level, use 3 fear cards + the extra cards added or subtracted by each adversary. (e.g. adversaries with fear decks 3-4-3 and 4-4-4 would result in a combined 4-5-4 fear deck)</li>
+                                <li>The supporting adversary's escalation effect applies to stage 3 invader cards. (If the effect is terrain specific, choose one of the terrains randomly)</li>
+                                <li>When constructing the invader deck, follow all instructions from the leading adversary in order, then all from the following adversary in order.</li>
+                                <li><b>FRANCE</b> If playing vs France level 2 or higher, increase the pool of towns by 1 per player for each level of the other adversary.</li>
+                                <li><b>SCOTLAND</b> If the other adversary's setup instructions would add a city to a coastal land other than land #2, instead add the city to an adjacent inland land.</li>
+                            </ul>
+                        </div>
+                    }
+                    @if(setup.ShowInstructionsArchipelago)
+                    {
+                        <h4>Archipelago</h4>
+                        <div class="child-item">
+                            <label>
+                                Archipelagos should be laid out with each islet having an ocean that roughly faces another. The following rules apply: 
+                            </label>
+                            <ul>
+                                <li>Coastal lands with facing oceans are considered to be range 2 from each other.</li>
+                                <li>Targeting a spirit with whom you do not share an islet costs 1 energy per ocean jump required to reach it. This is paid when the power is used (not when played).</li>
+                                <li>Archipelago maps are generally a bit harder (+1 <strong>at most</strong>). However, they can combine with particular scenarios or adversaries to make things significantly harder.</li>
+                            </ul>
+                        </div>
+                    }
+                </Body>
+            </Panel>
+        </div>
+    }
+    <div class="col-12">
+        <Panel>
+            <Header>
+                Stats
+            </Header>
+            <Body>
+                <label><span class="si-tag">@setup.DifficultyOptionsConsidered</span> valid configurations for the selected difficulty range
+                    multiplied by <span class="si-tag">@setup.BoardSetupOptionsConsidered</span> valid board/spirit options equals 
+                    <span class="si-tag">@(setup.BoardSetupOptionsConsidered*setup.DifficultyOptionsConsidered)</span> total combinations.</label>
+            </Body>
+        </Panel>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter(Name = "Setup")]
+    public SetupResult setup { get; set; }
+}

@@ -10,17 +10,23 @@
 <div class="container">
 @if (config == null)
 {
-  <div class="row">
-    <div class="col-12">
-        <em>Loading...</em>
+    <div class="row">
+        <div class="col-12">
+            <em>Loading...</em>
+        </div>
     </div>
-  </div>
 }
 else if (setup == null)
 {
     <EditForm Model=@config OnValidSubmit="GenerateSetupAsync">
         <DataAnnotationsValidator />
         <ValidationSummary />
+        @if(Error != null) 
+        {
+            <div>
+                <label class="validation-message">@Error</label>
+            </div>
+        }
 
         <div class="row">
             <div class="col-2">
@@ -44,57 +50,59 @@ else if (setup == null)
                     </Body>
                 </Panel>
             </div>
+
             <div class="col-6">
+                <CascadingValue Value="config.Expansions" Name="Group">
+                    <SelectableGroup T=Expansion ItemClass="col-6 col-6-sm" />
+                </CascadingValue>
+            </div>
+
+            <div class="col-12">
                 <Panel>
                     <Header>
                         Options <Tooltip Text="Each of these options can be configured as Allow, Block or Force. Allow means it might be used when randomising the game setup. Block means it will not be used. Force means it will be used">?</Tooltip>
                     </Header>
                     <Body>
-                        <label>
-                            <InputSelect @bind-Value="@config.CombinedAdversaries" >                            
-                                @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
-                                {                                
-                                    <option value="@choice">@choice</option>
-                                }
-                            </InputSelect> Combined Adversaries <Tooltip Text="Control the addition of a second adversary in combination with the first. This is an additional setup option described in the Jagged Earth rule book. It suggests that the second adversary contributes 50%-75% of its full difficulty. We need a definite figure, so 60% is used. This is then rounded to the nearest whole number.">?</Tooltip>
-                        </label>
-                        <br/>
-                        <label>
-                            <InputSelect @bind-Value="@config.RandomThematicBoards" >                            
-                                @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
-                                {                                
-                                    <option value="@choice">@choice</option>
-                                }
-                            </InputSelect> Random Thematic Boards <Tooltip Text="The thematic boards have specific recommended boards for each number of players in order to provide the 'definitive' experience. This option allows you to fully randomise selection of thematic boards (with the caveat that invalid combinations such as West + North East will not be selected)">?</Tooltip>
-                        </label>
-                        <br/>
-                        <label>
-                            <InputSelect @bind-Value="@config.AdditionalBoard" >                            
-                                @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
-                                {                                
-                                    <option value="@choice">@choice</option> 
-                                }
-                            </InputSelect> Additional Board <Tooltip Text="Controls the addition of an extra board. This is an additional setup option described in the Jagged Earth rule book. It suggests the extra board adds rougly '+2 at difficulty 0, +3 at difficulty 3 and +4 at difficulty 6'. To be precise, the algorithm used here adds 2 for difficulty <= 1, 3 for difficulty <= 4 and 4 otherwise">?</Tooltip>
-                        </label>
-                        <br/>
-                        <label>
-                            <InputSelect @bind-Value="@config.ImbalancedArcadeBoards" >                            
-                                @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
-                                {                                
-                                    <option value="@choice">@choice</option> 
-                                }
-                            </InputSelect> Imbalanced Arcade Boards <Tooltip Text="Certain boards that come with Jagged Earth are recommended not to be used with specific other boards for games using <= 4 boards. This website respects that recommendation by default, but changing this option to Allow or Force will ignore it and allow imbalanced arcade boards to be selected.">?</Tooltip>
-                        </label>
+                        <div class="container slim">
+                            <div class="row slim">
+                                <div class="col-6">
+                                    <label>
+                                    <InputSelect @bind-Value="@config.CombinedAdversaries" >
+                                        @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
+                                        {                                
+                                            <option value="@choice">@choice</option>
+                                        }
+                                    </InputSelect> Combined Adversaries <Tooltip Text="Control the addition of a second adversary in combination with the first. This is an additional setup option described in the Jagged Earth rule book. It suggests that the second adversary contributes 50%-75% of its full difficulty. We need a definite figure, so 60% is used. This is then rounded to the nearest whole number.">?</Tooltip>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <InputSelect @bind-Value="@config.RandomThematicBoards" >                            
+                                        @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
+                                        {                                
+                                            <option value="@choice">@choice</option>
+                                        }
+                                    </InputSelect> Random Thematic Boards <Tooltip Text="The thematic boards have specific recommended boards for each number of players in order to provide the 'definitive' experience. This option allows you to fully randomise selection of thematic boards (with the caveat that invalid combinations such as West + North East will not be selected). This can result in a very 'swingy' game dependent on the invader cards you draw.">?</Tooltip>
+                                </div>
+                                <div class="col-6">
+                                    <InputSelect @bind-Value="@config.AdditionalBoard" >                            
+                                        @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
+                                        {                                
+                                            <option value="@choice">@choice</option> 
+                                        }
+                                    </InputSelect> Additional Board <Tooltip Text="Controls the addition of an extra board. This is an additional setup option described in the Jagged Earth rule book. It suggests the extra board adds rougly '+2 at difficulty 0, +3 at difficulty 3 and +4 at difficulty 6'. To be precise, the algorithm used here adds 2 for difficulty <= 1, 3 for difficulty <= 4 and 4 otherwise">?</Tooltip>
+                                </div>
+                                <div class="col-6">
+                                    <InputSelect @bind-Value="@config.ImbalancedArcadeBoards" >                            
+                                        @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
+                                        {                                
+                                            <option value="@choice">@choice</option> 
+                                        }
+                                    </InputSelect> Imbalanced Arcade Boards <Tooltip Text="Certain boards that come with Jagged Earth are recommended not to be used with specific other boards for games using <= 4 boards. This website respects that recommendation by default, but changing this option to Allow or Force will ignore it and allow imbalanced arcade boards to be selected together. This can result in a slightly 'swingy' game dependent on the invader cards you draw.">?</Tooltip>
+                                </div>
+                            </div>
+                        </div>
                     </Body>
                 </Panel>
-            </div>
-        </div>  
-
-        <div class="row">
-            <div class="col-12">
-                <CascadingValue Value="config.Expansions" Name="Group">
-                    <SelectableGroup T=Expansion ItemClass="col-4 col-6-sm" />
-                </CascadingValue>
             </div>
         </div>
         
@@ -136,6 +144,12 @@ else if (setup == null)
         </div>
 
         <ValidationSummary />
+        @if(Error != null) 
+        {
+            <div>
+                <label class="validation-message">@Error</label>
+            </div>
+        }
 
         <div class="row">
             <div class="col-12">
@@ -148,157 +162,9 @@ else if (setup == null)
 } 
 else
 {
-    <div class="row">
-        <div class="col-6">
-            <Panel>
-                <Header>
-                    Difficulty
-                </Header>
-                <Body>
-                    <span class="si-tag">@setup.Setup.Difficulty</span>
-                </Body>
-            </Panel>
-        </div>
-        <div class="col-6">
-            <Panel>
-                <Header>
-                    Scenario
-                </Header>
-                <Body>
-                    <label>@setup.Setup.Scenario.Name</label>
-                </Body>
-            </Panel>
-        </div>
-        <div class="col-6">
-            <Panel>
-                <Header>
-                    Map
-                </Header>
-                <Body>
-                    <label>@setup.Setup.Map.Name</label>
-                    <br/>
-                    @if(setup.Setup.HasMapImage)
-                    {
-                        <img class="map-image" src="images/maps/@setup.Setup.MapImageFileName" />
-                    }
-                </Body>
-            </Panel>
-        </div>
-        <div class="col-6">
-            <Panel>
-                <Header>
-                    Spirits and Starting Boards
-                </Header>
-                <Body>
-                    @foreach (var board in setup.Setup.BoardSetups)
-                    {
-                        <label>Board <span class="si-tag">@board.Board.Name</span> - @board.SpiritDisplayName</label><br>
-                    }
-                </Body>
-            </Panel>
-        </div>
-        <div class="col-6">
-            <Panel>
-                <Header>
-                    Adversary
-                </Header>
-                <Body>
-                    <label>@setup.Setup.LeadingAdversary.ToString()</label><br>
-                    @if(@setup.Setup.HasSupportingAdversary)
-                    {
-                        <label>Supported by:</label><br>
-                        <label>@setup.Setup.SupportingAdversary.ToString()</label>
-                    }
-                </Body>
-            </Panel>
-        </div>        
-        @if(setup.ShowInstructions)
-        {
-            <div class="col-12">
-                <Panel>
-                    <Header>
-                        Setup Instructions
-                    </Header>
-                    <Body>
-                        @if(setup.ShowInstructionsAdditionalBoard)
-                        {
-                            <p>
-                                When setting up the game with an extra board:
-                            </p>
-                            <ul>
-                                <li>Blight on the blight card is based on the number of boards, not players.</li>
-                                <li>Add +1 fear tokens per player to the fear pool</li>
-                                <li>Do not place any additional blight or invaders indicated by adversary setup instructions on the extra board.</li>
-                                <li>Place starting invaders as indicated in the table below:</li>
-                            </ul>
-                            <table>
-                                <tr>
-                                    <th style="text-align: left" width="15%">Players</th>
-                                    <th style="text-align: left">Invaders placed on the extra board during setup</th>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>None (not even the initial explore)</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Initial explore only</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Coastal city + initial explore</td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Inland town + initial explorer</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>As normal</td>
-                                </tr>
-                            </table>
-                        }
-                        @if(setup.ShowInstructionsAdditionalAdversary)
-                        {
-                            <p>
-                                Use all game changes from both adversaries except: 
-                            </p>
-                            <ul>
-                                <li>For each terror level, use 3 fear cards + the extra cards added or subtracted by each adversary. (e.g. adversaries with fear decks 3-4-3 and 4-4-4 would result in a combined 4-5-4 fear deck)</li>
-                                <li>The supporting adversary's escalation effect applies to stage 3 invader cards. (If the effect is terrain specific, choose one of the terrains randomly)</li>
-                                <li>When constructing the invader deck, follow all instructions from the leading adversary in order, then all from the following adversary in order.</li>
-                                <li><b>FRANCE</b> If playing vs France level 2 or higher, increase the pool of towns by 1 per player for each level of the other adversary.</li>
-                                <li><b>SCOTLAND</b> If the other adversary's setup instructions would add a city to a coastal land other than land #2, instead add the city to an adjacent inland land.</li>
-                            </ul>
-                        }
-                        @if(setup.ShowInstructionsArchipelago)
-                        {
-                            <p>
-                                Archipelagos should be laid out with each islet having an ocean that roughly faces another. The following rules apply: 
-                            </p>
-                            <ul>
-                                <li>Coastal lands with facing oceans are considered to be range 2 from each other.</li>
-                                <li>Targeting a spirit with whom you do not share an islet costs 1 energy per ocean jump required to reach it. This is paid when the power is used (not when played).</li>
-                                <li>Archipelago maps are generally a bit harder (+1 <strong>at most</strong>). However, they can combine with particular scenarios or adversaries to make things significantly harder.</li>
-                            </ul>
-                        }
-                    </Body>
-                </Panel>
-            </div>
-        }
-        <div class="col-12">
-            <Panel>
-                <Header>
-                    Stats
-                </Header>
-                <Body>
-                    <label><span class="si-tag">@setup.DifficultyOptionsConsidered</span> valid configurations for the selected difficulty range
-                        multiplied by <span class="si-tag">@setup.BoardSetupOptionsConsidered</span> valid board/spirit options equals 
-                        <span class="si-tag">@(setup.BoardSetupOptionsConsidered*setup.DifficultyOptionsConsidered)</span> total combinations.</label>
-                </Body>
-            </Panel>
-        </div>
-    </div>
+    <CascadingValue Value="setup" Name="Setup">
+        <ShowSetup />
+    </CascadingValue>
 
     <div class="row">
         <div class="col-12">
@@ -316,6 +182,7 @@ else
 @code {
     private OverallConfiguration config;
     private SetupResult setup;
+    private string Error;
 
     private const string StorageName = "si-randomizer-config";
 
@@ -362,9 +229,17 @@ else
 
     protected async Task GenerateSetupAsync()
     {
+        Error = null;
         var jsonConfig = JsonSerializer.Serialize(config);
         await JSRuntime.InvokeVoidAsync("localStorage.setItem", StorageName, jsonConfig);
-        setup = SetupGenerator.Generate(config);
+        try
+        {
+            setup = SetupGenerator.Generate(config);
+        } 
+        catch(SiException ex)
+        {
+            Error = ex.Message;
+        }
     }
 
     protected void ClearSetup()

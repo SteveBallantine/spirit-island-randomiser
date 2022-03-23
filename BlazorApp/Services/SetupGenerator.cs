@@ -51,10 +51,9 @@ namespace SiRandomizer.Services
                     c.Difficulty >= config.MinDifficulty && 
                     c.Difficulty <= config.MaxDifficulty);
 
-           if(setups.Count() == 0)
+            if(setups.Count() == 0)
             {
-                throw new SiException($"No setups found for difficulty " +
-                    $"{config.MinDifficulty}-{config.MaxDifficulty}");
+                throw new SiException($"No valid setups found for the configured options");
             }
 
             // Pick the setup to use from the available options
