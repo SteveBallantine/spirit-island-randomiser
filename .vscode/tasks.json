@@ -32,9 +32,8 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/BlazorApp/spirit-island-randomiser.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "--project",
+                "${workspaceFolder}/BlazorApp/spirit-island-randomiser.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
