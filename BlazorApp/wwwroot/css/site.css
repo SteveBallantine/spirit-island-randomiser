@@ -1,11 +1,13 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
-
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 a, .btn-link {
     color: #0366d6;
+}
+
+h4 {
+    margin: 0;
 }
 
 .btn-primary {
@@ -48,7 +50,6 @@ a, .btn-link {
     right: 0.75rem;
     top: 0.5rem;
 }
-
 
 .panel-invalid {
     outline: 1px solid red;

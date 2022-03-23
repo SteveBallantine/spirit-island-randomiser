@@ -11,7 +11,7 @@
 .top-row {
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
-    min-height: 3.5rem;
+    min-height: 2.5rem;
     display: flow-root;
     text-align: center;
     top: 0;
@@ -23,7 +23,6 @@
     min-height: 3.5rem;
     text-align: center;
 }
-
 
 @media (min-width: 641px) {
     .page {
