@@ -68,7 +68,7 @@ namespace SiRandomizer.Data
             // update all children accordingly.
             if(args.PropertyName == nameof(Selected)) 
             {
-                foreach(var child in _children.Values)
+                foreach(var child in _children.Values.Where(c => c.IsVisible()))
                 {
                     child.Selected = Selected;
                 }

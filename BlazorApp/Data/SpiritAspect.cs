@@ -68,7 +68,8 @@ namespace SiRandomizer.Data
         { 
             // Base aspect is always considered selected if the parent is a 
             // single aspect spirit (and the parent is selected).
-            get => IsSingleAspectSpirit == true ? Parent.Selected : base.Selected; 
+            get => IsBaseAspect && IsSingleAspectSpirit ? Parent.Selected : 
+                Parent.Selected && base.Selected; 
             set => base.Selected = value; 
         }
         
