@@ -57,11 +57,11 @@ namespace SiRandomizer.Data
                     (AdditionalBoards * additionalBoardDifficulty);
             }
         }
-
         public bool HasMapImage =>
+            BoardSetups.Count() > 1 &&
             Map.Thematic == false &&
             Map.Name != Map.Archipelago;
 
-        public string MapImageFileName => $"{(this.BoardSetups.Count())}-{Map.Name.ToLower().Replace(" ", "-")}.png";
+        public string MapImageFileName => $"{(BoardSetups.Count())}-{Map.Name.ToLower().Replace(" ", "-")}.png";
     }
 }
