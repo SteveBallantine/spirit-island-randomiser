@@ -44,20 +44,18 @@ namespace SiRandomizer.tests
             _config.Players = 1;
         }
 
-        private void SetupAllOptions()
+        private void SetupAllOptions(Func<Map, bool> mapFilter)
         {
             // Select all components
             _config.Expansions.Selected = true;
+            // Must select maps before boards
+            _config.Maps
+                .Where(m => mapFilter(m)).ToList()
+                .ForEach(m => m.Selected = true);
             _config.Boards.Selected = true;
             _config.Adversaries.Selected = true;
             _config.Scenarios.Selected = true;
             _config.Spirits.Selected = true;
-            // Just the non-thematic maps
-            // (This avoids changes in the results from picking thematic vs standard for this test.)
-            _config.Maps
-                .Where(m => m.Name.Contains("Thematic") == false && 
-                    _config.Players <= m.MaxCount && _config.Players >= m.MinCount).ToList()
-                .ForEach(m => m.Selected = true);
         }
 
         /// <summary>
@@ -269,9 +267,13 @@ namespace SiRandomizer.tests
             _config.MinDifficulty = 0;
             _config.MaxDifficulty = 20;
             _config.Players = 2;
-            SetupAllOptions();
 
-            // This config is just used 
+            // Limit this test to non-thematic maps as they can skew the selected boards.
+            Func<Map, bool> mapFilter = m => m.Name.Contains("Thematic") == false && 
+                    _config.Players <= m.MaxCount && _config.Players >= m.MinCount;
+            SetupAllOptions(mapFilter);
+
+            // Build some dictionaries to keep counts of options that are picked.
             var selectedBoards = _config.Boards
                 .Where(b => b.Thematic == false)
                 .ToDictionary(b => b.Name, b => 0);
@@ -283,10 +285,10 @@ namespace SiRandomizer.tests
             var selectedSpirits = _config.Spirits
                 .ToDictionary(s => s.Name, s => 0);
             var selectedMaps = _config.Maps
-                .Where(m => m.Name.Contains("Thematic") == false && 
-                    _config.Players <= m.MaxCount && _config.Players >= m.MinCount)
+                .Where(m => mapFilter(m))
                 .ToDictionary(s => s.Name, s => 0);
 
+            // Generate 1000 setups and store the results in the dictionaries.
             for(var i = 0; i < 1000; i++)
             {
                 var result = _generator.Generate(_config);
@@ -300,7 +302,9 @@ namespace SiRandomizer.tests
                 selectedAdversaries[result.Setup.LeadingAdversary.Parent.Name + result.Setup.LeadingAdversary.Level]++;
                 selectedMaps[result.Setup.Map.Name]++;
             }
-
+            
+            // Verify that the frequency of each option being selected is within the 
+            // expected range.
             VerifySelectionFrequency(selectedBoards);
             VerifySelectionFrequency(selectedSpirits);
             VerifySelectionFrequency(selectedScenarios);

@@ -25,6 +25,12 @@ namespace SiRandomizer.Extensions
         /// </sumamry>
         public static long GetCombinations<T>(this IEnumerable<T> collection, int itemsToChoose)  
         {
+            if(itemsToChoose > collection.Count()) 
+            {
+                throw new ArgumentException($"Items to choose ({itemsToChoose}) " +
+                    $"must be >= size of collection ({collection.Count()})", nameof(itemsToChoose));
+            }
+
             // We can use Pascal's triangle to figure this out given:
             // n = number of items in the complete set (e.g. number of spirits available)
             // k = number of items to be chosen from the set   
