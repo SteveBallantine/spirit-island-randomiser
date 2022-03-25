@@ -15,7 +15,7 @@
                 Scenario
             </Header>
             <Body>
-                <label>@setup.Setup.Scenario.Name</label>
+                <label>@setup.Setup.Scenario.Name</label><span class="si-tag">+@setup.Setup.Scenario.DifficultyModifier</span>
             </Body>
         </Panel>
     </div>
@@ -25,7 +25,7 @@
                 Map
             </Header>
             <Body>
-                <label>@setup.Setup.Map.Name</label>
+                <label>@setup.Setup.Map.Name</label><span class="si-tag">+@setup.Setup.Map.DifficultyModifier</span>
                 <br/>
                 @if(setup.Setup.HasMapImage)
                 {
@@ -53,11 +53,11 @@
                 Adversary
             </Header>
             <Body>
-                <label>@setup.Setup.LeadingAdversary.ToString()</label><br>
+                <label>@setup.Setup.LeadingAdversary.ToString()</label><span class="si-tag">+@setup.Setup.LeadingAdversaryDifficultyModifier</span><br>
                 @if(@setup.Setup.HasSupportingAdversary)
                 {
                     <label>Supported by:</label><br>
-                    <label>@setup.Setup.SupportingAdversary.ToString()</label>
+                    <label>@setup.Setup.SupportingAdversary.ToString()</label><span class="si-tag">+@setup.Setup.SupportingAdversaryDifficultyModifier</span>
                 }
             </Body>
         </Panel>
