@@ -30,19 +30,37 @@ namespace SiRandomizer.Data
                 (Scenario.ValidMaps == null || Scenario.ValidMaps.Any(m => m == Map));
         }
 
-        public int Difficulty {
-            get {
-                int maxAdversary = HasSupportingAdversary == false ? LeadingAdversary.DifficultyModifier :
+        /// <summary>
+        /// For a single adversary, we will use the difficulty modifier from the AdversaryLevel.
+        /// For multiple adversaries, the lower of the difficulties is multiplied by 0.6.
+        /// (the JE manual recommends 0.5-0.75, but we use an exact figure here)
+        /// </summary>
+        /// <returns></returns>
+        public int LeadingAdversaryDifficultyModifier =>
+            MaxAdversaryDifficulty == LeadingAdversary.DifficultyModifier ? 
+                MaxAdversaryDifficulty : (int)Math.Round(LeadingAdversary.DifficultyModifier * 0.6);
+
+        public int SupportingAdversaryDifficultyModifier =>
+            HasSupportingAdversary == false ? 0 :
+            (MaxAdversaryDifficulty == LeadingAdversary.DifficultyModifier ? 
+                 (int)Math.Round(SupportingAdversary.DifficultyModifier * 0.6) : SupportingAdversary.DifficultyModifier);
+
+        private int MaxAdversaryDifficulty =>
+             HasSupportingAdversary == false ? LeadingAdversary.DifficultyModifier :
                     Math.Max(LeadingAdversary.DifficultyModifier, 
                         SupportingAdversary.DifficultyModifier);
-                int minAdversary = HasSupportingAdversary == false ? 0 :
+
+        private int MinAdversaryDifficulty =>
+             HasSupportingAdversary == false ? 0 :
                     Math.Min(LeadingAdversary.DifficultyModifier, 
                         SupportingAdversary.DifficultyModifier);
 
-                // Adversary difficulty is calculated as the higher 
-                // difficulty + 50-75% of the lower difficulty.
-                int baseDifficulty = maxAdversary +
-                    (int)Math.Round(minAdversary * 0.6) +
+        public int Difficulty 
+        {
+            get 
+            {
+                int baseDifficulty = LeadingAdversaryDifficultyModifier +
+                    SupportingAdversaryDifficultyModifier +
                     Map.DifficultyModifier +
                     Scenario.DifficultyModifier;
 

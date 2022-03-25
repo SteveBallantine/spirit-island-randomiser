@@ -1,11 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SiRandomizer.Services;
-using SiRandomizer.Data;
-using SiRandomizer.Exceptions;
 using SiRandomizer.Extensions;
 using System.Linq;
-using System;
-using System.Collections.Generic;
 
 namespace SiRandomizer.tests
 {
