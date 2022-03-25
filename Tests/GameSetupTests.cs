@@ -18,6 +18,7 @@ namespace SiRandomizer.tests
         private static Adversary _adversaryB;
         private static AdversaryLevel _levelB1;
         private static AdversaryLevel _levelB2;
+        private static AdversaryLevel _levelB3;
 
         private static Map _map0;
         private static Map _map1;
@@ -36,8 +37,10 @@ namespace SiRandomizer.tests
             _adversaryB = new Adversary("Test B", null, null);
             _levelB1 = new AdversaryLevel("B1", null, 1, 1);
             _levelB2 = new AdversaryLevel("B2", null, 2, 3);
+            _levelB3 = new AdversaryLevel("B3", null, 2, 4);
             _adversaryB.Add(_levelB1);
             _adversaryB.Add(_levelB2);
+            _adversaryB.Add(_levelB3);
 
             _map0 = new Map("TestM0", null, 1, 6, 0);
             _map1 = new Map("TestM1", null, 1, 6, 1);
@@ -48,16 +51,17 @@ namespace SiRandomizer.tests
 
         [DataTestMethod]
         [DynamicData("Difficulty_TestData", DynamicDataSourceType.Method)]
-        public void Difficulty(GameSetup setup, 
+        public void Difficulty(string testDescription,
+            GameSetup setup, 
             bool hasSupportingAdversary,
             int expectedDifficulty, 
             int leadingDifficulty, 
             int supportingDifficulty)
         {
-            Assert.AreEqual(hasSupportingAdversary, setup.HasSupportingAdversary);
-            Assert.AreEqual(expectedDifficulty, setup.Difficulty);
-            Assert.AreEqual(leadingDifficulty, setup.LeadingAdversaryDifficultyModifier);
-            Assert.AreEqual(supportingDifficulty, setup.SupportingAdversaryDifficultyModifier);
+            Assert.AreEqual(hasSupportingAdversary, setup.HasSupportingAdversary, "HasSupportingAdversary is incorrect");
+            Assert.AreEqual(expectedDifficulty, setup.Difficulty, "Difficulty is incorrect");
+            Assert.AreEqual(leadingDifficulty, setup.LeadingAdversaryDifficultyModifier, "LeadingAdversaryDifficultyModifier is incorrect");
+            Assert.AreEqual(supportingDifficulty, setup.SupportingAdversaryDifficultyModifier, "SupportingAdversaryDifficultyModifier is incorrect");
         }
 
         public static IEnumerable<object[]> Difficulty_TestData()
@@ -70,7 +74,7 @@ namespace SiRandomizer.tests
                 Scenario = _scenario0
             };
             var lDiff = setup.LeadingAdversary.DifficultyModifier;
-            yield return new object[] { setup, false, lDiff, lDiff, 0 };
+            yield return new object[] { "Single adversary", setup, false, lDiff, lDiff, 0 };
 
             // Leading adversary is higher difficulty than supporting adversary.
             // Multiplier does not affect overall difficulty.
@@ -83,7 +87,7 @@ namespace SiRandomizer.tests
             };
             lDiff = setup.LeadingAdversary.DifficultyModifier;
             var sDiff = (int)Math.Round(setup.SupportingAdversary.DifficultyModifier * 0.6);
-            yield return new object[] { setup, true, lDiff + sDiff, lDiff, sDiff };
+            yield return new object[] { "Leading adversary higher", setup, true, lDiff + sDiff, lDiff, sDiff };
 
             // Leading adversary is higher difficulty than supporting adversary.
             // Multiplier does affect overall difficulty.
@@ -96,7 +100,7 @@ namespace SiRandomizer.tests
             };
             lDiff = setup.LeadingAdversary.DifficultyModifier;
             sDiff = (int)Math.Round(setup.SupportingAdversary.DifficultyModifier * 0.6);
-            yield return new object[] { setup, true, lDiff + sDiff, lDiff, sDiff };
+            yield return new object[] { "Leading adversary higher 2", setup, true, lDiff + sDiff, lDiff, sDiff };
 
             // Supporting adversary is higher difficulty than leading adversary.
             setup = new GameSetup()
@@ -108,8 +112,20 @@ namespace SiRandomizer.tests
             };
             lDiff = (int)Math.Round(setup.LeadingAdversary.DifficultyModifier * 0.6);
             sDiff = setup.SupportingAdversary.DifficultyModifier;
-            yield return new object[] { setup, true, lDiff + sDiff, lDiff, sDiff };
+            yield return new object[] { "Supporting adversary higher", setup, true, lDiff + sDiff, lDiff, sDiff };
             
+            // Supporting adversary and leading adversary are same difficulty
+            setup = new GameSetup()
+            {
+                LeadingAdversary = _levelA2, 
+                SupportingAdversary = _levelB3,
+                Map = _map0,
+                Scenario = _scenario0
+            };
+            lDiff = setup.LeadingAdversary.DifficultyModifier;
+            sDiff = (int)Math.Round(setup.SupportingAdversary.DifficultyModifier * 0.6);
+            yield return new object[] { "Leading and supporting same difficulty",  setup, true, lDiff + sDiff, lDiff, sDiff };
+
             // Map and scenario difficulty included
             setup = new GameSetup()
             {
@@ -118,7 +134,7 @@ namespace SiRandomizer.tests
                 Scenario = _scenario1
             };
             lDiff = setup.LeadingAdversary.DifficultyModifier;
-            yield return new object[] { setup, false, lDiff + _map1.DifficultyModifier + _scenario1.DifficultyModifier, lDiff, 0 };
+            yield return new object[] { "Map and Scenario", setup, false, lDiff + _map1.DifficultyModifier + _scenario1.DifficultyModifier, lDiff, 0 };
         }
 
     }
