@@ -1,11 +1,8 @@
 ﻿@page "/"
 
-@using System.Text.Json
-@using System.Text.Json.Serialization
-
 @inject ConfigurationService ConfigurationService
+@inject PresetService PresetService
 @inject SetupGenerator SetupGenerator
-@inject IJSRuntime JSRuntime
 
 <div class="container">
 @if (config == null)
@@ -28,6 +25,18 @@ else if (setup == null)
             </div>
         }
 
+        <div class="row">
+            <div class="col-12">
+                <Panel>
+                    <Header>
+                        Presets
+                    </Header>
+                    <Body>
+                        <PresetDropdown></PresetDropdown>
+                    </Body>
+                </Panel>
+            </div>
+        </div>
         <div class="row">
             <div class="col-2">
                 <Panel>
@@ -185,11 +194,13 @@ else
     private string Error;
 
     private const string StorageName = "si-randomizer-config";
-
-
+    private const string StorageNamePresets = "si-randomizer-presets";
+    private const string StorageNamePresetPrefix = "si-randomizer-config-";
+    
     protected override async Task OnInitializedAsync()
     {
-        config = await ConfigurationService.GetConfigurationAsync();
+        await PresetService.InitialisePresetsAsync();
+        config = ConfigurationService.Current;
         // Changing selected expansions will change the visible components for lots of things
         config.Expansions.PropertyChanged += HandlePropertyChanged;
         // Changing selected maps can change the visible boards
@@ -204,34 +215,10 @@ else
         }
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(firstRender)
-        {
-            // Try to get configuration from local storage
-            var jsonConfig = await JSRuntime.InvokeAsync<string>("localStorage.getItem", StorageName);
-            if(string.IsNullOrEmpty(jsonConfig) == false)
-            {
-                try
-                {
-                    var savedSettings = JsonSerializer.Deserialize<OverallConfiguration>(jsonConfig);
-                    config.TakeSettingsFrom(savedSettings);
-                    // configuration has changed so let the system know to re-render.
-                    await InvokeAsync(StateHasChanged);
-                }
-                catch(Exception)
-                {
-                    // Don't worry about the error - we'll just use the new config instead.
-                }
-            }
-        }
-    }
-
     protected async Task GenerateSetupAsync()
     {
         Error = null;
-        var jsonConfig = JsonSerializer.Serialize(config);
-        await JSRuntime.InvokeVoidAsync("localStorage.setItem", StorageName, jsonConfig);
+        await PresetService.SaveCurrentConfigurationAsync();
         try
         {
             setup = SetupGenerator.Generate(config);
@@ -247,3 +234,6 @@ else
         setup = null;
     }
 }
+
+
+

@@ -7,7 +7,15 @@ namespace SiRandomizer.Services
 {
     public class ConfigurationService
     {
-        public Task<OverallConfiguration> GetConfigurationAsync()
+        private Lazy<OverallConfiguration> _current;
+        public OverallConfiguration Current => _current.Value;
+
+        public ConfigurationService()
+        {
+            _current = new Lazy<OverallConfiguration>(CreateConfiguration);
+        }
+
+        public OverallConfiguration CreateConfiguration()
         {
             var config = new OverallConfiguration();
             config.Expansions = CreateExpansions(config);
@@ -16,7 +24,7 @@ namespace SiRandomizer.Services
             config.Maps = CreateMaps(config);
             config.Spirits = CreateSpirits(config);
             config.Scenarios = CreateScenarios(config);
-            return Task.FromResult(config);
+            return config;
         }
 
         public OptionGroup<Expansion> CreateExpansions(OverallConfiguration config)

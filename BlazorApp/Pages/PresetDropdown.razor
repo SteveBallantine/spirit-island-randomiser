@@ -1,0 +1,109 @@
+@inject PresetService PresetService
+
+@if(PresetService.Presets == null)
+{
+    <span>Loading...</span>
+}
+else 
+{
+    <span>
+        <span class="preset-dropdown" @onclick="Expand">
+            <span>@PresetService.Presets.Current</span><i class="fa-solid fa-angle-down preset-expand"></i>
+        </span>        
+        <div class="preset-options @(ShowOptions ? "show": string.Empty)">
+            @foreach (var preset in PresetService.Presets.Available)
+            {
+                <PresetItem Preset=@preset ShowDelete=@ShowDelete OnSelectItem="() => SelectAsync(preset)" OnDeleteItem="() => DeleteAsync(preset)"></PresetItem>
+            }
+        </div>
+        <i class="fa-solid fa-square-plus preset-add-new" @onclick="ShowNewPreset"></i>
+        @if(ShowAdd)
+        {
+            <InputText @bind-Value="NewPresetName"></InputText>
+            <label>Populate from current config:
+                <InputCheckbox @bind-Value="NewPresetFromCurrent"></InputCheckbox>
+            </label>
+            <i class="fa-solid fa-floppy-disk preset-save-new" @onclick="SaveNewPresetAsync"></i>
+            <i class="fa-solid fa-xmark preset-close-new" @onclick="CloseNewPreset"></i>
+        }
+    </span>
+    
+    @*<select @onchange="ChangePresetAsync">
+        @foreach (var preset in PresetService.Presets.Available)
+        {
+            <option value="@preset" checked=@(preset == PresetService.Presets.Current)>@preset</option>
+        }
+    </select>
+    @if(PresetService.Presets.Available.Count > 1)
+    {
+        <button type="button" @onclick="DeletePresetAsync">Delete current preset (@PresetService.Presets.Current)</button>
+    }
+    <span>
+        <label>New preset name:</label>
+        <InputText @bind-Value="NewPresetName"></InputText>
+    </span>
+    <span>
+        <label>Populate from current config:</label>
+        <InputCheckbox @bind-Value="NewPresetFromCurrent"></InputCheckbox>
+    </span>
+    <button type="button" @onclick="AddPresetAsync">Add Preset</button>*@
+}
+
+@code {
+
+    private bool ShowOptions = false;
+    private bool ShowDelete = false;
+    private bool ShowAdd = false;
+    private string NewPresetName = "";
+    private bool NewPresetFromCurrent = false;
+
+    private async Task SelectAsync(string preset)
+    {
+        Collapse();
+        // Change to the selected preset and refresh.
+        await PresetService.SetPresetAsync(preset);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task DeleteAsync(string preset)
+    {   
+        Collapse();
+        // Remove the specified preset
+        await PresetService.RemovePresetAsync(preset);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SaveNewPresetAsync()
+    {
+        ShowAdd = false;
+        await PresetService.AddPresetAsync(NewPresetName, NewPresetFromCurrent);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void Expand()
+    {
+        ShowOptions = true;
+        // Only show delete button if there are at least 2 presets. We don't allow the last one to be deleted.
+        ShowDelete = PresetService.Presets.Available.Count > 1;
+    }
+
+    private void Collapse()
+    {
+        // Hide the dropdown.
+        ShowOptions = false;
+        ShowDelete = false;
+    }
+    
+    private void ShowNewPreset()
+    {
+        ShowAdd = true;
+        NewPresetName = "";
+        NewPresetFromCurrent = false;
+    }
+
+    private void CloseNewPreset()
+    {
+        ShowAdd = false;
+    }
+
+}

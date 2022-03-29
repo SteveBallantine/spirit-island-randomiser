@@ -1,0 +1,38 @@
+.preset-dropdown {
+    border: 1px solid darkgrey;
+    background-color: #eee;
+    border-radius: 3px;
+    width: fit-content;
+    height: fit-content;
+    padding: 2px 0.5em 2px 0.5em;
+    font-size: small;
+    cursor: default;
+}
+
+.preset-dropdown:hover {
+    background-color: #ccc;
+}
+
+.preset-options {
+    background-color: #eee;
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    box-shadow: 2px 2px 3px #222;
+    border-radius: 3px; 
+    cursor: default;   
+}
+
+.preset-options.show {
+    visibility: visible;
+}
+
+.preset-expand {
+    margin-left: 1.5em;
+    cursor: default;
+}
+
+.preset-add-new {
+    color: green;
+    cursor: pointer;
+}
