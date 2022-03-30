@@ -70,12 +70,18 @@ namespace SiRandomizer.Data
             // 1. Any thematic map is selected.
             // 2. The 'Random thematic boards' option is not blocked.
             var showThematic = Config.Maps.Any(m => m.Selected && m.Thematic) && 
-                Config.RandomThematicBoards != OptionChoice.Block;
+                Config.RandomThematicBoards != OptionChoice.Block;                
             // Show arcade boards if any non-thematic map is selected.
             var showArcade = Config.Maps.Any(m => m.Selected && m.Thematic == false);
-            // Only show this board if the conditions above are met and the base 
-            // conditions are satisfied (i.e. relevant exansion is selected)
-            return (Thematic ? showThematic : showArcade) && base.IsVisible();
+            // Only show this board if the conditions for this board type are met and the 
+            // board is available for selection (i.e. relevant exansion is selected)
+            return (Thematic ? showThematic : showArcade) && IsAvailable();
         }
+
+        public bool IsAvailable()
+        {
+            return base.IsVisible();
+        }
+
     }
 }
