@@ -42,7 +42,12 @@
             <Body>
                 @foreach (var board in setup.Setup.BoardSetups)
                 {
-                    <label>Board <span class="si-tag">@board.Board.Name</span> - @board.SpiritDisplayName</label><br>
+                    <label>Board <span class="si-tag">@board.Board.Name</span> - @board.SpiritDisplayName</label>
+                    @if(board.SpiritAspect == null) 
+                    {
+                        <span class="si-tag">+@setup.Setup.Map.DifficultyModifier</span>
+                    }
+                    <br>
                 }
             </Body>
         </Panel>

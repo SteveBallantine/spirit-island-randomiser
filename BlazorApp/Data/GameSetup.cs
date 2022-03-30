@@ -51,28 +51,29 @@ namespace SiRandomizer.Data
                         SupportingAdversary.DifficultyModifier);
 
         private int MinAdversaryDifficulty =>
-             HasSupportingAdversary == false ? 0 :
+            HasSupportingAdversary == false ? 0 :
                     Math.Min(LeadingAdversary.DifficultyModifier, 
                         SupportingAdversary.DifficultyModifier);
+
+        private int BaseDifficulty => 
+            LeadingAdversaryDifficultyModifier +
+                SupportingAdversaryDifficultyModifier +
+                Map.DifficultyModifier +
+                Scenario.DifficultyModifier;
+        
+        // One additional board is (very roughly!)
+        // +2 difficulty if difficulty is 0
+        // +3 difficulty if difficulty is 3
+        // +4 difficulty if difficulty is 6
+        public int AdditionalBoardDifficulty =>
+            BaseDifficulty <= 1 ? 2 : BaseDifficulty <= 4 ? 3 : 4;
 
         public int Difficulty 
         {
             get 
             {
-                int baseDifficulty = LeadingAdversaryDifficultyModifier +
-                    SupportingAdversaryDifficultyModifier +
-                    Map.DifficultyModifier +
-                    Scenario.DifficultyModifier;
-
-                // One additional board is (very roughly!)
-                // +2 difficulty if difficulty is 0
-                // +3 difficulty if difficulty is 3
-                // +4 difficulty if difficulty is 6
-                int additionalBoardDifficulty = 
-                    baseDifficulty <= 1 ? 2 : baseDifficulty <= 4 ? 3 : 4;
-
-                return baseDifficulty + 
-                    (AdditionalBoards * additionalBoardDifficulty);
+                return BaseDifficulty + 
+                    (AdditionalBoards * AdditionalBoardDifficulty);
             }
         }
         public bool HasMapImage =>
