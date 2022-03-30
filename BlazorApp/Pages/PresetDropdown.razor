@@ -14,12 +14,12 @@ else
             }
         </InputSelect>
         <button type="button" @onclick="ShowNewPreset">
-            <Tooltip Text="Add new preset" ButtonStyling=false>
+            <Tooltip Text="Add new preset" ButtonStyling=false Small=true>
                 <i class="fa-solid fa-square-plus preset-add-new"></i>
             </Tooltip>
         </button>
         <button type="button" @onclick="() => DeleteAsync(PresetService.Presets.Current)">
-            <Tooltip Text="Delete current preset" ButtonStyling=false>
+            <Tooltip Text="Delete current preset" ButtonStyling=false Small=true>
                 <i class="fa fa-trash preset-delete show"></i>
             </Tooltip>
         </button>
@@ -30,12 +30,12 @@ else
                 <InputCheckbox @bind-Value="NewPresetFromCurrent"></InputCheckbox>
             </label>
             <button type="button" @onclick="SaveNewPresetAsync">
-                <Tooltip Text="Save new preset" ButtonStyling=false>
+                <Tooltip Text="Save new preset" ButtonStyling=false Small=true>
                     <i class="fa-solid fa-floppy-disk preset-save-new"></i>
                 </Tooltip>
             </button>
             <button type="button" @onclick="CloseNewPreset">
-                <Tooltip Text="Cancel new preset" ButtonStyling=false>
+                <Tooltip Text="Cancel new preset" ButtonStyling=false Small=true>
                     <i class="fa-solid fa-xmark preset-close-new"></i>
                 </Tooltip>
             </button>

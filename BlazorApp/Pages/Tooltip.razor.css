@@ -30,6 +30,10 @@ span {
     z-index: 1;
     font-weight: normal;
 }
+span.small {    
+    width: 150px;
+    margin-left: -75px;
+}
 /* On small screens, just center the tool tip on the screen */
 @media screen and (max-width: 600px) 
 { 
@@ -41,6 +45,10 @@ span {
         left: 50%;
         transform: translate(0, -50%);
         bottom: auto;
+    }
+    span.small
+    {        
+        width: 150px;
     }
 }
 
