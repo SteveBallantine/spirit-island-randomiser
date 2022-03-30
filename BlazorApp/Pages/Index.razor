@@ -205,6 +205,7 @@ else
         config.Expansions.PropertyChanged += HandlePropertyChanged;
         // Changing selected maps can change the visible boards
         config.Maps.PropertyChanged += HandlePropertyChanged;
+        PresetService.RefreshRequired += HandleRefreshRequired; 
     }
 
     private void HandlePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs args)  
@@ -213,6 +214,10 @@ else
         {
             InvokeAsync(StateHasChanged);
         }
+    }
+    private void HandleRefreshRequired(object sender, EventArgs args)  
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     protected async Task GenerateSetupAsync()

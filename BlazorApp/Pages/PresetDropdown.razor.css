@@ -36,3 +36,12 @@
     color: green;
     cursor: pointer;
 }
+
+.preset-save-new {
+    cursor: pointer;
+}
+
+.preset-close-new {
+    color: red;
+    cursor: pointer;
+}

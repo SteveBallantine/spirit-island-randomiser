@@ -1,6 +1,6 @@
 @* Pinched from https://chrissainty.com/building-a-simple-tooltip-component-for-blazor-in-under-10-lines-of-code/ *@
 
-<div class="tooltip-wrapper">
+<div class="tooltip-wrapper @(ButtonStyling ? "button-style" : "")">
     <span>@Text</span>
     @ChildContent
 </div>
@@ -8,4 +8,5 @@
 @code {
     [Parameter] public RenderFragment ChildContent { get; set; }
     [Parameter] public string Text { get; set; }
+    [Parameter] public bool ButtonStyling { get; set; } = true;
 }

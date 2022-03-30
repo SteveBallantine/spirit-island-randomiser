@@ -1,8 +1,18 @@
 .tooltip-wrapper {
     position: relative;
     display: inline-block;
+}
+.button-style {
     border-bottom: 1px solid black;
     cursor: help;
+    background-color: rgb(196, 196, 196);
+    padding: 0px 10px 0px 10px;
+    border-radius: 20px;
+    margin-left: 5px;
+}
+
+.tooltip-wrapper:hover span {
+    visibility: visible;
 }
 
 span {
@@ -51,15 +61,4 @@ span::after {
     {
         display: none;
     }
-}
-
-.tooltip-wrapper {
-    background-color: rgb(196, 196, 196);
-    padding: 0px 10px 0px 10px;
-    border-radius: 20px;
-    margin-left: 5px;
-}
-
-.tooltip-wrapper:hover span {
-    visibility: visible;
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.JSInterop;
@@ -20,6 +21,8 @@ namespace SiRandomizer.Services
 
         public Presets Presets { get; private set; }
 
+        public event EventHandler RefreshRequired;
+
         public PresetService(IJSRuntime jsRuntime,
             ConfigurationService configService)
         {
@@ -39,36 +42,6 @@ namespace SiRandomizer.Services
             }
 
             await SavePresetAsync(Presets.Current);
-        }
-
-        /// <summary>
-        /// Saves the configuration of the current preset, loads the specified one and updates 
-        /// the current configruation with it.
-        /// </summary>
-        /// <param name="preset"></param>
-        /// <returns></returns>
-        public async Task SetPresetAsync(string preset, bool saveCurrentConfig = true)
-        {
-            if(Presets == null)
-            {
-                throw new Exception("Not initialised yet");
-            }
-
-            // Save the current configuration
-            if(saveCurrentConfig)
-            {
-                await SavePresetAsync(Presets.Current);
-            }
-            if(Presets.Available.Contains(preset) == false)
-            {
-                throw new ArgumentException($"'{preset}' is not an available preset", nameof(preset));
-            }
-            // Change the current preset
-            Presets.Current = preset;
-            await SavePresetsAsync();
-            // Load the configuration for the new preset
-            var savedConfig = await LoadPresetAsync();
-            _configService.Current.TakeSettingsFrom(savedConfig);
         }
         
         /// <summary>
@@ -97,7 +70,7 @@ namespace SiRandomizer.Services
             }
 
             // Change the current preset to the new one
-            await SetPresetAsync(preset);
+            Presets.Current = preset;
         }
 
         /// <summary>
@@ -124,7 +97,7 @@ namespace SiRandomizer.Services
             // that is not the one we're deleting.
             if(Presets.Current == preset)
             {                
-                await SetPresetAsync(Presets.Available.First(p => p != preset), false);
+                Presets.Current = Presets.Available.First(p => p != preset);
             }
             // Remove the preset from the list and save the changes.
             Presets.Available.Remove(preset);
@@ -163,8 +136,47 @@ namespace SiRandomizer.Services
                 };
             }
             Presets = result;
+            Presets.PropertyChanging += PresetsChangingAsync;
+            Presets.PropertyChanged += PresetsChangedAsync;
 
-            await SetPresetAsync(result.Current, false);
+            // Load the configuration for the current preset
+            var savedConfig = await LoadPresetAsync();
+            _configService.Current.TakeSettingsFrom(savedConfig);
+        }
+
+        public async void PresetsChangingAsync(object sender, PropertyChangedEventArgs args) 
+        {
+            // If the current preset is changing then save the current configuration before it's updated.
+            if(args.PropertyName == nameof(Presets.Current)) 
+            {                
+                // Save the current configuration
+                if(string.IsNullOrEmpty(Presets.Current) == false)
+                {
+                    await SavePresetAsync(Presets.Current);
+                }
+            }
+        }
+
+        public async void PresetsChangedAsync(object sender, PropertyChangedEventArgs args) 
+        {
+            // If the current preset has changed then update the configuration to reflect this.
+            if(args.PropertyName == nameof(Presets.Current)) 
+            {
+                // Save the name of the preset as the current one
+                await SavePresetsAsync();
+                // Load the configuration for the preset
+                var savedConfig = await LoadPresetAsync();
+                _configService.Current.TakeSettingsFrom(savedConfig);
+                OnRefreshRequired();
+            }
+        }
+
+        private void OnRefreshRequired()
+        {
+            if(RefreshRequired != null) 
+            {
+                RefreshRequired.Invoke(this, null);
+            }
         }
 
         /// <summary>
