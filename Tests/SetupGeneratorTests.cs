@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace SiRandomizer.tests
 {
@@ -18,7 +19,8 @@ namespace SiRandomizer.tests
         [TestInitialize]
         public void Init()
         {
-            _generator = new SetupGenerator();
+            var loggerFactory = new LoggerFactory();
+            _generator = new SetupGenerator(loggerFactory.CreateLogger<SetupGenerator>());
             _config = new ConfigurationService().CreateConfiguration();
         }
 
@@ -162,24 +164,21 @@ namespace SiRandomizer.tests
         [DataTestMethod]
         // We allow the use of random thematic boards to be determined randomly.
         // This means that there are:
-        // - 2 possible board combinations (NE. or NW.)
-        [DataRow(OptionChoice.Allow, 2)]
+        // - 4 possible board combinations (NE., E., W. or NW.)
+        [DataRow(OptionChoice.Allow, 4)]
         // We block the use of random thematic boards.
         // This means that there are:
         // - 1 possible board combinations (NE.)
         [DataRow(OptionChoice.Block, 1)]
         // We force the use of random thematic boards.
         // This means that there are:
-        // - 2 possible board combinations (NE. or NW.)
-        [DataRow(OptionChoice.Force, 2)]
+        // - 4 possible board combinations (NE., E., W. or NW.)
+        [DataRow(OptionChoice.Force, 4)]
         public void Generate_RandomThematic(
             OptionChoice randomThematicChoice, 
             int expectedBoardOptions)
         {
             SetupMinimalOptions(true);
-            // Need to add board NW. to give the random option 
-            // something to pick from.
-            _config.Boards[Board.NWest].Selected = true;
             _config.RandomThematicBoards = randomThematicChoice;
 
             List<SetupResult> setups = new List<SetupResult>();
