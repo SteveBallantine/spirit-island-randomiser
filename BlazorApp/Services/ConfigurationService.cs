@@ -62,7 +62,7 @@ namespace SiRandomizer.Services
             scenarios.Add(new Scenario(Scenario.DahanInsurrection, config, null, 4));
             scenarios.Add(new Scenario(Scenario.SecondWave, config, expansions[Expansion.BranchAndClaw], 1));
             scenarios.Add(new Scenario(Scenario.PowersLongForgotten, config, expansions[Expansion.BranchAndClaw], 2));
-            scenarios.Add(new Scenario(Scenario.WardTheShores, config, expansions[Expansion.BranchAndClaw], 3));
+            scenarios.Add(new Scenario(Scenario.WardTheShores, config, expansions[Expansion.BranchAndClaw], 2));
             scenarios.Add(new Scenario(Scenario.RitualsOfTheDestroyingFlame, config, expansions[Expansion.BranchAndClaw], 3));
             scenarios.Add(new Scenario(Scenario.ElementalInvocation, config, expansions[Expansion.JaggedEarth], 1));
             scenarios.Add(new Scenario(Scenario.DespicableTheft, config, expansions[Expansion.JaggedEarth], 2));
