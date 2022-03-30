@@ -1,0 +1,88 @@
+@inject PresetService PresetService
+
+@if(PresetService.Presets == null)
+{
+    <span>Loading...</span>
+}
+else 
+{
+    <div class="container slim">
+        <div class="row slim">
+            <div class="col-3">
+                <InputSelect @bind-Value="@PresetService.Presets.Current">
+                    @foreach (var preset in PresetService.Presets.Available)
+                    {
+                        <option value="@preset">@preset</option>
+                    }
+                </InputSelect>
+                <button type="button" @onclick="ShowNewPreset">
+                    <Tooltip Text="Add new preset" ButtonStyling=false Small=true>
+                        <i class="fa-solid fa-square-plus preset-add-new"></i>
+                    </Tooltip>
+                </button>
+                <button type="button" @onclick="() => DeleteAsync(PresetService.Presets.Current)">
+                    <Tooltip Text="Delete current preset" ButtonStyling=false Small=true>
+                        <i class="fa fa-trash preset-delete show"></i>
+                    </Tooltip>
+                </button>
+            </div>
+            @if(ShowAdd)
+            {
+                <div class="col-5">
+                    <label>New preset name:
+                        <InputText @bind-Value="NewPresetName"></InputText>
+                    </label>
+                </div>
+                <div class="col-4">
+                    <label>Populate from current:
+                        <InputCheckbox @bind-Value="NewPresetFromCurrent"></InputCheckbox>
+                    </label>
+                    <button type="button" @onclick="SaveNewPresetAsync">
+                        <Tooltip Text="Create new preset" ButtonStyling=false Small=true>
+                            <i class="fa-solid fa-floppy-disk preset-save-new"></i>
+                        </Tooltip>
+                    </button>
+                    <button type="button" @onclick="CloseNewPreset">
+                        <Tooltip Text="Cancel new preset" ButtonStyling=false Small=true>
+                            <i class="fa-solid fa-xmark preset-close-new"></i>
+                        </Tooltip>
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+
+    private bool ShowAdd = false;
+    private string NewPresetName = "";
+    private bool NewPresetFromCurrent = false;
+
+    private async Task DeleteAsync(string preset)
+    {
+        // Remove the specified preset
+        await PresetService.RemovePresetAsync(preset);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SaveNewPresetAsync()
+    {
+        ShowAdd = false;
+        await PresetService.AddPresetAsync(NewPresetName, NewPresetFromCurrent);
+        await InvokeAsync(StateHasChanged);
+    }
+    
+    private void ShowNewPreset()
+    {
+        ShowAdd = true;
+        NewPresetName = "";
+        NewPresetFromCurrent = false;
+    }
+
+    private void CloseNewPreset()
+    {
+        ShowAdd = false;
+    }
+
+}

@@ -43,6 +43,13 @@ namespace SiRandomizer.Services
             { 6, 7, 10, 10, 6, 1 }
         };
 
+        private ILogger<SetupGenerator> _logger;
+
+        public SetupGenerator(ILogger<SetupGenerator> logger)
+        {
+            _logger = logger;
+        }
+
         public SetupResult Generate(OverallConfiguration config) 
         {
             // Get possible setups based on included options and min/max difficulty.
@@ -71,6 +78,10 @@ namespace SiRandomizer.Services
             
             // Get a set of boards to match the number of spirits + any additional boards
             var boards = GetBoards(config, setup, out long boardCombinations).ToList();
+            if(boards.Count < config.Players + setup.AdditionalBoards) 
+            {
+                throw new SiException("Failed to get the expected number of boards");
+            }
 
             // Randomise spirit/board combos
             setup.BoardSetups = GetBoardSetups(boards, aspects).ToList();
@@ -112,7 +123,9 @@ namespace SiRandomizer.Services
             if(gameSetup.Map.Thematic) 
             {
                 var thematicBoards = config.Boards
-                    .Where(b => b.Thematic && b.Selected).ToList();
+                    .Where(b => b.Thematic && b.IsAvailable()).ToList();
+
+                _logger.LogDebug($"Selecting thematic boards from: {string.Join(",", thematicBoards.Select(b => b.Name))}");
 
                 Func<int> GetNonDefinitiveCombinations = () =>
                 {    
@@ -152,6 +165,7 @@ namespace SiRandomizer.Services
 
                 if(useDefinitiveBoards) 
                 {
+                    _logger.LogDebug($"Using definitive thematic boards for a count of {totalBoards}");
                     // We use the 'definitive' thematic boards based on the number of boards needed.
                     selectedBoards = thematicBoards
                         .Where(b => b.ThematicDefinitivePlayerCounts
@@ -159,6 +173,11 @@ namespace SiRandomizer.Services
                 }
                 else 
                 {
+                    // As we're randomising the boards, only include the boards that were 
+                    // actually selected.
+                    thematicBoards = thematicBoards.Where(b => b.Selected).ToList();
+
+                    _logger.LogDebug("Using random thematic boards");
                     // We're allowed to use any thematic boards. However, the
                     // boards we pick need to be neighbouring ones. So start by 
                     // picking one at random, then repeatedly pick a random 
@@ -187,6 +206,8 @@ namespace SiRandomizer.Services
             }
             else 
             {
+                _logger.LogDebug("Selecting arcade boards");
+
                 var possibleBoards = config.Boards
                     .Where(b => b.Thematic == false && b.Selected);
                 // Get the total board combinations by adding the number of combinations
@@ -230,6 +251,7 @@ namespace SiRandomizer.Services
                 }
             }
 
+            _logger.LogDebug($"Selected boards: {string.Join(", ", selectedBoards.Select(b => b.Name))}");
             return selectedBoards;
         }
 

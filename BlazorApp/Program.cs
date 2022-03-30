@@ -7,8 +7,14 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+builder.Logging.SetMinimumLevel(LogLevel.Warning);
+#if(DEBUG)
+builder.Logging.AddFilter("SiRandomizer", LogLevel.Debug);
+#endif
+
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddSingleton<SetupGenerator>();
+builder.Services.AddSingleton<PresetService>();
 
 await builder.Build().RunAsync();

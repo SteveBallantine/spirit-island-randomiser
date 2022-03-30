@@ -19,7 +19,7 @@ namespace SiRandomizer.tests
         public void Init()
         {
             _generator = new SetupGenerator();
-            _config = new ConfigurationService().GetConfigurationAsync().Result;
+            _config = new ConfigurationService().CreateConfiguration();
         }
 
         private void SetupMinimalOptions(bool thematic)
@@ -66,7 +66,7 @@ namespace SiRandomizer.tests
         [ExpectedException(typeof(SiException))]
         public void Generate_NoneSelected()
         {
-            OverallConfiguration config = new ConfigurationService().GetConfigurationAsync().Result;          
+            OverallConfiguration config = new ConfigurationService().CreateConfiguration();          
             _generator.Generate(config);
         }
 

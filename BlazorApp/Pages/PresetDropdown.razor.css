@@ -1,0 +1,15 @@
+.preset-add-new {
+    color: green;
+}
+
+.preset-delete {
+    color: red;
+}
+
+.preset-save-new {
+    color: blue;
+}
+
+.preset-close-new {
+    color: red;
+}
