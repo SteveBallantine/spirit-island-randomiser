@@ -20,11 +20,14 @@ else
                         <i class="fa-solid fa-square-plus preset-add-new"></i>
                     </Tooltip>
                 </button>
-                <button type="button" @onclick="() => DeleteAsync(PresetService.Presets.Current)">
-                    <Tooltip Text="Delete current preset" ButtonStyling=false Small=true>
-                        <i class="fa fa-trash preset-delete show"></i>
-                    </Tooltip>
-                </button>
+                @if(PresetService.Presets.Available.Count > 1)
+                {
+                    <button type="button" @onclick="() => DeleteAsync(PresetService.Presets.Current)">
+                        <Tooltip Text="Delete current preset" ButtonStyling=false Small=true>
+                            <i class="fa fa-trash preset-delete show"></i>
+                        </Tooltip>
+                    </button>
+                }
             </div>
             @if(ShowAdd)
             {
