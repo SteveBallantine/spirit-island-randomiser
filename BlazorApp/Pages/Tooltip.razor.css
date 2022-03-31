@@ -50,6 +50,20 @@ span.small {
     {        
         width: 150px;
     }
+    
+}
+
+@media (pointer:coarse) {
+    /* On touch screens, only show tool tips that are using 'button-style'
+    * This is because tooltips that are actually on button elements do not
+    * behave correctly on touch screens.
+    */
+    .tooltip-wrapper:hover span {
+        visibility: hidden;
+    }
+    .tooltip-wrapper.button-style:hover span {
+        visibility: visible;
+    }
 }
 
 span::after {
