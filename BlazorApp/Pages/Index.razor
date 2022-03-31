@@ -108,6 +108,14 @@ else if (setup == null)
                                         }
                                     </InputSelect> Imbalanced Arcade Boards <Tooltip Text="Certain boards that come with Jagged Earth are recommended not to be used with specific other boards for games using <= 4 boards. This website respects that recommendation by default, but changing this option to Allow or Force will ignore it and allow imbalanced arcade boards to be selected together. This can result in a slightly 'swingy' game dependent on the invader cards you draw.">?</Tooltip>
                                 </div>
+                                <div class="col-6">
+                                    <InputSelect @bind-Value="@config.Aspects" >                            
+                                        @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
+                                        {                                
+                                            <option value="@choice">@choice</option> 
+                                        }
+                                    </InputSelect> Aspects <Tooltip Text="Control the selection of aspects en-masse with this option. Allow gives you full control. Block means only the base aspect will ever be selected. Force means that the base aspect will never be selected.">?</Tooltip>
+                                </div>
                             </div>
                         </div>
                     </Body>

@@ -59,17 +59,65 @@ namespace SiRandomizer.Data
 
         public override bool IsVisible()
         {
+            bool result = false;
             // Never show the base aspect if it is the only one available.
-            return IsBaseAspect && IsSingleAspectSpirit ? false : 
-                Parent.IsVisible() && base.IsVisible();
+            if((IsBaseAspect && IsSingleAspectSpirit) == false)
+            {
+                switch (Config?.Aspects ?? OptionChoice.Allow)
+                {
+                    case OptionChoice.Allow:
+                        // Show aspect if spirit is visible and the base requirements are met
+                        // (i.e. Relevant expansion is selected.)
+                        result = Parent.IsVisible() && base.IsVisible();
+                        break;
+                    case OptionChoice.Force:
+                        // Same logic as allow, except that base is never shown.
+                        result = Parent.IsVisible() && base.IsVisible() && IsBaseAspect == false;
+                        break;
+                    case OptionChoice.Block:
+                        // Aspects are blocked so never show them.
+                        result = false;
+                        break;
+                }
+            }
+
+            return result;
         }
 
         public override bool Selected 
         { 
             // Base aspect is always considered selected if the parent is a 
             // single aspect spirit (and the parent is selected).
-            get => IsBaseAspect && IsSingleAspectSpirit ? Parent.Selected : 
-                Parent.Selected && base.Selected; 
+            get
+            {
+                bool result = false;
+                if(IsBaseAspect && IsSingleAspectSpirit) 
+                {
+                    result = Parent.Selected;
+                } 
+                else 
+                {
+                    switch (Config?.Aspects ?? OptionChoice.Allow)
+                    {
+                        case OptionChoice.Allow:
+                            // Aspect is only selected if both the spirit and aspect are selected.
+                            result = Parent.Selected && base.Selected;
+                            break;
+                        case OptionChoice.Force:
+                            // Same logic as 'allow', except that base aspects are never considered selected.
+                            // (Remebmer that if it's a single aspect spirit, the initial 'if' statement will
+                            // mean that the base aspect is selected as it's the only one available!)
+                            result = Parent.Selected && base.Selected && !IsBaseAspect;
+                            break;
+                        case OptionChoice.Block:
+                            // Aspects are blocked so only the base aspect is ever selected and it must 
+                            // always be selected.
+                            result = IsBaseAspect;
+                            break;
+                    }
+                }
+                return result;
+            } 
             set => base.Selected = value; 
         }
         

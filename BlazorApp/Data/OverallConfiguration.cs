@@ -32,6 +32,7 @@ namespace SiRandomizer.Data
         public OptionChoice CombinedAdversaries {get;set;} = OptionChoice.Block;
         public OptionChoice RandomThematicBoards {get;set;} = OptionChoice.Block;
         public OptionChoice ImbalancedArcadeBoards {get;set;} = OptionChoice.Block;
+        public OptionChoice Aspects {get;set;} = OptionChoice.Allow;
 
         [JsonIgnore]
         public int MaxAdditionalBoards 
@@ -76,6 +77,7 @@ namespace SiRandomizer.Data
             this.Players = other.Players;
             this.RandomThematicBoards = other.RandomThematicBoards;
             this.ImbalancedArcadeBoards = other.ImbalancedArcadeBoards;
+            this.Aspects = other.Aspects;
 
             TakeSettingsFrom(Expansions, other.Expansions);
             // Adversaries is a collection (of AdversaryLevels) so need to specify
