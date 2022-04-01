@@ -1,0 +1,24 @@
+.warning {
+    margin: 4px;
+    background-color:lightgoldenrodyellow;
+    border: 1px solid orange;
+    border-radius: 5px;    
+    display: none;
+}
+.warning.show {
+    display: flex;
+}
+
+.dismiss {
+    margin-right: 0.5em;
+}
+
+.fa-xmark {
+    color: #cc5500;
+}
+
+.message {
+    margin-left: 0.5em;
+    flex-grow: 1;
+    color: #cc5500;
+}

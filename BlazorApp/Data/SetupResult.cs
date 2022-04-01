@@ -10,6 +10,7 @@ namespace SiRandomizer.Data
         public GameSetup Setup { get; set; }
         public long DifficultyOptionsConsidered { get; set; }
         public long BoardSetupOptionsConsidered { get; set; }
+        public bool ShowRandomThematicWarning { get; set; }
 
         public bool ShowInstructionsAdditionalBoard =>
             Setup.BoardSetups.Any(b => b.SpiritAspect == null);
@@ -22,5 +23,6 @@ namespace SiRandomizer.Data
             ShowInstructionsAdditionalAdversary ||
             ShowInstructionsAdditionalBoard ||
             ShowInstructionsArchipelago;
+
     }
 }

@@ -1,0 +1,32 @@
+@inject IJSRuntime jsRuntime;
+
+<div class="warning @(show ? "show" : "")">
+    <div class="message">
+        @ChildContent
+    </div>
+    <div class="dismiss">        
+        <i class="fa-solid fa-xmark" @onclick="DismissAsync"></i>
+    </div>
+</div>
+
+@code {
+    [Parameter] 
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public string StorageName { get; set; }
+    
+    private bool show;
+    private const string DismissedStorageText = "dismissed";
+
+    private async Task DismissAsync()
+    { 
+        show = false;
+        await jsRuntime.InvokeVoidAsync("localStorage.setItem", StorageName, DismissedStorageText); 
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var value = await jsRuntime.InvokeAsync<string>("localStorage.getItem", StorageName);
+        show = string.IsNullOrEmpty(value) || value != DismissedStorageText;
+    }
+}

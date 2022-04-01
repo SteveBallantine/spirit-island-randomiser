@@ -90,7 +90,8 @@ namespace SiRandomizer.Services
                 Setup = setup,
                 DifficultyOptionsConsidered = setups.Count(),
                 BoardSetupOptionsConsidered = 
-                    spiritCombinations * boardCombinations
+                    spiritCombinations * boardCombinations,
+                ShowRandomThematicWarning = config.RandomThematicBoards == OptionChoice.Block
             };
         }
 

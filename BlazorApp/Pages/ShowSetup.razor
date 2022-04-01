@@ -47,7 +47,13 @@
                     {
                         <span class="si-tag">+@setup.Setup.Map.DifficultyModifier</span>
                     }
-                    <br>
+                    <br>                    
+                }
+                @if(setup.ShowRandomThematicWarning)
+                {
+                    <Warning StorageName="thematic-board-warning">
+                        Warning: The 'random thematic boards' setting is set to block. This means that the same 'definitive' thematic boards will always be selected based on the number of boards needed, as described in the Spirit Island rulebook (Gameplay Options -> Thematic Map).
+                    </Warning>
                 }
             </Body>
         </Panel>
