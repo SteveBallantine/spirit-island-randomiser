@@ -38,6 +38,8 @@ namespace SiRandomizer.Services
             expansions.Add(new Expansion(Expansion.JaggedEarth, config, "JE"));
             expansions.Add(new Expansion(Expansion.Promo1, config, "P1"));
             expansions.Add(new Expansion(Expansion.Promo2, config, "P2"));
+            expansions.Add(new Expansion(Expansion.Horizons, config, "HS"));
+            //expansions.Add(new Expansion(Expansion.NatureIncarnate, config, "NI"));
             expansions.Add(new Expansion(Expansion.Apocrypha, config, "Ax"));
             expansions.Add(new Expansion(Expansion.Homebrew, config, "Hx"));
 
@@ -129,6 +131,12 @@ namespace SiRandomizer.Services
             spirits.Add(new Spirit(Spirit.Fractured, config, expansions[Expansion.JaggedEarth], Complexity.VeryHigh));
             // Apocrypha
             spirits.Add(new Spirit(Spirit.Rot, config, expansions[Expansion.Apocrypha], Complexity.High));
+            // Horizons
+            spirits.Add(new Spirit(Spirit.Teeth, config, expansions[Expansion.Horizons], Complexity.Low));
+            spirits.Add(new Spirit(Spirit.Whirlwind, config, expansions[Expansion.Horizons], Complexity.Low));
+            spirits.Add(new Spirit(Spirit.Heat, config, expansions[Expansion.Horizons], Complexity.Low));
+            spirits.Add(new Spirit(Spirit.Swamp, config, expansions[Expansion.Horizons], Complexity.Low));
+            spirits.Add(new Spirit(Spirit.Eyes, config, expansions[Expansion.Horizons], Complexity.Low));
             
             return spirits;
         }

@@ -30,7 +30,13 @@ namespace SiRandomizer.Data
         public const string Fractured = "Fractured Days Split the Sky";
         public const string Downpour = "Downpour Drenches the World";
         public const string Finder = "Finder of Paths Unseen";
-        public const string Rot = "Spreading Rot Renews the Earth";        
+        public const string Rot = "Spreading Rot Renews the Earth";
+        
+        public const string Teeth = "Devouring Teeth Lurk Underfoot";
+        public const string Whirlwind = "Sun-Bright Whirlwind";
+        public const string Eyes = "Eyes Watch From the Trees";
+        public const string Heat = "Rising Heat of Stone and Sand";
+        public const string Swamp = "Fathomless Mud of the Swamp";
 
         [JsonIgnore]
         public Complexity BaseComplexity {get; set;}

@@ -10,7 +10,11 @@ namespace SiRandomizer.Data
         public const string Promo1 = "Promo Pack 1";
         public const string Promo2 = "Promo Pack 2";
         public const string Apocrypha = "Apocrypha";
-        public const string Homebrew = "Homebrew";        
+        public const string Horizons = "Horizons of Spirit Island";  
+        //public const string NatureIncarnate = "Nature Incarnate";  
+        public const string Homebrew = "Homebrew";  
+
+              
         
         [JsonIgnore]
         public string Tag { get; private set; }

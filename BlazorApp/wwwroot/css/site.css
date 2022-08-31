@@ -98,6 +98,9 @@ table {
 .expansion-tag-P2 {
     background-color: rgb(223, 102, 223);
 }
+.expansion-tag-HS {
+    background-color: rgb(233, 169, 73);
+}
 
 .child-item {
     padding-left: 16px;
