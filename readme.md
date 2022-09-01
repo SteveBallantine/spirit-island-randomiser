@@ -16,3 +16,12 @@ The purpose of this app is to experiment with Blazor in a 'real world' scenario 
 - Move tooltip text to a more suitable location (code-wise).
 - Add tests and ensure invalid edge cases are handled correctly (e.g. 'no adversary' is not selected, but secondary adversary is 'blocked')
 - Bug - Select all expansions. Select lightning - all aspects are selected. Deselect 'Base'. Deselect 'Promo 2' and 'Jagged Earth' then reselect them. Lightning is still selected, but none of it's aspects are.
+
+# Developing
+
+To run locally, navigate to BlazorApp directory and execute
+```
+dotnet run
+```
+
+Then, open browser to indicated url (default is http://localhost:5000)

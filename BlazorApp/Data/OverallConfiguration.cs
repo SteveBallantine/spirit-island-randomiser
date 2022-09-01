@@ -28,8 +28,13 @@ namespace SiRandomizer.Data
         [Range(0, 20, ErrorMessage = "Maximum difficulty must be 0 - 20")]
         public int MaxDifficulty {get;set;}
 
-        public OptionChoice AdditionalBoard  {get;set;} = OptionChoice.Block;
-        public OptionChoice CombinedAdversaries {get;set;} = OptionChoice.Block;
+        [Range(0, 100, ErrorMessage = "Additional board chance must be 0 - 100")]
+        public int AdditionalBoardChance {get;set;} = 50;
+        [Range(0, 100, ErrorMessage = "Combined adversaries chance must be 0 - 100")]
+        public int CombinedAdversariesChance {get;set;} = 50;
+        
+        public OptionChoice AdditionalBoard  {get;set;} = OptionChoice.Allow;
+        public OptionChoice CombinedAdversaries {get;set;} = OptionChoice.Allow;
         public OptionChoice RandomThematicBoards {get;set;} = OptionChoice.Block;
         public OptionChoice ImbalancedArcadeBoards {get;set;} = OptionChoice.Block;
         public OptionChoice Aspects {get;set;} = OptionChoice.Allow;
@@ -69,9 +74,37 @@ namespace SiRandomizer.Data
         /// </summary>
         /// <param name="other"></param>
         public void TakeSettingsFrom(OverallConfiguration other)
-        {
-            this.AdditionalBoard = other.AdditionalBoard;
-            this.CombinedAdversaries = other.CombinedAdversaries;
+        {            
+            this.AdditionalBoardChance = other.AdditionalBoardChance;
+            this.CombinedAdversariesChance = other.CombinedAdversariesChance;
+
+            // In future, AdditionalBoard and CombinedAdversaries will always be 'Allow'.
+            // If the user has a different value, then migrate it by setting the corresponding 'Chance' value instead.
+            switch (other.AdditionalBoard)
+            {
+                case OptionChoice.Force:
+                    this.AdditionalBoardChance = 100;
+                    break;
+                case OptionChoice.Block:
+                    this.AdditionalBoardChance = 0;
+                    break;
+                case OptionChoice.Allow:
+                default:
+                    break;
+            }
+            switch (other.CombinedAdversaries)
+            {
+                case OptionChoice.Force:
+                    this.CombinedAdversariesChance = 100;
+                    break;
+                case OptionChoice.Block:
+                    this.CombinedAdversariesChance = 0;
+                    break;
+                case OptionChoice.Allow:
+                default:
+                    break;
+            }
+            
             this.MaxDifficulty = other.MaxDifficulty;
             this.MinDifficulty = other.MinDifficulty;
             this.Players = other.Players;

@@ -75,14 +75,12 @@ else if (setup == null)
                         <div class="container slim">
                             <div class="row slim">
                                 <div class="col-6">
-                                    <label>
-                                    <InputSelect @bind-Value="@config.CombinedAdversaries" >
-                                        @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
-                                        {                                
-                                            <option value="@choice">@choice</option>
-                                        }
-                                    </InputSelect> Combined Adversaries <Tooltip Text="Control the addition of a second adversary in combination with the first. This is an additional setup option described in the Jagged Earth rule book. It suggests that the second adversary contributes 50%-75% of its full difficulty. We need a definite figure, so 60% is used. This is then rounded to the nearest whole number.">?</Tooltip>
-                                    </label>
+                                    <span>Second Adversary Chance (0-100%) <InputNumber class="numeric-3" @bind-Value=config.CombinedAdversariesChance/></span>
+                                    <Tooltip Text="Control the addition of a second adversary in combination with the first. This is an additional setup option described in the Jagged Earth rule book. It suggests that the second adversary contributes 50%-75% of its full difficulty. We need a definite figure, so 60% is used. This is then rounded to the nearest whole number.">?</Tooltip>
+                                </div>
+                                <div class="col-6">
+                                    <span>Additional Board Chance (0-100%) <InputNumber class="numeric-3" @bind-Value=config.AdditionalBoardChance/></span>
+                                    <Tooltip Text="Controls the addition of an extra board. This is an additional setup option described in the Jagged Earth rule book. It suggests the extra board adds rougly '+2 at difficulty 0, +3 at difficulty 3 and +4 at difficulty 6'. To be precise, the algorithm used here adds 2 for difficulty <= 1, 3 for difficulty <= 4 and 4 otherwise.">?</Tooltip>
                                 </div>
                                 <div class="col-6">
                                     <InputSelect @bind-Value="@config.RandomThematicBoards" >                            
@@ -91,14 +89,6 @@ else if (setup == null)
                                             <option value="@choice">@choice</option>
                                         }
                                     </InputSelect> Random Thematic Boards <Tooltip Text="The thematic boards have specific recommended boards for each number of players in order to provide the 'definitive' experience. This option allows you to fully randomise selection of thematic boards (with the caveat that invalid combinations such as West + North East will not be selected). This can result in a very 'swingy' game dependent on the invader cards you draw.">?</Tooltip>
-                                </div>
-                                <div class="col-6">
-                                    <InputSelect @bind-Value="@config.AdditionalBoard" >                            
-                                        @foreach (var choice in Enum.GetValues(typeof(OptionChoice)))
-                                        {                                
-                                            <option value="@choice">@choice</option> 
-                                        }
-                                    </InputSelect> Additional Board <Tooltip Text="Controls the addition of an extra board. This is an additional setup option described in the Jagged Earth rule book. It suggests the extra board adds rougly '+2 at difficulty 0, +3 at difficulty 3 and +4 at difficulty 6'. To be precise, the algorithm used here adds 2 for difficulty <= 1, 3 for difficulty <= 4 and 4 otherwise">?</Tooltip>
                                 </div>
                                 <div class="col-6">
                                     <InputSelect @bind-Value="@config.ImbalancedArcadeBoards" >                            

@@ -73,6 +73,9 @@ h4 {
 .numeric-2 {
     max-width: 5ch;
 }
+.numeric-3 {
+    max-width: 7ch;
+}
 
 table {
     table-layout: fixed;
