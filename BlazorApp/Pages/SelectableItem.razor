@@ -10,6 +10,11 @@
 @if(Item is IDifficultyModifier difficultyMod) {
     <span class="si-tag">+@difficultyMod.DifficultyModifier</span>
 }
+@if(Item.Deletable) {
+    <button class="item-delete-button" type="button" @onclick="() => DeleteItemCallback.InvokeAsync(Item.Name)">
+        <i class="fa fa-trash item-delete show"></i>
+    </button>
+}
 @if(children != null && children.Count > 0) {
     <div class="container slim">
         <div class="row slim">
@@ -46,6 +51,9 @@
         get { return values; } 
     }
 
+    [Parameter]
+    public EventCallback<string> DeleteItemCallback { get; set; }
+
     private INamedComponent values;
-    private List<INamedComponent> children;        
+    private List<INamedComponent> children;
 }

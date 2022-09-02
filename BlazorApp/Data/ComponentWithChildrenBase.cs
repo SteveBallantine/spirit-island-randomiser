@@ -57,6 +57,23 @@ namespace SiRandomizer.Data
             entry.PropertyChanged += ChildUpdated;
         }
         
+        /// <summary>
+        /// Remove the specified item from the list of children if it exists
+        /// </summary>
+        /// <param name="name"></param>
+        public void Remove(string name)
+        {
+            if(_children.TryGetValue(name, out var entry))
+            {
+                entry.PropertyChanged -= ChildUpdated;  
+                if(entry is IComponentWithParent<TParent> child) 
+                {
+                    child.Parent = null;
+                } 
+                _children.Remove(name);
+            } 
+        }
+
         public void ChildUpdated (object sender, PropertyChangedEventArgs args) {
             // When child is updated, trigger the property changed
             // event on the group.
@@ -84,5 +101,16 @@ namespace SiRandomizer.Data
         {
             return _children.Values.GetEnumerator();
         }
+
+        /// <summary>
+        /// Return true if there is a child item with the specified name. False if not.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool HasChild(string name)
+        {
+            return _children.ContainsKey(name);
+        }
+
     }
 }

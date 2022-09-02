@@ -118,6 +118,8 @@ else if (setup == null)
                 <CascadingValue Value="config.Spirits" Name="Group">
                     <SelectableGroup T=Spirit />
                 </CascadingValue>
+                <InputText placeholder="Spirit to Add" @bind-Value="newSpirit"></InputText>
+                <button type="button" @onclick="AddSpirit">Add Homebrew Spirit</button>
             </div>
         </div>
         
@@ -190,6 +192,7 @@ else
     private OverallConfiguration config;
     private SetupResult setup;
     private string Error;
+    private string newSpirit;
 
     private const string StorageName = "si-randomizer-config";
     private const string StorageNamePresets = "si-randomizer-presets";
@@ -235,6 +238,20 @@ else
     protected void ClearSetup()
     {
         setup = null;
+    }
+
+    /// <summary>
+    /// Create a new homebrew spirit and add it to the list.
+    /// </summary>
+    private void AddSpirit()
+    {
+        if(string.IsNullOrWhiteSpace(newSpirit) == false &&
+            config.Spirits.HasChild(newSpirit) == false)
+        {
+            var spirit = new Spirit(newSpirit, config, config.Expansions[Expansion.Homebrew], Complexity.Unspecified);
+            spirit.Deletable = true;
+            config.Spirits.Add(spirit);
+        }
     }
 }
 

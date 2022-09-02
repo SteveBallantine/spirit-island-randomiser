@@ -125,7 +125,7 @@ namespace SiRandomizer.Data
             TakeSettingsFrom(Boards, other.Boards);
             TakeSettingsFrom(Maps, other.Maps);
             TakeSettingsFrom(Scenarios, other.Scenarios);
-            TakeSettingsFrom<Spirit, SpiritAspect>(Spirits, other.Spirits);
+            TakeSettingsFrom<Spirit, SpiritAspect>(Spirits, other.Spirits, SpiritFactory);
         }
 
         private void TakeSettingsFrom<TItem>(
@@ -142,7 +142,8 @@ namespace SiRandomizer.Data
 
         private void TakeSettingsFrom<TItem, TChild>(
             IComponentCollection<TItem> destination, 
-            IComponentCollection<TItem> source)
+            IComponentCollection<TItem> source,
+            Func<TItem, TItem> itemFactory = null)
             where TItem : INamedComponent
             where TChild : INamedComponent
         {
@@ -153,16 +154,60 @@ namespace SiRandomizer.Data
                 destination.Selected = source.Selected;
                 foreach(var sourceItem in source)
                 {         
-                    var destinationItem = destination.Single(i => i.Name == sourceItem.Name);       
-                    destinationItem.Selected = sourceItem.Selected;
-                    if(itemsAreCollections)
+                    if(destination.HasChild(sourceItem.Name) == false)
                     {
-                        TakeSettingsFrom(
-                            destinationItem as IComponentCollection<TChild>, 
-                            sourceItem as IComponentCollection<TChild>);
+                        if(itemFactory == null) 
+                        {
+                            throw new Exception($"No item factory specified for '{typeof(TItem).Name}'");
+                        }
+                        // The default list does not include this item, so create and add it.
+                        destination.Add(itemFactory(sourceItem));
+                    }
+                    else 
+                    {
+                        // The default list does include this item so get the 'selected' status.
+                        var destinationItem = destination.Single(i => i.Name == sourceItem.Name);       
+                        destinationItem.Selected = sourceItem.Selected;
+                        if(itemsAreCollections)
+                        {
+                            // Repeat for any children.
+                            TakeSettingsFrom(
+                                destinationItem as IComponentCollection<TChild>, 
+                                sourceItem as IComponentCollection<TChild>);
+                        }
                     }
                 }
+
+                // Remove any items that are in the source but not the destination.
+                // (e.g. this can happen if you have a preset (A) with homebrew spirits and another (B) without.
+                // when you switch from A to B, we need to remove those additional spirits.)
+                var notInSource = destination.Where(i => source.Any(j => j.Name == i.Name) == false);
+                foreach(var item in notInSource)
+                {
+                    destination.Remove(item.Name);
+                }
             }
+        }
+
+        /// <summary>
+        /// Duplicates a spirit using this configuation object as the new instance's parent.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        private Spirit SpiritFactory(Spirit source)
+        {
+            var spirit = new Spirit(source.Name, this, Expansions[Expansion.Homebrew], source.BaseComplexity);
+            spirit.Deletable = true;
+            foreach(var aspect in spirit) 
+            {
+                if(spirit.HasChild(aspect.Name) == false) 
+                {
+                    var newAspect = new SpiritAspect(aspect.Name, this, Expansions[Expansion.Homebrew]);
+                    aspect.Deletable = true;
+                    spirit.Add(newAspect);
+                }
+            }
+            return spirit;
         }
 
         public string ScenariosPanelClass = "";

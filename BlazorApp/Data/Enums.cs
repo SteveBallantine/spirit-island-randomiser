@@ -6,7 +6,8 @@ namespace SiRandomizer.Data
         Low,
         Moderate,
         High,
-        VeryHigh
+        VeryHigh,
+        Unspecified
     }
 
     public enum OptionChoice

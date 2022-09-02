@@ -60,6 +60,8 @@ namespace SiRandomizer.Data
 
         public string Name { get; set; }
 
+        public bool Deletable { get; set; } = false;
+
         private bool _selected = false;
         public virtual bool Selected 
         {

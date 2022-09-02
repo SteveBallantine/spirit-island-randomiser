@@ -6,6 +6,8 @@ namespace SiRandomizer.Data
     {
         string Name { get; }
         bool Selected { get; set; }
+
+        bool Deletable { get; set; }
         
         bool IsVisible();
     }
