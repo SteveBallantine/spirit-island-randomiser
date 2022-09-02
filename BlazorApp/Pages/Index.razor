@@ -245,6 +245,8 @@ else
     /// </summary>
     private void AddSpirit()
     {
+        // Ensure homebrew content is enabled. It's confusing if you click 'add' and nothing seems to happen!
+        config.Expansions[Expansion.Homebrew].Selected = true;
         if(string.IsNullOrWhiteSpace(newSpirit) == false &&
             config.Spirits.HasChild(newSpirit) == false)
         {
