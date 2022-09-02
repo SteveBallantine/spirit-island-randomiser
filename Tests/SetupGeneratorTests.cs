@@ -101,22 +101,23 @@ namespace SiRandomizer.tests
         /// </summary>
         [DataTestMethod]
         // We allow the inclusion of an additional board to be determined randomly.
+        // The algorithm will then consider options matching the outcome.
         // This means that there are:
-        // - 3 possible board combinations (A, B or A + B)
-        // - 2 difficulty options (with additional board or without)
-        [DataRow(OptionChoice.Allow, 3, 2, 1, 0)]
+        // - 3 possible board combinations considered (A, B or A + B)
+        // - 2 difficulty option considerd (with additional board or without)
+        [DataRow(50, 3, 2, 1, 0)]
         // We block the inclusion of an additional board.
         // This means that there are:
         // - 2 possible board combinations (A or B)
         // - 1 difficulty options (without additional board)
-        [DataRow(OptionChoice.Block, 2, 1, 0, 0)]
+        [DataRow(0, 2, 1, 0, 0)]
         // We force the inclusion of an additional board.
         // This means that there are:
         // - 1 possible board combinations (A + B)
         // - 1 difficulty options (with additional board)
-        [DataRow(OptionChoice.Force, 1, 1, 1, 1)]
+        [DataRow(100, 1, 1, 1, 1)]
         public void Generate_AdditionalBoard(
-            OptionChoice additionalBoardChoice, 
+            int additionalBoardChance, 
             int expectedBoardOptions,
             int expectedDifficultyOptions,
             int expectedMaxAdditionalBoards,
@@ -125,7 +126,7 @@ namespace SiRandomizer.tests
             SetupMinimalOptions(false);
             // Need to add board B to support the additional board option.
             _config.Boards[Board.B].Selected = true;
-            _config.AdditionalBoard = additionalBoardChoice;
+            _config.AdditionalBoardChance = additionalBoardChance;
 
             List<SetupResult> setups = new List<SetupResult>();
 
@@ -211,25 +212,25 @@ namespace SiRandomizer.tests
         // We allow the use of an additional adversary to be determined randomly.
         // Notation: E = Enagland, B = BrandenburgPrussia, N = No Adversary.
         // This means that there are:
-        // - 5 possible difficulty combinations (N, B, E, B + E, E + B)
-        [DataRow(OptionChoice.Allow, 5)]
+        // - 2 possible difficulty combinations (N, B, E or B + E, E + B)
+        [DataRow(50, new int[] { 2, 3 })]
         // We block the use of an additional adversary.
         // This means that there are:
         // - 3 possible difficulty combinations (N, B, E)
-        [DataRow(OptionChoice.Block, 3)]
+        [DataRow(0, new int[] { 3 })]
         // We force the use of an additional adversary.
         // This means that there are:
         // - 2 possible difficulty combinations (B + E, E + B)
-        [DataRow(OptionChoice.Force, 2)]
+        [DataRow(100, new int[] { 2 })]
         public void Generate_CombinedAdversaries(
-            OptionChoice combinedAdversariesChoice, 
-            int expectedDifficultyOptions)
+            int combinedAdversariesChance,
+            int[] expectedDifficultyOptions)
         {
             SetupMinimalOptions(true);
             // Slect the first level for two adversaries to allow them to be combined.
             _config.Adversaries[Adversary.BrandenburgPrussia].Levels.First().Selected = true;
             _config.Adversaries[Adversary.England].Levels.First().Selected = true;
-            _config.CombinedAdversaries = combinedAdversariesChoice;
+            _config.CombinedAdversariesChance = combinedAdversariesChance;
 
             List<SetupResult> setups = new List<SetupResult>();
 
@@ -251,9 +252,10 @@ namespace SiRandomizer.tests
                     $"Invalid adversary - {result.Setup.SupportingAdversary.Parent.Name}");
                 // Verify the number of options considered is correct.
                 Assert.AreEqual(1, result.BoardSetupOptionsConsidered);
-                Assert.AreEqual(expectedDifficultyOptions, result.DifficultyOptionsConsidered);
+                Assert.IsTrue(expectedDifficultyOptions.Contains((int)result.DifficultyOptionsConsidered));
             }
         }
+
 
         /// <summary>
         /// Generate 1000 random setups and verify that the spread of selected

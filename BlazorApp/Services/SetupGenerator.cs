@@ -52,26 +52,35 @@ namespace SiRandomizer.Services
 
         public SetupResult Generate(OverallConfiguration config) 
         {
-            // Get possible setups based on included options and min/max difficulty.
+            // Decide if we will be using an extra board or second adversary
             var useAdditionalBoard = _rng.NextDouble() <= (double)config.AdditionalBoardChance / 100;
             _logger.LogDebug($"Additional board: {useAdditionalBoard}");
             var useCombinedAdversary = _rng.NextDouble() <= (double)config.CombinedAdversariesChance / 100;
-            _logger.LogDebug($"Combined adversaries: {useCombinedAdversary}");
+            _logger.LogDebug($"Combined adversaries: {useCombinedAdversary}");            
+            if(useAdditionalBoard) {
+                config.AdditionalBoard = OptionChoice.Force;
+            } else {
+                config.AdditionalBoard = OptionChoice.Block;
+            }
+            if(useCombinedAdversary) {
+                config.CombinedAdversaries = OptionChoice.Force;
+            } else {
+                config.CombinedAdversaries = OptionChoice.Block;
+            }
+
+            // Get possible setups based on included options and min/max difficulty.
             var setups = GetSetups(config)
                 .Where(c => 
                     c.Difficulty >= config.MinDifficulty && 
                     c.Difficulty <= config.MaxDifficulty);
-            var filteredSetups = setups.Where(c =>
-                    (useCombinedAdversary ? c.HasSupportingAdversary : !c.HasSupportingAdversary) &&
-                    (useAdditionalBoard ? c.AdditionalBoards > 0 : c.AdditionalBoards == 0));
 
-            if(filteredSetups.Count() == 0)
+            if(setups.Count() == 0)
             {
                 throw new SiException($"No valid setups found for the configured options");
             }
 
             // Pick the setup to use from the available options
-            var setup = filteredSetups.PickRandom(1).Single();
+            var setup = setups.PickRandom(1).Single();
 
             // Get the number of possible combinations based on the number of players and
             // number of selected spirits. (Note - we can't easilly use selected aspects 
@@ -218,7 +227,7 @@ namespace SiRandomizer.Services
                 var possibleBoards = config.Boards
                     .Where(b => b.Thematic == false && b.Selected);
                 // Get the total board combinations by adding the number of combinations
-                // for each possible number of boards.
+                // for each possible number of boards.                
                 for(int i = config.MinAdditionalBoards; i <= config.MaxAdditionalBoards; i++)
                 {
                     boardCombinations += possibleBoards.GetCombinations(config.Players + i);
