@@ -196,13 +196,13 @@ namespace SiRandomizer.Data
         /// <returns></returns>
         private Spirit SpiritFactory(Spirit source)
         {
-            var spirit = new Spirit(source.Name, this, Expansions[Expansion.Homebrew], source.BaseComplexity);
+            var spirit = new Spirit(source.Name, this, Spirits, Expansions[Expansion.Homebrew], source.BaseComplexity);
             spirit.Deletable = true;
             foreach(var aspect in spirit) 
             {
                 if(spirit.HasChild(aspect.Name) == false) 
                 {
-                    var newAspect = new SpiritAspect(aspect.Name, this, Expansions[Expansion.Homebrew]);
+                    var newAspect = new SpiritAspect(aspect.Name, this, spirit, Expansions[Expansion.Homebrew]);
                     aspect.Deletable = true;
                     spirit.Add(newAspect);
                 }

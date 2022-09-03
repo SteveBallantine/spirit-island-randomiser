@@ -37,10 +37,11 @@ namespace SiRandomizer.Data
         public Scenario(
             string name, 
             OverallConfiguration config,
+            IComponentCollection parentList,
             Expansion expansion,
             int difficultyModifier,
             List<Map> validMaps = null) 
-            : base(name, config, expansion) 
+            : base(name, config, parentList, expansion) 
         {
             DifficultyModifier = difficultyModifier;
             ValidMaps = validMaps;

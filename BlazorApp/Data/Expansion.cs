@@ -24,8 +24,9 @@ namespace SiRandomizer.Data
         public Expansion(
             string name,  
             OverallConfiguration config,
+            IComponentCollection parentList,
             string tag) 
-            : base(name, config) 
+            : base(name, config, parentList) 
         {
             Tag = tag;
         }

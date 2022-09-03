@@ -18,8 +18,8 @@ namespace SiRandomizer.Data
 
         public SelectableComponentBase() {}
 
-        public SelectableComponentBase(string name, OverallConfiguration config) 
-            : base(name, config)
+        public SelectableComponentBase(string name, OverallConfiguration config, IComponentCollection parentList) 
+            : base(name, config, parentList)
         {
         }
 
@@ -60,6 +60,11 @@ namespace SiRandomizer.Data
 
         public string Name { get; set; }
 
+        /// <summary>
+        /// Flag that controls whether this item can be deleted or not.
+        /// By default, only homebrew items (which are added by the user) can be deleted.
+        /// </summary>
+        /// <value></value>
         public bool Deletable { get; set; } = false;
 
         private bool _selected = false;
@@ -76,6 +81,13 @@ namespace SiRandomizer.Data
             }
         }
 
+        /// <summary>
+        /// The collection that contains this item.
+        /// </summary>
+        /// <value></value>
+        [JsonIgnore]
+        public IComponentCollection ParentList { get; set; }
+
         [JsonIgnore]
         public OverallConfiguration Config { get; private set; }
 
@@ -87,10 +99,12 @@ namespace SiRandomizer.Data
         /// <param name="name"></param>
         public SelectableComponentBase(
             string name,
-            OverallConfiguration config)
+            OverallConfiguration config,
+            IComponentCollection parentList)
         {
             Name = name;
             Config = config;
+            ParentList = parentList;
         }        
 
         public override bool Equals(object obj)

@@ -39,11 +39,12 @@ namespace SiRandomizer.Data
         public Map(
             string name,  
             OverallConfiguration config,
+            IComponentCollection parentList,
             int minPlayerCount,
             int maxPlayerCount,
             int difficultyModifier,
             bool thematic = false) 
-            : base(name, config) 
+            : base(name, config, parentList) 
         { 
             MinCount = minPlayerCount;
             MaxCount = maxPlayerCount;

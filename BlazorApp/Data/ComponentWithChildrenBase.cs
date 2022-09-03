@@ -36,8 +36,9 @@ namespace SiRandomizer.Data
         public ComponentWithChildrenBase(
             string name, 
             OverallConfiguration config,
+            IComponentCollection parentList,
             Expansion expansion) : 
-            base(name, config, expansion)
+            base(name, config, parentList, expansion)
         {
             Init();
         }

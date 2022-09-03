@@ -17,9 +17,10 @@ namespace SiRandomizer.Data
         public AdversaryLevel(
             string name, 
             OverallConfiguration config,
+            IComponentCollection parentList,
             int level,
             int difficultyModifier) 
-            : base(name, config)
+            : base(name, config, parentList)
         {
             Level = level;
             DifficultyModifier = difficultyModifier;
