@@ -10,8 +10,14 @@
 @if(Item is IDifficultyModifier difficultyMod) {
     <span class="si-tag">+@difficultyMod.DifficultyModifier</span>
 }
+@if(Item.HasAssignableWeight && 
+    Item.Config.ShowWeights &&
+    Item.Selected)
+{
+    <InputNumber class="add-margin-left numeric-3" @bind-Value="Item.Weight" @bind-Value:format="F2" />
+}
 @if(Item.Deletable) {
-    <button class="item-delete-button" type="button" @onclick="() => DeleteItemCallback.InvokeAsync(Item.Name)">
+    <button class="add-margin-left" type="button" @onclick="() => DeleteItemCallback.InvokeAsync(Item.Name)">
         <i class="fa fa-trash item-delete show"></i>
     </button>
 }

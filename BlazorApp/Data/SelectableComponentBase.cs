@@ -94,6 +94,11 @@ namespace SiRandomizer.Data
                 if(ParentList == null) { return 0; }
                 return AssignedWeight.HasValue ? AssignedWeight.Value : ParentList.CalculateSelectedItemsWeight();
             }
+            set 
+            {
+                AssignedWeight = (int)value;
+                OnPropertyChanged(nameof(AssignedWeight));
+            }
         }
 
         /// <summary>

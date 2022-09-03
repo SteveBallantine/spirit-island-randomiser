@@ -43,6 +43,12 @@ namespace SiRandomizer.Data
         public OptionChoice ImbalancedArcadeBoards {get;set;} = OptionChoice.Block;
         public OptionChoice Aspects {get;set;} = OptionChoice.Allow;
 
+        /// <summary>
+        /// If true, display and allow editing of weights for individual items.
+        /// </summary>
+        /// <value></value>
+        public bool ShowWeights {get;set;} = false;
+
         [JsonIgnore]
         public int MaxAdditionalBoards 
         {
@@ -72,6 +78,7 @@ namespace SiRandomizer.Data
         {            
             this.AdditionalBoardChance = other.AdditionalBoardChance;
             this.CombinedAdversariesChance = other.CombinedAdversariesChance;
+            this.ShowWeights = other.ShowWeights;
 
             // In future, AdditionalBoard and CombinedAdversaries will always be null.
             // If the user has a different value, then migrate it by setting the corresponding 'Chance' value instead.
@@ -152,6 +159,7 @@ namespace SiRandomizer.Data
                 var itemsAreCollections = typeof(TItem).IsNamedComponentCollection();
 
                 destination.Selected = source.Selected;
+                destination.AssignedWeight = source.AssignedWeight;
                 foreach(var sourceItem in source)
                 {         
                     if(destination.HasChild(sourceItem.Name) == false)

@@ -21,11 +21,13 @@ namespace SiRandomizer.Data
         /// <value></value>
         IComponentCollection ParentList { get; set; }
 
+        OverallConfiguration Config { get; }
+
         /// <summary>
         /// The chance that this item will be picked out of all items in the parent's list.
         /// </summary>
         /// <value></value>
-        float Weight { get; }
+        float Weight { get; set; }
 
         /// <summary>
         /// The chance that has been assigned by the user for this item to be selected.

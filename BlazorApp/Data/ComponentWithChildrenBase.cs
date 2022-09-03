@@ -126,7 +126,7 @@ namespace SiRandomizer.Data
             {
                 sumOfAssignedWeights = 100;
             }
-            
+
             var selectedChildrenWithoutWeights = _children
                 .Where(i => i.Value.Selected && i.Value.AssignedWeight.HasValue == false);
 
