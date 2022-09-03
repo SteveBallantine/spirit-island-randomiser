@@ -32,6 +32,13 @@ namespace SiRandomizer.Data
         [JsonIgnore]
         public List<Map> ValidMaps { get; set; }
 
+        [JsonIgnore]
+        /// <summary>
+        /// If true then the <see cref="Weight"> can be modified by the user.
+        /// </summary>
+        /// <value></value>
+        public override bool HasAssignableWeight { get { return true; } }
+
         public Scenario() {}
 
         public Scenario(

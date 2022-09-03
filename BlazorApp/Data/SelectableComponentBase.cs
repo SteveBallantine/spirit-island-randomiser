@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -80,6 +81,33 @@ namespace SiRandomizer.Data
                 }
             }
         }
+
+        /// <summary>
+        /// The chance that this item will be picked out of all items in the parent's list.
+        /// </summary>
+        /// <value></value>
+        [JsonIgnore]
+        public float Weight 
+        { 
+            get
+            {
+                if(ParentList == null) { return 0; }
+                return AssignedWeight.HasValue ? AssignedWeight.Value : ParentList.CalculateSelectedItemsWeight();
+            }
+        }
+
+        /// <summary>
+        /// The chance that has been assigned by the user for this item to be selected.
+        /// </summary>
+        /// <value></value>
+        public int? AssignedWeight { get; set; } = null;
+
+        [JsonIgnore]
+        /// <summary>
+        /// If true then the <see cref="Weight"> can be modified by the user.
+        /// </summary>
+        /// <value></value>
+        public virtual bool HasAssignableWeight { get { return false; } }
 
         /// <summary>
         /// The collection that contains this item.

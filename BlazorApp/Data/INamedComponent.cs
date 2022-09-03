@@ -14,13 +14,31 @@ namespace SiRandomizer.Data
         /// </summary>
         /// <value></value>
         bool Deletable { get; set; }
-        
-        bool IsVisible();
 
         /// <summary>
         /// The collection that contains this item.
         /// </summary>
         /// <value></value>
         IComponentCollection ParentList { get; set; }
+
+        /// <summary>
+        /// The chance that this item will be picked out of all items in the parent's list.
+        /// </summary>
+        /// <value></value>
+        float Weight { get; }
+
+        /// <summary>
+        /// The chance that has been assigned by the user for this item to be selected.
+        /// </summary>
+        /// <value></value>
+        int? AssignedWeight { get; set; }
+
+        /// <summary>
+        /// If true then the <see cref="Weight"> can be modified by the user.
+        /// </summary>
+        /// <value></value>
+        bool HasAssignableWeight { get; }  
+        
+        bool IsVisible();
     }
 }

@@ -112,6 +112,36 @@ namespace SiRandomizer.Data
         {
             return _children.ContainsKey(name);
         }
+        
+        /// <summary>
+        /// Calculate the weight to use for all selected items that do not have assigned weights.
+        /// </summary>
+        /// <returns></returns>
+        public float CalculateSelectedItemsWeight()
+        {
+            var sumOfAssignedWeights = _children
+                .Where(i => i.Value.Selected && i.Value.AssignedWeight.HasValue)
+                .Sum(i => i.Value.AssignedWeight ?? 0);
+            if(sumOfAssignedWeights > 100)
+            {
+                sumOfAssignedWeights = 100;
+            }
+            
+            var selectedChildrenWithoutWeights = _children
+                .Where(i => i.Value.Selected && i.Value.AssignedWeight.HasValue == false);
 
+            return (100 - sumOfAssignedWeights) / selectedChildrenWithoutWeights.Count();
+        }
+
+        /// <summary>
+        /// Get count of items in collection.
+        /// (This may seem odd, but is needed to give the non-generic IComponentCollection 
+        /// easy access to the count)
+        /// </summary>
+        /// <value></value>
+        public int Count()
+        {
+            return this.Count();
+        }
     }
 }
