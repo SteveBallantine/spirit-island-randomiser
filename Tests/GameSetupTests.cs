@@ -28,25 +28,25 @@ namespace SiRandomizer.tests
         [ClassInitialize]
         public static void Init(TestContext context)
         {
-            _adversaryA = new Adversary("Test A", null, null);
-            _levelA1 = new AdversaryLevel("A1", null, 1, 2);
-            _levelA2 = new AdversaryLevel("A2", null, 2, 4);
+            _adversaryA = new Adversary("Test A", null, null, null);
+            _levelA1 = new AdversaryLevel("A1", null, null, 1, 2);
+            _levelA2 = new AdversaryLevel("A2", null, null, 2, 4);
             _adversaryA.Add(_levelA1);
             _adversaryA.Add(_levelA2);
 
-            _adversaryB = new Adversary("Test B", null, null);
-            _levelB1 = new AdversaryLevel("B1", null, 1, 1);
-            _levelB2 = new AdversaryLevel("B2", null, 2, 3);
-            _levelB3 = new AdversaryLevel("B3", null, 2, 4);
+            _adversaryB = new Adversary("Test B", null, null, null);
+            _levelB1 = new AdversaryLevel("B1", null, null, 1, 1);
+            _levelB2 = new AdversaryLevel("B2", null, null, 2, 3);
+            _levelB3 = new AdversaryLevel("B3", null, null, 2, 4);
             _adversaryB.Add(_levelB1);
             _adversaryB.Add(_levelB2);
             _adversaryB.Add(_levelB3);
 
-            _map0 = new Map("TestM0", null, 1, 6, 0);
-            _map1 = new Map("TestM1", null, 1, 6, 1);
+            _map0 = new Map("TestM0", null, null, 1, 6, 0);
+            _map1 = new Map("TestM1", null, null, 1, 6, 1);
 
-            _scenario0 = new Scenario("TestS0", null, null, 0);
-            _scenario1 = new Scenario("TestS1", null, null, 1);
+            _scenario0 = new Scenario("TestS0", null, null, null, 0);
+            _scenario1 = new Scenario("TestS1", null, null, null, 1);
         }
 
         [DataTestMethod]
