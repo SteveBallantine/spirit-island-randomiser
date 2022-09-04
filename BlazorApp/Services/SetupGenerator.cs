@@ -79,6 +79,15 @@ namespace SiRandomizer.Services
                 throw new SiException($"No valid setups found for the configured options");
             }
 
+            _logger.LogDebug($"{setups.Count()} valid setups found");
+            // If configurable weights are being used then apply them now.
+            if(config.ShowWeights)
+            {
+                setups = FilterOnWeights(setups, config.Maps, (s) => s.Map.Name);
+                setups = FilterOnWeights(setups, config.Scenarios, (s) => s.Scenario.Name);
+                setups = FilterOnWeights(setups, config.Adversaries, (s) => s.LeadingAdversary.Parent.Name);
+            }
+
             // Pick the setup to use from the available options
             var setup = setups.PickRandom(1).Single();
 
@@ -370,6 +379,51 @@ namespace SiRandomizer.Services
                     }
                 }
             }
+        }        
+
+        /// <summary>
+        /// Filter the supplied list of setups by selecting only those with a specific map, scenario, adversary, etc.
+        /// The item to filter on is determined based on the weights of the selected items.
+        /// </summary>
+        /// <param name="setups"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        private IEnumerable<GameSetup> FilterOnWeights<T> (
+            IEnumerable<GameSetup> setups, 
+            IComponentCollection<T> config,
+            Func<GameSetup, string> getComponentName) 
+            where T : INamedComponent
+        {
+            var pickedComponentName = "";
+            // Get configs, ignoring those for components that are not represented in the set of possible setups.
+            var possibleComponentNames = setups.GroupBy(s => getComponentName(s)).Select(g => g.Key);
+            var configs = config.Where(c => possibleComponentNames.Any(n => n == c.Name)).ToList();
+
+            var optionsText = string.Join(", ", configs.Select(c => $"{c.Name} @ {c.Weight}"));
+            _logger.LogDebug($"Selecting '{typeof(T).Name}' based on weights. Available options and weightings: {optionsText}");
+
+            // Get the sum of all weights and pick a random value.
+            var weightSum = configs.Sum(c => c.Weight);
+            var result = _rng.NextDouble() * weightSum;
+
+            // Iterate through the items until we find the component corresponding to the random value.
+            float weightsSoFar = 0;
+            foreach(var elementConfig in configs)
+            {
+                weightsSoFar += elementConfig.Weight;
+                if(weightsSoFar > result)
+                {
+                    pickedComponentName = elementConfig.Name;
+                    break;
+                }    
+            }
+            if(pickedComponentName == "")
+            {
+                throw new Exception($"Problem picking {typeof(T).Name}");
+            }
+            _logger.LogDebug($"Selected {typeof(T).Name}: '{pickedComponentName}'");
+
+            return setups.Where(s => getComponentName(s) == pickedComponentName);
         }
     }
 
