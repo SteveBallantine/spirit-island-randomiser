@@ -19,6 +19,14 @@ The purpose of this app is to experiment with Blazor in a 'real world' scenario 
 - Bug - Select all expansions. Select lightning - all aspects are selected. Deselect 'Base'. Deselect 'Promo 2' and 'Jagged Earth' then reselect them. Lightning is still selected, but none of it's aspects are.
 - https://github.com/SteveBallantine/spirit-island-randomiser/issues
 
+## For this branch
+
+- Filtering based on weights is VERY Slow for large probability spaces.
+  - Need to move the filtering to happen before all the valid setups are created. 
+    - Need to think of a way to ensure that this does not result in only setups that don't match the selected difficulty range.
+      - Or regenerate if there are no valid options?
+- The weights in the UI are fugly. Need to improve that a little. Also make it more clear that they are percentages.
+
 # Developing
 
 To run locally, navigate to BlazorApp directory and execute
