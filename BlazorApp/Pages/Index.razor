@@ -107,7 +107,7 @@ else if (setup == null)
                                     </InputSelect> Aspects <Tooltip Text="Control the selection of aspects en-masse with this option. Allow gives you full control. Block means only the base aspect will ever be selected. Force means that the base aspect will never be selected.">?</Tooltip>
                                 </div>
                                 <div class="col-6">
-                                    <input type="checkbox" @bind="config.ShowWeights">Show Weights
+                                    <input type="checkbox" @bind="config.ShowWeights">Show Weights <Tooltip Text="Allows the chance of certain options to be specified (e.g. chance of getting thematic map). For most purposes, the weights are the percentage chance of that item being selected. The app will automatically adjust the values of any weights that you havent specified so that the total of all weights adds up to (roughly) 100.">?</Tooltip>
                                 </div>
                             </div>
                         </div>
