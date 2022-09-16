@@ -52,33 +52,32 @@ namespace SiRandomizer.Services
 
         public SetupResult Generate(OverallConfiguration config) 
         {
-            // Decide if we will be using an extra board or second adversary
-            var useAdditionalBoard = _rng.NextDouble() <= (double)config.AdditionalBoardChance / 100;
-            _logger.LogDebug($"Additional board: {useAdditionalBoard}");
-            var useCombinedAdversary = _rng.NextDouble() <= (double)config.CombinedAdversariesChance / 100;
-            _logger.LogDebug($"Combined adversaries: {useCombinedAdversary}");            
-            if(useAdditionalBoard) {
-                config.AdditionalBoard = OptionChoice.Force;
-            } else {
-                config.AdditionalBoard = OptionChoice.Block;
-            }
-            if(useCombinedAdversary) {
-                config.CombinedAdversaries = OptionChoice.Force;
-            } else {
-                config.CombinedAdversaries = OptionChoice.Block;
-            }
+            bool foundValidSetup = false;
+            int attempts = 0;
+            IEnumerable<GameSetup> setups = null;
 
-            // Get possible setups based on included options and min/max difficulty.
-            var setups = GetSetups(config)
-                .Where(c => 
-                    c.Difficulty >= config.MinDifficulty && 
-                    c.Difficulty <= config.MaxDifficulty);
+            // Repeat this several times if needed to try and find a valid options.
+            while(foundValidSetup == false && attempts < 10)
+            {
+                // Determine which options to use when generating possible setups.
+                var options = DetermineOptions(config);
+
+                // Get possible setups based on options and min/max difficulty.
+                setups = GetSetups(config, options)
+                    .Where(c => 
+                        c.Difficulty >= config.MinDifficulty && 
+                        c.Difficulty <= config.MaxDifficulty);
+                
+                foundValidSetup = setups.Count() > 0;
+                attempts++;
+            }
 
             if(setups.Count() == 0)
             {
-                throw new SiException($"No valid setups found for the configured options");
+                throw new SiException($"No valid setups found for the configured options after 10 attempts");
             }
 
+            _logger.LogDebug($"{setups.Count()} valid setups found");
             // Pick the setup to use from the available options
             var setup = setups.PickRandom(1).Single();
 
@@ -109,6 +108,86 @@ namespace SiRandomizer.Services
                     spiritCombinations * boardCombinations,
                 ShowRandomThematicWarning = config.RandomThematicBoards == OptionChoice.Block
             };
+        }
+
+        private DeterminedOptions DetermineOptions(OverallConfiguration config)
+        {
+            DeterminedOptions options = new DeterminedOptions();
+
+            // Decide if we will be using an extra board or second adversary
+            var useAdditionalBoard = _rng.NextDouble() <= (double)config.AdditionalBoardChance / 100;
+            _logger.LogDebug($"Additional board: {useAdditionalBoard}");
+            var useCombinedAdversary = _rng.NextDouble() <= (double)config.CombinedAdversariesChance / 100;
+            _logger.LogDebug($"Combined adversaries: {useCombinedAdversary}");            
+            if(useAdditionalBoard) 
+            {
+                config.AdditionalBoard = OptionChoice.Force;
+                options.AdditionalBoards = 1;
+            } 
+            else 
+            {
+                config.AdditionalBoard = OptionChoice.Block;
+                options.AdditionalBoards = 0;
+            }
+            if(useCombinedAdversary) 
+            {
+                config.CombinedAdversaries = OptionChoice.Force;
+            } 
+            else 
+            {
+                config.CombinedAdversaries = OptionChoice.Block;
+            }
+
+            options.Scenario = DetermineOption(config.Scenarios.Where(s => s.Selected));
+            // Determine the entry to use for all options that have configurable weightings.
+            options.Map = DetermineOption(config.Maps.Where(m => m.Selected && 
+                // Ensure that only maps that are valid for the determined number of boards will be chosen.
+                m.ValidForBoardCount(config.Players + options.AdditionalBoards) &&
+                // Ensure that only maps that are valid for the determine scenario are chosen.
+                (options.Scenario.ValidMaps == null || options.Scenario.ValidMaps.Any(v => v == m))));
+
+            var possibleAdversaries = config.Adversaries.Where(a => a.Selected);
+            if(useCombinedAdversary)
+            {
+                // If we've combining adversaries then the primary cannot be 'no adversary'
+                possibleAdversaries = possibleAdversaries.Where(a => a.Name != Adversary.NoAdversary);
+            }
+            options.Adversary = DetermineOption(possibleAdversaries);
+
+            if(useCombinedAdversary)
+            {
+                // Make sure the second adversary won't be the same as the first.
+                options.SecondaryAdversary = DetermineOption(config.Adversaries.Where(a => 
+                    a.Selected && a.Name != Adversary.NoAdversary && a != options.Adversary));
+            }
+
+            return options;
+        }
+
+
+        private T DetermineOption<T>(IEnumerable<T> options)
+            where T : SelectableComponentBase<T>
+        {
+            var optionsText = string.Join(", ", options.Select(c => $"{c.Name} @ {c.Weight}"));
+            _logger.LogDebug($"Selecting '{typeof(T).Name}' based on weights. Available options and weightings: {optionsText}");
+
+            // Get the sum of all weights and pick a random value.
+            var weightSum = options.Sum(c => c.Weight);
+            var result = _rng.NextDouble() * weightSum;
+
+            // Iterate through the items until we find the component corresponding to the random value.
+            float weightsSoFar = 0;
+            foreach(var option in options)
+            {
+                weightsSoFar += option.Weight;
+                if(weightsSoFar > result)
+                {
+                    _logger.LogDebug($"Selected {typeof(T).Name}: '{option.Name}'");
+                    return option;
+                }    
+            }
+
+            return null;
         }
 
         private IEnumerable<BoardSetup> GetBoardSetups(List<Board> boards, List<SpiritAspect> spirits) 
@@ -277,54 +356,21 @@ namespace SiRandomizer.Services
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        private IEnumerable<GameSetup> GetSetups(OverallConfiguration config) 
+        private IEnumerable<GameSetup> GetSetups(OverallConfiguration config, DeterminedOptions options) 
         {
-            // Get the possible scenarios, maps and adversaries.
-            var scenarios = config.Scenarios
-                .Where(s => s.Selected);
-            var maps = config.Maps
-                .Where(m => m.Selected);
-            var adversaryLevels = config.Adversaries
-                .SelectMany(a => a.Levels)
-                .Where(l => l.Selected);
-            // Get the possible supporting adversaries.
-            List<AdversaryLevel> supportingAdversaryLevels = adversaryLevels.ToList();
-            // Get the possible numbers of additional boards.
-            var additionalBoards = new List<int>();
-            for(int i = config.MinAdditionalBoards; i <= config.MaxAdditionalBoards; i++) 
-            {
-                additionalBoards.Add(i);
-            }
-
-            // Join the various options so that we have all possible permutations.
-            var joined1 = scenarios.Join(additionalBoards, s => true, b => true, 
-                (s, b) => new { Scenario = s, AdditionalBoards = b });
-            var joined2 = joined1.Join(maps, s => true, m => true,
-                (j, m) => new { Scenario = j.Scenario, AdditionalBoards = j.AdditionalBoards, Map = m });  
-            // Add all possible adversary levels as the leading adversary.
-            // Set Supporting adversary to       
-            var setups = joined2.Join(adversaryLevels, j => true, a => true, 
-                (j, a) => new { Scenario = j.Scenario, Map = j.Map, AdditionalBoards = j.AdditionalBoards, LeadingAdversary = a })
-                .Select(j => new GameSetup() {
-                    Scenario = j.Scenario,
-                    Map = j.Map,
-                    LeadingAdversary = j.LeadingAdversary,
+            var setups = options.Adversary.Levels
+                .Select(l => new GameSetup() {
+                    Scenario = options.Scenario,
+                    Map = options.Map,
+                    LeadingAdversary = l,
                     SupportingAdversary = config.Adversaries[Adversary.NoAdversary].Levels.Single(),
-                    AdditionalBoards = j.AdditionalBoards
-                // Eliminate any setups that are invalid.
-                }).Where(s => s.IsValid(config.Players));
-            // Adding a supporting adversary is a little trickier as we want some logic to ensure that:
-            // 1. If leading adversary is 'no adversary' then supporting adversary MUST be 'no adversary'.
-            // 2. Otherwise, supporting adversary MUST be different to leading adverary.
-            // We also want to exclude options where supporting adversary is 'no adversary' if the
-            // combine adversaries option is set to 'force'.
-            if(config.CombinedAdversaries == OptionChoice.Allow ||
-                config.CombinedAdversaries == OptionChoice.Force)
+                    AdditionalBoards = options.AdditionalBoards
+                });
+            if(options.SecondaryAdversary != null)
             {
                 setups = AddSupportingAdversaryOptions(setups,
                     config.Adversaries[Adversary.NoAdversary].Levels.Single(), 
-                    supportingAdversaryLevels, 
-                    config.CombinedAdversaries == OptionChoice.Force);
+                    options.SecondaryAdversary.Levels.ToList());
             }
 
             // Return the possible options as GameSetup instances.
@@ -334,40 +380,20 @@ namespace SiRandomizer.Services
         private IEnumerable<GameSetup> AddSupportingAdversaryOptions(
             IEnumerable<GameSetup> input, 
             AdversaryLevel noAdversary,
-            List<AdversaryLevel> supportingAdversaries,
-            bool forceSupportingAdversary)
+            List<AdversaryLevel> supportingAdversaryLevels)
         {
             foreach(var entry in input)
             {
-                // If leading adversary is 'no adversary' then supporting adversary MUST be 'no adversary'.
-                if(entry.LeadingAdversary.Parent.Name == Adversary.NoAdversary)
+                foreach(var adversaryLevel in supportingAdversaryLevels)
                 {
-                    entry.SupportingAdversary = noAdversary;
-                    // If forceSupportingAdversary flag is set then don't return values where 
-                    // supporting adversary is 'NoAdversary'
-                    if(forceSupportingAdversary == false)
+                    yield return new GameSetup()
                     {
-                        yield return entry;
-                    }
-                }
-                else 
-                {
-                    // Otherwise, supporting adversary MUST be different to leading adverary.
-                    foreach(var adversaryLevel in supportingAdversaries
-                        .Where(s => s.Parent != entry.LeadingAdversary.Parent &&
-                            // If forceSupportingAdversary flag is set then don't return values where 
-                            // supporting adversary is 'NoAdversary'
-                            (forceSupportingAdversary == false || s.Parent.Name != Adversary.NoAdversary)))
-                    {
-                        yield return new GameSetup()
-                        {
-                            Scenario = entry.Scenario,
-                            Map = entry.Map,
-                            LeadingAdversary = entry.LeadingAdversary,
-                            SupportingAdversary = adversaryLevel,
-                            AdditionalBoards = entry.AdditionalBoards
-                        };
-                    }
+                        Scenario = entry.Scenario,
+                        Map = entry.Map,
+                        LeadingAdversary = entry.LeadingAdversary,
+                        SupportingAdversary = adversaryLevel,
+                        AdditionalBoards = entry.AdditionalBoards
+                    };
                 }
             }
         }

@@ -69,7 +69,7 @@ else if (setup == null)
             <div class="col-12">
                 <Panel>
                     <Header>
-                        Options <Tooltip Text="Each of these options can be configured as Allow, Block or Force. Allow means it might be used when randomising the game setup. Block means it will not be used. Force means it will be used">?</Tooltip>
+                        Advanced Options <Tooltip Text="Some of these options can be configured as Allow, Block or Force. Allow means it might be used when randomising the game setup. Block means it will not be used. Force means it will be used">?</Tooltip>
                     </Header>
                     <Body>
                         <div class="container slim">
@@ -105,6 +105,9 @@ else if (setup == null)
                                             <option value="@choice">@choice</option> 
                                         }
                                     </InputSelect> Aspects <Tooltip Text="Control the selection of aspects en-masse with this option. Allow gives you full control. Block means only the base aspect will ever be selected. Force means that the base aspect will never be selected.">?</Tooltip>
+                                </div>
+                                <div class="col-6">
+                                    <input type="checkbox" @bind="config.ShowWeights">Show Weights <Tooltip Text="Allows the chance of certain options to be specified (e.g. chance of getting thematic map). For most purposes, the weights are the percentage chance of that item being selected. The app will automatically adjust the values of any weights that you havent specified so that the total of all weights adds up to (roughly) 100.">?</Tooltip>
                                 </div>
                             </div>
                         </div>
@@ -250,7 +253,7 @@ else
         if(string.IsNullOrWhiteSpace(newSpirit) == false &&
             config.Spirits.HasChild(newSpirit) == false)
         {
-            var spirit = new Spirit(newSpirit, config, config.Expansions[Expansion.Homebrew], Complexity.Unspecified);
+            var spirit = new Spirit(newSpirit, config, config.Spirits, config.Expansions[Expansion.Homebrew], Complexity.Unspecified);
             spirit.Deletable = true;
             config.Spirits.Add(spirit);
         }

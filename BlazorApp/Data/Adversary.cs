@@ -20,8 +20,9 @@ namespace SiRandomizer.Data
         public Adversary(
             string name,  
             OverallConfiguration config,
+            IComponentCollection parentList,
             Expansion expansion)
-            : base (name, config, expansion)
+            : base (name, config, parentList, expansion)
         {
         }
 
@@ -37,5 +38,12 @@ namespace SiRandomizer.Data
                 return this;
             }
         }
+
+        [JsonIgnore]
+        /// <summary>
+        /// If true then the <see cref="Weight"> can be modified by the user.
+        /// </summary>
+        /// <value></value>
+        public override bool HasAssignableWeight { get { return true; } }
     }
 }

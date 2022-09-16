@@ -17,8 +17,9 @@ namespace SiRandomizer.Data
         public OptionGroup(
             string name, 
             OverallConfiguration config,
+            IComponentCollection parentList,
             Expansion expansion) 
-            : base(name, config, expansion) 
+            : base(name, config, parentList, expansion) 
         {}
     }
 }

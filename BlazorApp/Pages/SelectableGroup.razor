@@ -1,3 +1,5 @@
+@using System.ComponentModel
+
 <Panel>
     <Header>
         <input type="checkbox" @bind="Group.Selected" >@Group.Name
@@ -22,13 +24,36 @@
 @typeparam T where T : SelectableComponentBase<T>
 @code {
     [CascadingParameter(Name = "Group")]
-    public OptionGroup<T> Group { get; set; }
+    public OptionGroup<T> Group 
+    { 
+        get
+        {
+            return _group;
+        }
+        set
+        {
+            _group = value;
+            value.PropertyChanged += PropertyChanged;
+        }
+    }
 
     [Parameter]
     public string ItemClass { get; set; } = "col-6";
 
+    private OptionGroup<T> _group;
+
     public void DeleteItem(string itemName)
     {
         Group.Remove(itemName);
-    }   
+    }
+
+    public void PropertyChanged (object sender, PropertyChangedEventArgs args) 
+    {
+        // If an assigned weight changes for one of the children then we'll need to recalculate the others.
+        if(args.PropertyName == $"Child_{nameof(INamedComponent.AssignedWeight)}")
+        {
+            this.StateHasChanged();
+        }
+    }
+
 }

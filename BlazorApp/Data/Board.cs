@@ -57,9 +57,10 @@ namespace SiRandomizer.Data
         public Board(
             string name,  
             OverallConfiguration config,
+            IComponentCollection parentList,
             Expansion expansion,
             bool thematic) 
-            : base(name, config, expansion) 
+            : base(name, config, parentList, expansion) 
         { 
             Thematic = thematic;
         }

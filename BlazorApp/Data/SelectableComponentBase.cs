@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -18,8 +19,8 @@ namespace SiRandomizer.Data
 
         public SelectableComponentBase() {}
 
-        public SelectableComponentBase(string name, OverallConfiguration config) 
-            : base(name, config)
+        public SelectableComponentBase(string name, OverallConfiguration config, IComponentCollection parentList) 
+            : base(name, config, parentList)
         {
         }
 
@@ -60,6 +61,11 @@ namespace SiRandomizer.Data
 
         public string Name { get; set; }
 
+        /// <summary>
+        /// Flag that controls whether this item can be deleted or not.
+        /// By default, only homebrew items (which are added by the user) can be deleted.
+        /// </summary>
+        /// <value></value>
         public bool Deletable { get; set; } = false;
 
         private bool _selected = false;
@@ -76,6 +82,45 @@ namespace SiRandomizer.Data
             }
         }
 
+        /// <summary>
+        /// The chance that this item will be picked out of all items in the parent's list.
+        /// </summary>
+        /// <value></value>
+        [JsonIgnore]
+        public float Weight 
+        { 
+            get
+            {
+                if(ParentList == null) { return 0; }
+                return AssignedWeight.HasValue ? AssignedWeight.Value : ParentList.CalculateSelectedItemsWeight();
+            }
+            set 
+            {
+                AssignedWeight = (int)value;
+                OnPropertyChanged(nameof(AssignedWeight));
+            }
+        }
+
+        /// <summary>
+        /// The chance that has been assigned by the user for this item to be selected.
+        /// </summary>
+        /// <value></value>
+        public int? AssignedWeight { get; set; } = null;
+
+        [JsonIgnore]
+        /// <summary>
+        /// If true then the <see cref="Weight"> can be modified by the user.
+        /// </summary>
+        /// <value></value>
+        public virtual bool HasAssignableWeight { get { return false; } }
+
+        /// <summary>
+        /// The collection that contains this item.
+        /// </summary>
+        /// <value></value>
+        [JsonIgnore]
+        public IComponentCollection ParentList { get; set; }
+
         [JsonIgnore]
         public OverallConfiguration Config { get; private set; }
 
@@ -87,10 +132,12 @@ namespace SiRandomizer.Data
         /// <param name="name"></param>
         public SelectableComponentBase(
             string name,
-            OverallConfiguration config)
+            OverallConfiguration config,
+            IComponentCollection parentList)
         {
             Name = name;
             Config = config;
+            ParentList = parentList;
         }        
 
         public override bool Equals(object obj)

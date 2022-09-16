@@ -72,10 +72,18 @@ namespace SiRandomizer.Data
                     // Read this property value and set it on the result object
                     if(_properties.TryGetValue(propertyName, out var propertyInfo))
                     {
-                        reader.Read();                    
+                        reader.Read();
                         if(propertyInfo.PropertyType == typeof(bool))
                         {
                             propertyInfo.SetValue(result, reader.GetBoolean());
+                        } 
+                        else if(propertyInfo.PropertyType == typeof(int?))
+                        {
+                            var stringValue = reader.GetString();
+                            if(int.TryParse(stringValue, out int intValue))
+                            {
+                                propertyInfo.SetValue(result, intValue);
+                            }
                         } 
                         else 
                         {

@@ -20,8 +20,9 @@ namespace SiRandomizer.Data
         public SelectableExpansionComponentBase(
             string name,
             OverallConfiguration config,
+            IComponentCollection parentList,
             Expansion expansion) 
-            : base(name, config)
+            : base(name, config, parentList)
         {
             Expansion = expansion;
         }
