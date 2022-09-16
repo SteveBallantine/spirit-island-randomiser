@@ -141,7 +141,8 @@ namespace SiRandomizer.tests
             Assert.IsTrue(setups.All(s => s.Setup.BoardSetups.All(b => validBoardNames.Contains(b.Board.Name))));
             // Verify the number of options considered is correct.
             Assert.IsTrue(setups.All(s => s.BoardSetupOptionsConsidered == expectedBoardOptions));
-            Assert.IsTrue(setups.All(s => s.DifficultyOptionsConsidered == expectedDifficultyOptions));
+            // DifficultyOptionsConsidered is no longer useful following changes to the way setups are generated.
+            //Assert.IsTrue(setups.All(s => s.DifficultyOptionsConsidered == expectedDifficultyOptions));
             // Verify the number of additional boards are as expected.
             Assert.IsTrue(setups.All(s => 
                 s.Setup.AdditionalBoards >= expectedMinAdditionalBoards &&
@@ -228,7 +229,9 @@ namespace SiRandomizer.tests
         {
             SetupMinimalOptions(true);
             // Slect the first level for two adversaries to allow them to be combined.
+            _config.Adversaries[Adversary.BrandenburgPrussia].Selected = true;
             _config.Adversaries[Adversary.BrandenburgPrussia].Levels.First().Selected = true;
+            _config.Adversaries[Adversary.England].Selected = true;
             _config.Adversaries[Adversary.England].Levels.First().Selected = true;
             _config.CombinedAdversariesChance = combinedAdversariesChance;
 
@@ -252,7 +255,8 @@ namespace SiRandomizer.tests
                     $"Invalid adversary - {result.Setup.SupportingAdversary.Parent.Name}");
                 // Verify the number of options considered is correct.
                 Assert.AreEqual(1, result.BoardSetupOptionsConsidered);
-                Assert.IsTrue(expectedDifficultyOptions.Contains((int)result.DifficultyOptionsConsidered));
+                // DifficultyOptionsConsidered is no longer useful following changes to the way setups are generated.
+                //Assert.IsTrue(expectedDifficultyOptions.Contains((int)result.DifficultyOptionsConsidered));
             }
         }
 
@@ -278,8 +282,7 @@ namespace SiRandomizer.tests
                 .Where(b => b.Thematic == false)
                 .ToDictionary(b => b.Name, b => 0);
             var selectedAdversaries = _config.Adversaries
-                .SelectMany(a => a.Levels)
-                .ToDictionary(l => l.Parent.Name + l.Level, b => 0);
+                .ToDictionary(a => a.Name, b => 0);
             var selectedScenarios = _config.Scenarios
                 .ToDictionary(s => s.Name, s => 0);
             var selectedSpirits = _config.Spirits
@@ -299,7 +302,7 @@ namespace SiRandomizer.tests
                     selectedSpirits[boardSetup.SpiritAspect.Parent.Name]++;
                 }
                 selectedScenarios[result.Setup.Scenario.Name]++;
-                selectedAdversaries[result.Setup.LeadingAdversary.Parent.Name + result.Setup.LeadingAdversary.Level]++;
+                selectedAdversaries[result.Setup.LeadingAdversary.Parent.Name]++;
                 selectedMaps[result.Setup.Map.Name]++;
             }
             
@@ -328,6 +331,11 @@ namespace SiRandomizer.tests
             var max = average + std * 4;
             var min = average - std * 4;
             if(min < 1) { min = 1; }
+
+            /*foreach(var entry in frequencyTable)
+            {
+                Console.WriteLine($"{entry.Key}: {entry.Value}");
+            }*/
 
             var componentsOusideRange = frequencyTable.Where(v => 
                 v.Value > max || v.Value < min);

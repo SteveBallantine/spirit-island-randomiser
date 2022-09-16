@@ -156,7 +156,11 @@
             </Panel>
         </div>
     }
-    <div class="col-12">
+    <!-- Remove this for now. Previously, all possible setups were generated and then one picked.
+        This was changed to randomly pick individual options up front. This is much faster, essepcially for
+        situations where large numbers of items are selected.
+        However, it does mean that these stats are no longer relevant. -->
+    <!--div class="col-12">
         <Panel>
             <Header>
                 Stats
@@ -167,7 +171,7 @@
                     <span class="si-tag">@(setup.BoardSetupOptionsConsidered*setup.DifficultyOptionsConsidered)</span> total combinations.</label>
             </Body>
         </Panel>
-    </div>
+    </div-->
 </div>
 
 @code {

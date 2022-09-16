@@ -168,6 +168,11 @@ namespace SiRandomizer.Services
         private T DetermineOption<T>(IEnumerable<T> options)
             where T : SelectableComponentBase<T>
         {
+            if(options.Count() == 0) 
+            {
+                throw new SiException($"No valid '{typeof(T).Name}' to pick from");
+            }
+
             var optionsText = string.Join(", ", options.Select(c => $"{c.Name} @ {c.Weight}"));
             _logger.LogDebug($"Selecting '{typeof(T).Name}' based on weights. Available options and weightings: {optionsText}");
 
@@ -205,7 +210,7 @@ namespace SiRandomizer.Services
         }
 
         private IEnumerable<Board> GetBoards(
-            OverallConfiguration config, 
+            OverallConfiguration config,
             GameSetup gameSetup, 
             out long boardCombinations) 
         {
