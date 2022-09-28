@@ -42,7 +42,7 @@ namespace SiRandomizer.tests
 
             _config.MinDifficulty = 0;
             _config.MaxDifficulty = 10;
-            _config.Players = 1;
+            _config.MinSpirits = 1;
         }
 
         private void SetupAllOptions(Func<Map, bool> mapFilter)
@@ -270,11 +270,11 @@ namespace SiRandomizer.tests
         {
             _config.MinDifficulty = 0;
             _config.MaxDifficulty = 20;
-            _config.Players = 2;
+            _config.MinSpirits = 2;
 
             // Limit this test to non-thematic maps as they can skew the selected boards.
             Func<Map, bool> mapFilter = m => m.Name.Contains("Thematic") == false && 
-                    _config.Players <= m.MaxCount && _config.Players >= m.MinCount;
+                    _config.MinSpirits <= m.MaxCount && _config.MinSpirits >= m.MinCount;
             SetupAllOptions(mapFilter);
 
             // Build some dictionaries to keep counts of options that are picked.

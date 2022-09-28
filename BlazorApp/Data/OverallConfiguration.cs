@@ -26,9 +26,14 @@ namespace SiRandomizer.Data
         public OptionGroup<Spirit> Spirits { get; set; }
         public OptionGroup<Scenario> Scenarios { get; set; }
 
+        public bool RandomiseSpiritCount { get; set; } = false;
+
         [Required]
-        [Range(1, 6, ErrorMessage = "Number of players must be 1 - 6")]
-        public int Players {get;set;}
+        [Range(1, 6, ErrorMessage = "Number of spirits must be 1 - 6")]
+        public int MinSpirits {get;set;}
+        [Range(1, 6, ErrorMessage = "Number of spirits must be 1 - 6")]
+        public int MaxSpirits {get;set;}
+
         [Required]
         [Range(0, 20, ErrorMessage = "Minimum difficulty must be 0 - 20")]
         public int MinDifficulty {get;set;}
@@ -139,7 +144,9 @@ namespace SiRandomizer.Data
             
             this.MaxDifficulty = other.MaxDifficulty;
             this.MinDifficulty = other.MinDifficulty;
-            this.Players = other.Players;
+            this.MaxSpirits = other.MaxSpirits;
+            this.MinSpirits = other.MinSpirits;
+            this.RandomiseSpiritCount = other.RandomiseSpiritCount;
             this.RandomThematicBoards = other.RandomThematicBoards;
             this.ImbalancedArcadeBoards = other.ImbalancedArcadeBoards;
             this.Aspects = other.Aspects;
@@ -257,12 +264,12 @@ namespace SiRandomizer.Data
                 yield return new ValidationResult("Maximum difficulty must be geater than or equal to minimum difficulty",
                     new[] { nameof(MaxDifficulty) });
             }
-            if(Players + MaxAdditionalBoards > Boards.Count(b => b.Selected))
+            if(MaxSpirits + MaxAdditionalBoards > Boards.Count(b => b.Selected))
             {
                 BoardsPanelClass = "panel-invalid";
-                yield return new ValidationResult("Player count + max additional boards must be no bigger than the number of selected boards",
+                yield return new ValidationResult("Max number of spirits/players + max additional boards must be no larger than the number of selected boards",
                     new[] { nameof(Boards) });
-            }            
+            }
             if(Scenarios.All(s => s.Selected == false))
             {
                 ScenariosPanelClass = "panel-invalid";
@@ -278,11 +285,16 @@ namespace SiRandomizer.Data
                 MapsPanelClass = "panel-invalid";
                 yield return new ValidationResult("Must pick at least one maps", new[] { nameof(Maps) });
             }
-            if(Spirits.Count(s => s.Selected) < Players)
+            if(Spirits.Count(s => s.Selected) < MaxSpirits)
             {
                 SpiritsPanelClass = "panel-invalid";
-                yield return new ValidationResult($"Must pick at least {Players} spirits for {Players} players", new[] { nameof(Spirits) });
-            }            
+                yield return new ValidationResult($"Must select at least {MaxSpirits} spirits.", new[] { nameof(Spirits) });
+            }
+            if(RandomiseSpiritCount &&
+                MaxSpirits < MinSpirits)
+            {
+                yield return new ValidationResult($"Min player/spirit count must be greater than max.", new[] { nameof(MinSpirits), nameof(MaxSpirits) });
+            }           
         }
     }
 }

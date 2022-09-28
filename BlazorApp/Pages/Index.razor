@@ -38,17 +38,27 @@ else if (setup == null)
             </div>
         </div>
         <div class="row">
-            <div class="col-2">
+            <div class="col-6">
                 <Panel>
                     <Header>
-                        Player Count
+                        Spirit/Player Count
                     </Header>
-                    <Body>    
-                        <InputNumber class="numeric-2" @bind-Value=config.Players/>
+                    <Body>
+                        @if(config.RandomiseSpiritCount)
+                        {
+                            <label>min</label>
+                        }
+                        <InputNumber class="numeric-2" @bind-Value=config.MinSpirits/>
+                        @if(config.RandomiseSpiritCount)
+                        {
+                            <label>max</label>
+                            <InputNumber class="numeric-2" @bind-Value=config.MaxSpirits/>
+                        }
+                        <input type="checkbox" @bind="config.RandomiseSpiritCount">Randomise spirit count <Tooltip Text="Can be used when playing 'multi-handed' (i.e. a single player controlling multiple spirits) to randomise the number of spirits in the game.">?</Tooltip>
                     </Body>
                 </Panel>
             </div>
-            <div class="col-4">
+            <div class="col-6">
                 <Panel>
                     <Header>
                         Difficulty <Tooltip Text="Select the difficulty range of the game you want to play">?</Tooltip>
@@ -60,7 +70,7 @@ else if (setup == null)
                 </Panel>
             </div>
 
-            <div class="col-6">
+            <div class="col-12">
                 <CascadingValue Value="config.Expansions" Name="Group">
                     <SelectableGroup T=Expansion ItemClass="col-6 col-6-sm" />
                 </CascadingValue>

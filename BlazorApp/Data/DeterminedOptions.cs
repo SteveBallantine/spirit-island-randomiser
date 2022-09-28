@@ -5,6 +5,8 @@ namespace SiRandomizer.Data
     {
         public int AdditionalBoards { get; set; }
 
+        public int SpiritCount { get; set; }
+
         public Map Map { get; set; }
         public Scenario Scenario { get; set; }
         public Adversary Adversary { get; set; }

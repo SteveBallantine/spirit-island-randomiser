@@ -55,12 +55,13 @@ namespace SiRandomizer.Services
             bool foundValidSetup = false;
             int attempts = 0;
             IEnumerable<GameSetup> setups = null;
+            DeterminedOptions options = null;
 
             // Repeat this several times if needed to try and find a valid options.
             while(foundValidSetup == false && attempts < 10)
             {
                 // Determine which options to use when generating possible setups.
-                var options = DetermineOptions(config);
+                options = DetermineOptions(config);
 
                 // Get possible setups based on options and min/max difficulty.
                 setups = GetSetups(config, options)
@@ -86,14 +87,14 @@ namespace SiRandomizer.Services
             // because aspects cannot always be played together - e.g. immense lightning 
             // + wind lightning is an invalid result)
             var spirits = config.Spirits.Where(s => s.Selected);
-            var spiritCombinations = spirits.GetCombinations(config.Players);
+            var spiritCombinations = spirits.GetCombinations(options.SpiritCount);
             // Pick a random spirit and a random aspect for each selected spirit.
-            var aspects = spirits.PickRandom(config.Players)
+            var aspects = spirits.PickRandom(options.SpiritCount)
                 .Select(s => s.Aspects.Where(s => s.Selected).PickRandom(1).Single()).ToList();
             
             // Get a set of boards to match the number of spirits + any additional boards
-            var boards = GetBoards(config, setup, out long boardCombinations).ToList();
-            if(boards.Count < config.Players + setup.AdditionalBoards) 
+            var boards = GetBoards(config, options, setup, out long boardCombinations).ToList();
+            if(boards.Count < options.SpiritCount + setup.AdditionalBoards) 
             {
                 throw new SiException("Failed to get the expected number of boards");
             }
@@ -114,6 +115,11 @@ namespace SiRandomizer.Services
         {
             DeterminedOptions options = new DeterminedOptions();
 
+            // Determine spirit count.
+            options.SpiritCount = config.RandomiseSpiritCount ? 
+                _rng.Next(config.MinSpirits, config.MaxSpirits + 1) :
+                config.MinSpirits;
+            _logger.LogDebug($"Spirit count: {options.SpiritCount}");
             // Decide if we will be using an extra board or second adversary
             var useAdditionalBoard = _rng.NextDouble() <= (double)config.AdditionalBoardChance / 100;
             _logger.LogDebug($"Additional board: {useAdditionalBoard}");
@@ -142,7 +148,7 @@ namespace SiRandomizer.Services
             // Determine the entry to use for all options that have configurable weightings.
             options.Map = DetermineOption(config.Maps.Where(m => m.Selected && 
                 // Ensure that only maps that are valid for the determined number of boards will be chosen.
-                m.ValidForBoardCount(config.Players + options.AdditionalBoards) &&
+                m.ValidForBoardCount(options.SpiritCount + options.AdditionalBoards) &&
                 // Ensure that only maps that are valid for the determine scenario are chosen.
                 (options.Scenario.ValidMaps == null || options.Scenario.ValidMaps.Any(v => v == m))));
 
@@ -211,13 +217,14 @@ namespace SiRandomizer.Services
 
         private IEnumerable<Board> GetBoards(
             OverallConfiguration config,
+            DeterminedOptions options,
             GameSetup gameSetup, 
             out long boardCombinations) 
         {
             List<Board> selectedBoards = new List<Board>();
             boardCombinations = 0;
 
-            var totalBoards = config.Players + 
+            var totalBoards = options.SpiritCount + 
                 gameSetup.AdditionalBoards;
 
             if(gameSetup.Map.Thematic) 
@@ -234,7 +241,7 @@ namespace SiRandomizer.Services
                     {
                         // If there might be different numbers of boards (due to the 'allow additionl boards' option)
                         // We add the combinations for each possible numbers of boards in order to get the total.
-                        result += THEMATIC_BOARD_COMBINATIONS[thematicBoards.Count - 1, config.Players + i - 1];
+                        result += THEMATIC_BOARD_COMBINATIONS[thematicBoards.Count - 1, options.SpiritCount + i - 1];
                     }
                     return result;
                 };
@@ -314,7 +321,7 @@ namespace SiRandomizer.Services
                 // for each possible number of boards.                
                 for(int i = config.MinAdditionalBoards; i <= config.MaxAdditionalBoards; i++)
                 {
-                    boardCombinations += possibleBoards.GetCombinations(config.Players + i);
+                    boardCombinations += possibleBoards.GetCombinations(options.SpiritCount + i);
                 }
 
                 if(totalBoards <= 4 && 

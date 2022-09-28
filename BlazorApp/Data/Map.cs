@@ -71,9 +71,9 @@ namespace SiRandomizer.Data
 
         public override bool IsVisible()
         {
-            var visible = false;            
-            var maxBoards = Config.Players + Config.MaxAdditionalBoards;
-            var minBoards = Config.Players + Config.MinAdditionalBoards;
+            var visible = false;
+            var maxBoards = Config.MaxSpirits + Config.MaxAdditionalBoards;
+            var minBoards = Config.MinSpirits + Config.MinAdditionalBoards;
             // This map should be visible if it is valid for any possible
             // number of boards based on the current configuration.
             for(int c = minBoards; c <= maxBoards; c++)
