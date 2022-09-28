@@ -11,6 +11,14 @@ namespace SiRandomizer.Data
 {
     public class OverallConfiguration : IValidatableObject
     {
+        // Used to inform watchers about certain properties being changed
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new 
+                PropertyChangedEventArgs(propertyName));
+        }
+
         public OptionGroup<Adversary> Adversaries { get; set; }
         public OptionGroup<Board> Boards { get; set; }
         public OptionGroup<Map> Maps { get; set; }
@@ -43,11 +51,23 @@ namespace SiRandomizer.Data
         public OptionChoice ImbalancedArcadeBoards {get;set;} = OptionChoice.Block;
         public OptionChoice Aspects {get;set;} = OptionChoice.Allow;
 
+        private bool _showWeights = false;
         /// <summary>
         /// If true, display and allow editing of weights for individual items.
         /// </summary>
         /// <value></value>
-        public bool ShowWeights {get;set;} = false;
+        public bool ShowWeights 
+        {
+            get
+            {
+                return _showWeights;
+            }
+            set 
+            {
+                _showWeights = value;
+                OnPropertyChanged(nameof(ShowWeights));
+            }
+        }
 
         [JsonIgnore]
         public int MaxAdditionalBoards 

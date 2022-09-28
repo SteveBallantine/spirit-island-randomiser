@@ -210,11 +210,13 @@ else
         // Changing selected maps can change the visible boards
         config.Maps.PropertyChanged += HandlePropertyChanged;
         PresetService.RefreshRequired += HandleRefreshRequired; 
+        config.PropertyChanged += HandlePropertyChanged; 
     }
 
     private void HandlePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs args)  
     {
-        if(args.PropertyName.EndsWith(nameof(SelectableComponentBase.Selected)))
+        if(args.PropertyName.EndsWith(nameof(SelectableComponentBase.Selected)) ||
+            args.PropertyName.Equals(nameof(OverallConfiguration.ShowWeights)))
         {
             InvokeAsync(StateHasChanged);
         }
