@@ -31,8 +31,19 @@ namespace SiRandomizer.Data
         [Required]
         [Range(1, 6, ErrorMessage = "Number of spirits must be 1 - 6")]
         public int MinSpirits {get;set;}
-        [Range(1, 6, ErrorMessage = "Number of spirits must be 1 - 6")]
-        public int MaxSpirits {get;set;}
+
+        private int _maxSpirits;
+        public int MaxSpirits 
+        {
+            get 
+            {
+                return RandomiseSpiritCount ? _maxSpirits : MinSpirits;
+            }
+            set
+            {
+                _maxSpirits = value;
+            }
+        }
 
         [Required]
         [Range(0, 20, ErrorMessage = "Minimum difficulty must be 0 - 20")]
@@ -264,12 +275,6 @@ namespace SiRandomizer.Data
                 yield return new ValidationResult("Maximum difficulty must be geater than or equal to minimum difficulty",
                     new[] { nameof(MaxDifficulty) });
             }
-            if(MaxSpirits + MaxAdditionalBoards > Boards.Count(b => b.Selected))
-            {
-                BoardsPanelClass = "panel-invalid";
-                yield return new ValidationResult("Max number of spirits/players + max additional boards must be no larger than the number of selected boards",
-                    new[] { nameof(Boards) });
-            }
             if(Scenarios.All(s => s.Selected == false))
             {
                 ScenariosPanelClass = "panel-invalid";
@@ -280,10 +285,24 @@ namespace SiRandomizer.Data
                 AdversariesPanelClass = "panel-invalid";
                 yield return new ValidationResult("Must pick at least one adversary", new[] { nameof(Adversaries) });
             }
+            bool mapSelected = true;
             if(Maps.All(s => s.Selected == false))
             {
+                mapSelected = false;
                 MapsPanelClass = "panel-invalid";
                 yield return new ValidationResult("Must pick at least one maps", new[] { nameof(Maps) });
+            }
+            if(MaxSpirits + MaxAdditionalBoards > Boards.Count(b => b.Selected) &&
+                // If no map is selected then boards will not be available for selection. 
+                // The error message to pick a map is sufficient, so no need to display one for this as well.
+                mapSelected &&
+                // If only thematic maps are selected, boards are not displayed. So no need for this validation message.
+                Maps.Count(s => s.Selected && s.Thematic) != Maps.Count(s => s.Selected))
+            {
+                BoardsPanelClass = "panel-invalid";
+                yield return new ValidationResult($"You must select enough boards to allow for the maximum " +
+                    "number of spirits ({MaxSpirits}) + extra boards ({MaxAdditionalBoards})",
+                    new[] { nameof(Boards) });
             }
             if(Spirits.Count(s => s.Selected) < MaxSpirits)
             {
@@ -294,7 +313,12 @@ namespace SiRandomizer.Data
                 MaxSpirits < MinSpirits)
             {
                 yield return new ValidationResult($"Min player/spirit count must be greater than max.", new[] { nameof(MinSpirits), nameof(MaxSpirits) });
-            }           
+            }      
+            if(RandomiseSpiritCount &&
+                (MaxSpirits < 1 || MaxSpirits > 6))
+            {
+                yield return new ValidationResult($"Max player/spirit count must be 1-6.", new[] { nameof(MaxSpirits) });
+            }      
         }
     }
 }
