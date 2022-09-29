@@ -301,7 +301,7 @@ namespace SiRandomizer.Data
             {
                 BoardsPanelClass = "panel-invalid";
                 yield return new ValidationResult($"You must select enough boards to allow for the maximum " +
-                    "number of spirits ({MaxSpirits}) + extra boards ({MaxAdditionalBoards})",
+                    $"number of spirits ({MaxSpirits}) + extra boards ({MaxAdditionalBoards})",
                     new[] { nameof(Boards) });
             }
             if(Spirits.Count(s => s.Selected) < MaxSpirits)
