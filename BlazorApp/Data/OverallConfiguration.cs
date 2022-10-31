@@ -30,9 +30,9 @@ namespace SiRandomizer.Data
 
         [Required]
         [Range(1, 6, ErrorMessage = "Number of spirits must be 1 - 6")]
-        public int MinSpirits {get;set;}
+        public int MinSpirits {get;set;} = 1;
 
-        private int _maxSpirits;
+        private int _maxSpirits = 1;
         public int MaxSpirits 
         {
             get 
