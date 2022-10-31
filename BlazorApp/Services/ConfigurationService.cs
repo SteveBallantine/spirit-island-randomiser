@@ -57,7 +57,9 @@ namespace SiRandomizer.Services
                 Name = OptionGroup<Scenario>.SCENARIOS
             };
 
-            scenarios.Add(new Scenario(Scenario.NoScenario, config, scenarios, null, 0));
+            var noScenario = new Scenario(Scenario.NoScenario, config, scenarios, null, 0);
+            noScenario.Selected = true;
+            scenarios.Add(noScenario);
             scenarios.Add(new Scenario(Scenario.Blitz, config, scenarios, null, 0));
             scenarios.Add(new Scenario(Scenario.GuardTheIslesHeart, config, scenarios, null, 0));
             scenarios.Add(new Scenario(Scenario.RitualsOfTerror, config, scenarios, null, 3));
