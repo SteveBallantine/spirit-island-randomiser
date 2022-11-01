@@ -7,6 +7,7 @@ namespace SiRandomizer.Data
 {
     public class GameSetup
     {
+        public bool AccountForCognitiveLoad { get; set; }
         public AdversaryLevel LeadingAdversary { get; set; }
         public AdversaryLevel SupportingAdversary { get; set; }
         public IEnumerable<BoardSetup> BoardSetups { get; set; }
@@ -68,6 +69,10 @@ namespace SiRandomizer.Data
         public int AdditionalBoardDifficulty =>
             BaseDifficulty <= 1 ? 2 : BaseDifficulty <= 4 ? 3 : 4;
 
+        /// <summary>
+        /// The true difficulty, as determined by the Spirit Island rules.
+        /// </summary>
+        /// <value></value>
         public int Difficulty 
         {
             get 
@@ -76,6 +81,40 @@ namespace SiRandomizer.Data
                     (AdditionalBoards * AdditionalBoardDifficulty);
             }
         }
+
+        /// <summary>
+        /// This is the difficulty that is used when deciding if this setup can be 
+        /// selected or not, based on the user's min/max difficulty selection.
+        /// </summary>
+        /// <value></value>
+        public double GetComparitiveDifficulty()
+        {
+            return GetComparitiveDifficulty(this.BoardSetups.Where(b => b.SpiritAspect != null).Count());
+        }
+        public double GetComparitiveDifficulty(int spiritCount)
+        {
+            return AccountForCognitiveLoad ?
+                Difficulty + GetDifficultyFromSpiritCount(spiritCount) + GetDifficultyFromSpiritComplexity():
+                Difficulty;
+        }
+
+        private double GetDifficultyFromSpiritCount(int spiritCount)
+        {
+            return Math.Pow(spiritCount, 2)/6-(double)spiritCount/6;
+        }
+
+        private double GetDifficultyFromSpiritComplexity()
+        {
+            // GameSetup instances are initially created without board setups.
+            // In this case, just return 0 (i.e. the same as all spirits being moderate complexity)
+            return this.BoardSetups == null ? 0 :
+                // TotalComplexity will be a number from 1 (Low Complexity) to 4 (Very High Complexity) 
+                // We want to treat moderate complexity as the base line, so subtract 2.
+                // Then multiply by 1/3 to get the difficulty adjustement for each spirit.
+                this.BoardSetups.Where(b => b.SpiritAspect != null)
+                    .Sum(b => (b.SpiritAspect.TotalComplexity - 2) * 0.33);
+        }
+
         public bool HasMapImage =>
             BoardSetups.Count() > 1 &&
             Map.Thematic == false &&

@@ -55,7 +55,7 @@ namespace SiRandomizer.Data
             // Add a 'base' aspect for all spirits.
             // This allows us to keep the setup generation logic nice and general, rather
             // than having to deal with Aspects as a specical case.
-            Add(new SpiritAspect(SpiritAspect.Base, config, this, expansion));
+            Add(new SpiritAspect(SpiritAspect.Base, config, this, expansion, 0));
         }
 
         [JsonIgnore]

@@ -119,6 +119,9 @@ else if (setup == null)
                                 <div class="col-6">
                                     <input type="checkbox" @bind="config.ShowWeights">Show Weights <Tooltip Text="Allows the chance of certain options to be specified (e.g. chance of getting thematic map). For most purposes, the weights are the percentage chance of that item being selected. The app will automatically adjust the values of any weights that you havent specified so that the total of all weights adds up to (roughly) 100.">?</Tooltip>
                                 </div>
+                                <div class="col-6">
+                                    <input type="checkbox" @bind="config.AccountForCognitiveLoad">Account for Cognitive Load <Tooltip Text="This setting is intended for solo players playing 'multi-handed' (controlling multiple spirits). This modifies the difficulty value to try and take account of the 'cognitive load' of piloting ever-greater numbers of spirits, as well as multiple complex spirits. Each spirit beyond the first adds 1/3 * number of existing spirits to the difficulty. So, 2 spirits adds 1/3, 3 spirits adds 1, etc. In addition, difficulty is +/- 1/3 for each level above/below medium complexity. E.g. a high complexity spirit adds 1/3, very high adds 2/3 and a low subtracts 1/3.">?</Tooltip>
+                                </div>
                             </div>
                         </div>
                     </Body>

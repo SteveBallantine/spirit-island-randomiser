@@ -85,6 +85,8 @@ namespace SiRandomizer.Data
             }
         }
 
+        public bool AccountForCognitiveLoad { get; set; } = false;
+
         [JsonIgnore]
         public int MaxAdditionalBoards 
         {
@@ -115,6 +117,7 @@ namespace SiRandomizer.Data
             this.AdditionalBoardChance = other.AdditionalBoardChance;
             this.CombinedAdversariesChance = other.CombinedAdversariesChance;
             this.ShowWeights = other.ShowWeights;
+            this.AccountForCognitiveLoad = other.AccountForCognitiveLoad;
 
             // In future, AdditionalBoard and CombinedAdversaries will always be null.
             // If the user has a different value, then migrate it by setting the corresponding 'Chance' value instead.
@@ -248,7 +251,7 @@ namespace SiRandomizer.Data
             {
                 if(spirit.HasChild(aspect.Name) == false) 
                 {
-                    var newAspect = new SpiritAspect(aspect.Name, this, spirit, Expansions[Expansion.Homebrew]);
+                    var newAspect = new SpiritAspect(aspect.Name, this, spirit, Expansions[Expansion.Homebrew], 0);
                     aspect.Deletable = true;
                     spirit.Add(newAspect);
                 }

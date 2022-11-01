@@ -36,9 +36,12 @@ namespace SiRandomizer.Data
             string name,
             OverallConfiguration config,
             IComponentCollection parentList,
-            Expansion expansion) 
+            Expansion expansion,
+            int complexityChange) 
             : base(name, config, parentList, expansion)
-        { }
+        { 
+            ComplexityChange = complexityChange;
+        }
 
         /// <summary>
         /// Return true if the parent spirit only has one aspect available for selection
@@ -120,6 +123,20 @@ namespace SiRandomizer.Data
                 return result;
             } 
             set => base.Selected = value; 
+        }
+
+        [JsonIgnore]
+        public int ComplexityChange { get; set; }
+        [JsonIgnore]
+        public int TotalComplexity 
+        { 
+            get 
+            {
+                var totalComplexity = (int)Parent.BaseComplexity + ComplexityChange;
+                // If total complexity is < 1 (which represents low complexity), just return 1.
+                // This can happen when using Shadows with the Reach aspect.
+                return totalComplexity < 1 ? 1 : totalComplexity;
+            }
         }
         
         public override bool Equals(object obj)

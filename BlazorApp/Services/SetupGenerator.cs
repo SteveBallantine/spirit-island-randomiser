@@ -64,10 +64,10 @@ namespace SiRandomizer.Services
                 options = DetermineOptions(config);
 
                 // Get possible setups based on options and min/max difficulty.
-                setups = GetSetups(config, options)
-                    .Where(c => 
-                        c.Difficulty >= config.MinDifficulty && 
-                        c.Difficulty <= config.MaxDifficulty);
+                setups = GetSetups(config, options)                
+                    .Where(c =>
+                        c.GetComparitiveDifficulty(options.SpiritCount) >= config.MinDifficulty && 
+                        c.GetComparitiveDifficulty(options.SpiritCount) <= config.MaxDifficulty);
                 
                 foundValidSetup = setups.Count() > 0;
                 attempts++;
@@ -81,26 +81,49 @@ namespace SiRandomizer.Services
             _logger.LogDebug($"{setups.Count()} valid setups found");
             // Pick the setup to use from the available options
             var setup = setups.PickRandom(1).Single();
-
+        
             // Get the number of possible combinations based on the number of players and
-            // number of selected spirits. (Note - we can't easilly use selected aspects 
+            // number of selected spirits. (Note - we can't easily use selected aspects 
             // because aspects cannot always be played together - e.g. immense lightning 
             // + wind lightning is an invalid result)
             var spirits = config.Spirits.Where(s => s.Selected);
             var spiritCombinations = spirits.GetCombinations(options.SpiritCount);
-            // Pick a random spirit and a random aspect for each selected spirit.
-            var aspects = spirits.PickRandom(options.SpiritCount)
-                .Select(s => s.Aspects.Where(s => s.Selected).PickRandom(1).Single()).ToList();
-            
-            // Get a set of boards to match the number of spirits + any additional boards
-            var boards = GetBoards(config, options, setup, out long boardCombinations).ToList();
-            if(boards.Count < options.SpiritCount + setup.AdditionalBoards) 
-            {
-                throw new SiException("Failed to get the expected number of boards");
-            }
 
-            // Randomise spirit/board combos
-            setup.BoardSetups = GetBoardSetups(boards, aspects).ToList();
+            foundValidSetup = false;
+            attempts = 0;
+            long boardCombinations = 0;
+
+            while(foundValidSetup == false && attempts < 10)
+            {
+                attempts++;
+
+                // Pick a random spirit and a random aspect for each selected spirit.
+                var aspects = spirits.PickRandom(options.SpiritCount)
+                    .Select(s => s.Aspects.Where(s => s.Selected).PickRandom(1).Single()).ToList();
+                
+                // Get a set of boards to match the number of spirits + any additional boards
+                var boards = GetBoards(config, options, setup, out boardCombinations).ToList();
+                if(boards.Count < options.SpiritCount + setup.AdditionalBoards) 
+                {
+                    throw new SiException("Failed to get the expected number of boards");
+                }
+
+                // Randomise spirit/board combos
+                setup.BoardSetups = GetBoardSetups(boards, aspects).ToList();
+
+                // Check if the selected setup is valid based on the final comparitive 
+                // difficulty (which will now take spirit complexity into account)
+                // If the 'account for cognitive load' option is not ticked, the difficulty 
+                // will remain unchanged.
+                foundValidSetup = 
+                    setup.GetComparitiveDifficulty() >= config.MinDifficulty && 
+                    setup.GetComparitiveDifficulty() <= config.MaxDifficulty;
+            }
+            
+            if(foundValidSetup == false)
+            {
+                throw new SiException($"No valid setups found for the configured options after 10 attempts");
+            }
 
             return new SetupResult() {
                 Setup = setup,
@@ -376,7 +399,8 @@ namespace SiRandomizer.Services
                     Map = options.Map,
                     LeadingAdversary = l,
                     SupportingAdversary = config.Adversaries[Adversary.NoAdversary].Levels.Single(),
-                    AdditionalBoards = options.AdditionalBoards
+                    AdditionalBoards = options.AdditionalBoards,
+                    AccountForCognitiveLoad = config.AccountForCognitiveLoad
                 });
             if(options.SecondaryAdversary != null)
             {
