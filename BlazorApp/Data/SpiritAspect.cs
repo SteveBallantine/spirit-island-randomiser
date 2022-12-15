@@ -12,20 +12,63 @@ namespace SiRandomizer.Data
         public const string Immense = "Immense";
         public const string Wind = "Wind";
         public const string Pandemonium = "Pandemonium";
+        public const string Sparking = "Sparking";
 
         // Earth
         public const string Might = "Might";
         public const string Resilience = "Resilience";
+        public const string Nourishing = "Nourishing";
 
         // River
         public const string Sunshine = "Sunshine";
         public const string Travel = "Travel";
+        public const string Haven = "Haven";
 
         // Shadows
         public const string Madness = "Madness";
         public const string Amorphous = "Amorphous";
         public const string Reach = "Reach";
         public const string Foreboding = "Foreboding";
+        public const string DarkFire = "Dark Fire";
+
+        // Green
+        public const string Regrowth = "Regrowth";
+        public const string Tangles = "Tangles";
+
+        // Thunderspeaker
+        public const string Tactician = "Tactician";
+        public const string Warrior = "Warrior";
+
+        // Ocean
+        public const string Deeps = "Deeps";
+
+        // Bringer
+        public const string Enticing = "Enticing";
+        public const string Violence = "Violence";
+
+        // Serpent
+        public const string Locus = "Locus";
+
+        // Wildfire
+        public const string Transforming = "Transforming";
+
+        // Fangs
+        public const string Encircle = "Encircle";
+        public const string Unconstrained = "Unconstrained";
+
+        // Keeper
+        public const string Hostility = "Spreading Hostility";
+
+        // Memory
+        public const string Intensify = "Intensify";
+        public const string Mentor = "Mentor";
+
+        // Lure
+        public const string Lair = "Lair";
+
+        // Mist
+        public const string Stranded = "Stranded";
+
 
         [JsonIgnore]
         public Spirit Parent { get; set; }

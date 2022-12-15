@@ -105,14 +105,15 @@ namespace SiRandomizer.Data
             }
         }
 
-        public OverallConfiguration() {}         
+
+        public OverallConfiguration() {}
 
         /// <summary>
         /// Update the user-configurable settings on this configuration object
         /// with those from the supplied configuration object.
         /// </summary>
         /// <param name="other"></param>
-        public void TakeSettingsFrom(OverallConfiguration other)
+        public void TakeSettingsFrom(OverallConfiguration other, ILogger logger)
         {            
             this.AdditionalBoardChance = other.AdditionalBoardChance;
             this.CombinedAdversariesChance = other.CombinedAdversariesChance;
@@ -173,7 +174,9 @@ namespace SiRandomizer.Data
             TakeSettingsFrom(Boards, other.Boards);
             TakeSettingsFrom(Maps, other.Maps);
             TakeSettingsFrom(Scenarios, other.Scenarios);
-            TakeSettingsFrom<Spirit, SpiritAspect>(Spirits, other.Spirits, SpiritFactory);
+            TakeSettingsFrom<Spirit, SpiritAspect>(Spirits, other.Spirits, true, SpiritFactory);
+
+            logger.LogInformation("Completed merging configurations");
         }
 
         private void TakeSettingsFrom<TItem>(
@@ -191,6 +194,7 @@ namespace SiRandomizer.Data
         private void TakeSettingsFrom<TItem, TChild>(
             IComponentCollection<TItem> destination, 
             IComponentCollection<TItem> source,
+            bool removeFromDestinationIfNotInSource = false,
             Func<TItem, TItem> itemFactory = null)
             where TItem : INamedComponent
             where TChild : INamedComponent
@@ -227,13 +231,16 @@ namespace SiRandomizer.Data
                     }
                 }
 
-                // Remove any items that are in the source but not the destination.
-                // (e.g. this can happen if you have a preset (A) with homebrew spirits and another (B) without.
-                // when you switch from A to B, we need to remove those additional spirits.)
-                var notInSource = destination.Where(i => source.Any(j => j.Name == i.Name) == false);
-                foreach(var item in notInSource)
+                if(removeFromDestinationIfNotInSource)
                 {
-                    destination.Remove(item.Name);
+                    // Remove any items that are in the source but not the destination.
+                    // (e.g. this can happen if you have a preset (A) with homebrew spirits and another (B) without.
+                    // when you switch from A to B, we need to remove those additional spirits.)
+                    var notInSource = destination.Where(i => source.Any(j => j.Name == i.Name) == false);
+                    foreach(var item in notInSource)
+                    {
+                        destination.Remove(item.Name);
+                    }
                 }
             }
         }

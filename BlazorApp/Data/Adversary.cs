@@ -14,6 +14,7 @@ namespace SiRandomizer.Data
         public const string Habsburg = "Habsburg";
         public const string Russia = "Russia";
         public const string Scotland = "Scotland";
+        public const string HapsburgMining = "Hapsburg Mining Expedition";
 
         public Adversary() {}
 

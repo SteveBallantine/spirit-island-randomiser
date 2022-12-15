@@ -39,7 +39,7 @@ namespace SiRandomizer.Services
             expansions.Add(new Expansion(Expansion.Promo1, config, expansions, "P1"));
             expansions.Add(new Expansion(Expansion.Promo2, config, expansions, "P2"));
             expansions.Add(new Expansion(Expansion.Horizons, config, expansions, "HS"));
-            //expansions.Add(new Expansion(Expansion.NatureIncarnate, config, "NI"));
+            expansions.Add(new Expansion(Expansion.NatureIncarnate, config, expansions, "NI"));
             expansions.Add(new Expansion(Expansion.Apocrypha, config, expansions, "Ax"));
             expansions.Add(new Expansion(Expansion.Homebrew, config, expansions, "Hx"));
 
@@ -92,43 +92,92 @@ namespace SiRandomizer.Services
             lightning.Add(new SpiritAspect(SpiritAspect.Wind, config, lightning, expansions[Expansion.JaggedEarth], 1));
             lightning.Add(new SpiritAspect(SpiritAspect.Pandemonium, config, lightning, expansions[Expansion.JaggedEarth], 1));
             lightning.Add(new SpiritAspect(SpiritAspect.Immense, config, lightning, expansions[Expansion.Promo2], 1));
+            lightning.Add(new SpiritAspect(SpiritAspect.Sparking, config, lightning, expansions[Expansion.NatureIncarnate], 0));
             spirits.Add(lightning);
+
             var shadows = new Spirit(Spirit.Shadows, config, spirits, null, Complexity.Low);
             shadows.Add(new SpiritAspect(SpiritAspect.Madness, config, shadows, expansions[Expansion.JaggedEarth], 1));
             shadows.Add(new SpiritAspect(SpiritAspect.Reach, config, shadows, expansions[Expansion.JaggedEarth], -1));
             shadows.Add(new SpiritAspect(SpiritAspect.Amorphous, config, shadows, expansions[Expansion.Promo2], 1));
             shadows.Add(new SpiritAspect(SpiritAspect.Foreboding, config, shadows, expansions[Expansion.Promo2], 1));
+            shadows.Add(new SpiritAspect(SpiritAspect.DarkFire, config, shadows, expansions[Expansion.NatureIncarnate], 0));
             spirits.Add(shadows);
+
             var earth = new Spirit(Spirit.Earth, config, spirits, null, Complexity.Low);
             earth.Add(new SpiritAspect(SpiritAspect.Resilience, config, earth, expansions[Expansion.JaggedEarth], 0));
             earth.Add(new SpiritAspect(SpiritAspect.Might, config, earth, expansions[Expansion.Promo2], 1));
+            earth.Add(new SpiritAspect(SpiritAspect.Nourishing, config, earth, expansions[Expansion.NatureIncarnate], 0));
             spirits.Add(earth);
+
             var river = new Spirit(Spirit.River, config, spirits, null, Complexity.Low);
             river.Add(new SpiritAspect(SpiritAspect.Sunshine, config, river, expansions[Expansion.JaggedEarth], 1));
             river.Add(new SpiritAspect(SpiritAspect.Travel, config, river, expansions[Expansion.Promo2], 1));
+            river.Add(new SpiritAspect(SpiritAspect.Haven, config, river, expansions[Expansion.NatureIncarnate], 0));
             spirits.Add(river);
-            spirits.Add(new Spirit(Spirit.Thunderspeaker, config, spirits, null, Complexity.Moderate));
-            spirits.Add(new Spirit(Spirit.Green, config, spirits, null, Complexity.Moderate));
-            spirits.Add(new Spirit(Spirit.Ocean, config, spirits, null, Complexity.High));
-            spirits.Add(new Spirit(Spirit.Bringer, config, spirits, null, Complexity.High));
+
+            var thunderspeaker = new Spirit(Spirit.Thunderspeaker, config, spirits, null, Complexity.Moderate);
+            thunderspeaker.Add(new SpiritAspect(SpiritAspect.Warrior, config, thunderspeaker, expansions[Expansion.NatureIncarnate], 0));
+            thunderspeaker.Add(new SpiritAspect(SpiritAspect.Tactician, config, thunderspeaker, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(thunderspeaker);
+
+            var green = new Spirit(Spirit.Green, config, spirits, null, Complexity.Moderate);
+            green.Add(new SpiritAspect(SpiritAspect.Regrowth, config, green, expansions[Expansion.NatureIncarnate], 0));
+            green.Add(new SpiritAspect(SpiritAspect.Tangles, config, green, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(green);
+
+            var ocean = new Spirit(Spirit.Ocean, config, spirits, null, Complexity.High);
+            ocean.Add(new SpiritAspect(SpiritAspect.Deeps, config, ocean, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(ocean);
+
+            var bringer = new Spirit(Spirit.Bringer, config, spirits, null, Complexity.High);
+            bringer.Add(new SpiritAspect(SpiritAspect.Violence, config, bringer, expansions[Expansion.NatureIncarnate], 0));
+            bringer.Add(new SpiritAspect(SpiritAspect.Enticing, config, bringer, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(bringer);
+
             // Branch and claw
-            spirits.Add(new Spirit(Spirit.Keeper, config, spirits, expansions[Expansion.BranchAndClaw], Complexity.Moderate));
-            spirits.Add(new Spirit(Spirit.Fangs, config, spirits, expansions[Expansion.BranchAndClaw], Complexity.Moderate));
+            var keeper = new Spirit(Spirit.Keeper, config, spirits, expansions[Expansion.BranchAndClaw], Complexity.Moderate);
+            keeper.Add(new SpiritAspect(SpiritAspect.Hostility, config, keeper, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(keeper);
+
+            var fangs = new Spirit(Spirit.Fangs, config, spirits, expansions[Expansion.BranchAndClaw], Complexity.Moderate);
+            fangs.Add(new SpiritAspect(SpiritAspect.Encircle, config, fangs, expansions[Expansion.NatureIncarnate], 0));
+            fangs.Add(new SpiritAspect(SpiritAspect.Unconstrained, config, fangs, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(fangs);
+
             // Promo 1
-            spirits.Add(new Spirit(Spirit.Wildfire, config, spirits, expansions[Expansion.Promo1], Complexity.High));
-            spirits.Add(new Spirit(Spirit.Snek, config, spirits, expansions[Expansion.Promo1], Complexity.High));
+            var wildfire = new Spirit(Spirit.Wildfire, config, spirits, expansions[Expansion.Promo1], Complexity.High);
+            wildfire.Add(new SpiritAspect(SpiritAspect.Transforming, config, wildfire, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(wildfire);
+
+            var snek = new Spirit(Spirit.Snek, config, spirits, expansions[Expansion.Promo1], Complexity.High);
+            snek.Add(new SpiritAspect(SpiritAspect.Locus, config, snek, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(snek);
+
             // Promo 2
             spirits.Add(new Spirit(Spirit.Downpour, config, spirits, expansions[Expansion.Promo2], Complexity.High));
             spirits.Add(new Spirit(Spirit.Finder, config, spirits, expansions[Expansion.Promo2], Complexity.VeryHigh));
             // Jagged Earth
             spirits.Add(new Spirit(Spirit.Volcano, config, spirits, expansions[Expansion.JaggedEarth], Complexity.Moderate));
-            spirits.Add(new Spirit(Spirit.Lure, config, spirits, expansions[Expansion.JaggedEarth], Complexity.Moderate));
+
+            var lure = new Spirit(Spirit.Lure, config, spirits, expansions[Expansion.JaggedEarth], Complexity.Moderate);
+            lure.Add(new SpiritAspect(SpiritAspect.Stranded, config, lure, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(lure);
+
             spirits.Add(new Spirit(Spirit.ManyMinds, config, spirits, expansions[Expansion.JaggedEarth], Complexity.Moderate));
-            spirits.Add(new Spirit(Spirit.Memory, config, spirits, expansions[Expansion.JaggedEarth], Complexity.Moderate));
+            
+            var memory = new Spirit(Spirit.Memory, config, spirits, expansions[Expansion.JaggedEarth], Complexity.Moderate);
+            memory.Add(new SpiritAspect(SpiritAspect.Mentor, config, memory, expansions[Expansion.NatureIncarnate], 0));
+            memory.Add(new SpiritAspect(SpiritAspect.Intensify, config, memory, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(memory);
+
             spirits.Add(new Spirit(Spirit.Stone, config, spirits, expansions[Expansion.JaggedEarth], Complexity.Moderate));
             spirits.Add(new Spirit(Spirit.Trickster, config, spirits, expansions[Expansion.JaggedEarth], Complexity.Moderate));
             spirits.Add(new Spirit(Spirit.Vengeance, config, spirits, expansions[Expansion.JaggedEarth], Complexity.High));
-            spirits.Add(new Spirit(Spirit.Mist, config, spirits, expansions[Expansion.JaggedEarth], Complexity.High));
+
+            var mist = new Spirit(Spirit.Mist, config, spirits, expansions[Expansion.JaggedEarth], Complexity.High);
+            mist.Add(new SpiritAspect(SpiritAspect.Stranded, config, mist, expansions[Expansion.NatureIncarnate], 0));
+            spirits.Add(mist);
+
             spirits.Add(new Spirit(Spirit.Starlight, config, spirits, expansions[Expansion.JaggedEarth], Complexity.VeryHigh));
             spirits.Add(new Spirit(Spirit.Fractured, config, spirits, expansions[Expansion.JaggedEarth], Complexity.VeryHigh));
             // Apocrypha
@@ -176,6 +225,9 @@ namespace SiRandomizer.Services
             adversaries.Add(adversary);
             adversary = new Adversary(Adversary.Scotland, config, adversaries, expansions[Expansion.Promo2]);
             AddAdversaryLevels(adversary, new int[] { 1, 3, 4, 6, 7, 8, 10 }, config);
+            adversaries.Add(adversary);
+            adversary = new Adversary(Adversary.HapsburgMining, config, adversaries, expansions[Expansion.NatureIncarnate]);
+            AddAdversaryLevels(adversary, new int[] { 0, 0, 0, 0, 0, 0, 0 }, config);
             adversaries.Add(adversary);
             
             return adversaries;

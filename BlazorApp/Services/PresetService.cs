@@ -18,16 +18,19 @@ namespace SiRandomizer.Services
 
         private IJSRuntime _jsRuntime;
         private ConfigurationService _configService;
+        private ILogger<PresetService> _logger;
 
         public Presets Presets { get; private set; }
 
         public event EventHandler RefreshRequired;
 
         public PresetService(IJSRuntime jsRuntime,
-            ConfigurationService configService)
+            ConfigurationService configService,
+            ILogger<PresetService> logger)
         {
             _jsRuntime = jsRuntime;
             _configService = configService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -141,7 +144,7 @@ namespace SiRandomizer.Services
 
             // Load the configuration for the current preset
             var savedConfig = await LoadPresetAsync();
-            _configService.Current.TakeSettingsFrom(savedConfig);
+            _configService.Current.TakeSettingsFrom(savedConfig, _logger);
         }
 
         public async void PresetsChangingAsync(object sender, PropertyChangedEventArgs args) 
@@ -166,7 +169,7 @@ namespace SiRandomizer.Services
                 await SavePresetsAsync();
                 // Load the configuration for the preset
                 var savedConfig = await LoadPresetAsync();
-                _configService.Current.TakeSettingsFrom(savedConfig);
+                _configService.Current.TakeSettingsFrom(savedConfig, _logger);
                 OnRefreshRequired();
             }
         }
