@@ -166,35 +166,36 @@ namespace SiRandomizer.Data
             this.ImbalancedArcadeBoards = other.ImbalancedArcadeBoards;
             this.Aspects = other.Aspects;
 
-            TakeSettingsFrom(Expansions, other.Expansions);
+            TakeSettingsFrom(Expansions, other.Expansions, logger);
             // Adversaries is a collection (of AdversaryLevels) so need to specify
             // the child type in order for this to work properly.
             // This is all a bit clunky, but gets the job done.
-            TakeSettingsFrom<Adversary, AdversaryLevel>(Adversaries, other.Adversaries);
-            TakeSettingsFrom(Boards, other.Boards);
-            TakeSettingsFrom(Maps, other.Maps);
-            TakeSettingsFrom(Scenarios, other.Scenarios);
-            TakeSettingsFrom<Spirit, SpiritAspect>(Spirits, other.Spirits, true, SpiritFactory);
+            TakeSettingsFrom<Adversary, AdversaryLevel>(Adversaries, other.Adversaries, logger);
+            TakeSettingsFrom(Boards, other.Boards, logger);
+            TakeSettingsFrom(Maps, other.Maps, logger);
+            TakeSettingsFrom(Scenarios, other.Scenarios, logger);
+            TakeSettingsFrom<Spirit, SpiritAspect>(Spirits, other.Spirits, logger, SpiritFactory);
 
             logger.LogInformation("Completed merging configurations");
         }
 
         private void TakeSettingsFrom<TItem>(
             IComponentCollection<TItem> destination, 
-            IComponentCollection<TItem> source)
+            IComponentCollection<TItem> source,
+            ILogger logger)
             where TItem : INamedComponent
         {
             // We call the alternative signature for the method, passing the 
             // item type as the child type.
             // The checks in the other method will handle whether TItem is
             // actually a collection class or not.
-            TakeSettingsFrom<TItem, TItem>(destination, source);
+            TakeSettingsFrom<TItem, TItem>(destination, source, logger);
         }
 
         private void TakeSettingsFrom<TItem, TChild>(
             IComponentCollection<TItem> destination, 
             IComponentCollection<TItem> source,
-            bool removeFromDestinationIfNotInSource = false,
+            ILogger logger,
             Func<TItem, TItem> itemFactory = null)
             where TItem : INamedComponent
             where TChild : INamedComponent
@@ -226,21 +227,23 @@ namespace SiRandomizer.Data
                             // Repeat for any children.
                             TakeSettingsFrom(
                                 destinationItem as IComponentCollection<TChild>, 
-                                sourceItem as IComponentCollection<TChild>);
+                                sourceItem as IComponentCollection<TChild>,
+                                logger);
                         }
                     }
                 }
 
-                if(removeFromDestinationIfNotInSource)
+                // Remove any homebrew items that are in the source but not the destination.
+                // (e.g. this can happen if you have a preset (A) with homebrew spirits and another (B) without.
+                // when you switch from A to B, we need to remove those additional spirits.)
+                var notInSource = destination.Where(i => 
+                    source.Any(j => j.Name == i.Name) == false && 
+                    i is IExpansionContent expansionContent &&
+                    expansionContent.Expansion.Name == Expansion.Homebrew);
+                foreach(var item in notInSource)
                 {
-                    // Remove any items that are in the source but not the destination.
-                    // (e.g. this can happen if you have a preset (A) with homebrew spirits and another (B) without.
-                    // when you switch from A to B, we need to remove those additional spirits.)
-                    var notInSource = destination.Where(i => source.Any(j => j.Name == i.Name) == false);
-                    foreach(var item in notInSource)
-                    {
-                        destination.Remove(item.Name);
-                    }
+                    logger.LogWarning($"Removing '{item.Name}' from configuration");
+                    destination.Remove(item.Name);
                 }
             }
         }

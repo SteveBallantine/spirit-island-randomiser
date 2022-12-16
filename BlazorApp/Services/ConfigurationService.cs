@@ -188,6 +188,16 @@ namespace SiRandomizer.Services
             spirits.Add(new Spirit(Spirit.Heat, config, spirits, expansions[Expansion.Horizons], Complexity.Low));
             spirits.Add(new Spirit(Spirit.Swamp, config, spirits, expansions[Expansion.Horizons], Complexity.Low));
             spirits.Add(new Spirit(Spirit.Eyes, config, spirits, expansions[Expansion.Horizons], Complexity.Low));
+
+            // Nature Incarnate
+            spirits.Add(new Spirit(Spirit.Behemoth, config, spirits, expansions[Expansion.NatureIncarnate], Complexity.Moderate));
+            spirits.Add(new Spirit(Spirit.Roots, config, spirits, expansions[Expansion.NatureIncarnate], Complexity.Moderate));
+            spirits.Add(new Spirit(Spirit.Vigil, config, spirits, expansions[Expansion.NatureIncarnate], Complexity.Moderate));
+            spirits.Add(new Spirit(Spirit.Darkness, config, spirits, expansions[Expansion.NatureIncarnate], Complexity.High));
+            spirits.Add(new Spirit(Spirit.Sun, config, spirits, expansions[Expansion.NatureIncarnate], Complexity.High));
+            spirits.Add(new Spirit(Spirit.Earthquakes, config, spirits, expansions[Expansion.NatureIncarnate], Complexity.VeryHigh));
+            spirits.Add(new Spirit(Spirit.Voice, config, spirits, expansions[Expansion.NatureIncarnate], Complexity.High));
+            spirits.Add(new Spirit(Spirit.WoundedWaters, config, spirits, expansions[Expansion.NatureIncarnate], Complexity.High));
             
             return spirits;
         }
