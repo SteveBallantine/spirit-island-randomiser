@@ -8,7 +8,7 @@
     <span class="si-tag expansion-tag-@itemEx.Expansion.Tag">@itemEx.Expansion.Tag</span>
 }
 @if(Item is IDifficultyModifier difficultyMod) {
-    <span class="si-tag">+@difficultyMod.DifficultyModifier</span>
+    <span class="si-tag">@difficultyMod.DifficultyModifier.ToString("+0;-#")</span>
 }
 @if(Item.HasAssignableWeight && 
     Item.Config.ShowWeights &&

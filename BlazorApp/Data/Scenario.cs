@@ -20,6 +20,9 @@ namespace SiRandomizer.Data
         public const string TheGreatRiver = "The Great River";
         public const string ADiversityOfSpirits = "A Diversity of Spirits";
         public const string VariedTerrains = "Varied Terrains";
+        public const string SurgesOfColonization = "Surges of Colonization";
+        public const string SurgesOfColonizationLarger = "Surges of Colonization (Larger)";
+        public const string DestinyUnfolds = "Destiny Unfolds";
         
         [JsonIgnore]
         public int DifficultyModifier { get; set; }
