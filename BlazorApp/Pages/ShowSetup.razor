@@ -28,7 +28,7 @@
                 Scenario
             </Header>
             <Body>
-                <label>@setup.Setup.Scenario.Name</label><span class="si-tag">+@setup.Setup.Scenario.DifficultyModifier</span>
+                <label>@setup.Setup.Scenario.Name</label><span class="si-tag">@setup.Setup.Scenario.DifficultyModifier.ToString("+0;-#")</span>
             </Body>
         </Panel>
     </div>
@@ -38,7 +38,7 @@
                 Map
             </Header>
             <Body>
-                <label>@setup.Setup.Map.Name</label><span class="si-tag">+@setup.Setup.Map.DifficultyModifier</span>
+                <label>@setup.Setup.Map.Name</label><span class="si-tag">@setup.Setup.Map.DifficultyModifier.ToString("+0;-#")</span>
                 <br/>
                 @if(setup.Setup.HasMapImage)
                 {
@@ -58,7 +58,7 @@
                     <label>Board <span class="si-tag">@board.Board.Name</span> - @board.SpiritDisplayName</label>
                     @if(board.SpiritAspect == null) 
                     {
-                        <span class="si-tag">+@setup.Setup.AdditionalBoardDifficulty</span>
+                        <span class="si-tag">@setup.Setup.AdditionalBoardDifficulty.ToString("+0;-#")</span>
                     }
                     <br>                    
                 }
@@ -77,11 +77,11 @@
                 Adversary
             </Header>
             <Body>
-                <label>@setup.Setup.LeadingAdversary.ToString()</label><span class="si-tag">+@setup.Setup.LeadingAdversaryDifficultyModifier</span><br>
+                <label>@setup.Setup.LeadingAdversary.ToString()</label><span class="si-tag">@setup.Setup.LeadingAdversaryDifficultyModifier.ToString("+0;-#")</span><br>
                 @if(@setup.Setup.HasSupportingAdversary)
                 {
                     <label>Supported by:</label><br>
-                    <label>@setup.Setup.SupportingAdversary.ToString()</label><span class="si-tag">+@setup.Setup.SupportingAdversaryDifficultyModifier</span>
+                    <label>@setup.Setup.SupportingAdversary.ToString()</label><span class="si-tag">@setup.Setup.SupportingAdversaryDifficultyModifier.ToString("+0;-#")</span>
                 }
             </Body>
         </Panel>

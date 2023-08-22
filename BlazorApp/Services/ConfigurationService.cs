@@ -73,6 +73,9 @@ namespace SiRandomizer.Services
             scenarios.Add(new Scenario(Scenario.TheGreatRiver, config, scenarios, expansions[Expansion.JaggedEarth], 3, new List<Map>() { config.Maps[Map.Coastline] }));
             scenarios.Add(new Scenario(Scenario.ADiversityOfSpirits, config, scenarios, expansions[Expansion.Promo2], 0));
             scenarios.Add(new Scenario(Scenario.VariedTerrains, config, scenarios, expansions[Expansion.Promo2], 2));
+            scenarios.Add(new Scenario(Scenario.SurgesOfColonization, config, scenarios, expansions[Expansion.NatureIncarnate], 2));
+            scenarios.Add(new Scenario(Scenario.SurgesOfColonizationLarger, config, scenarios, expansions[Expansion.NatureIncarnate], 7));
+            scenarios.Add(new Scenario(Scenario.DestinyUnfolds, config, scenarios, expansions[Expansion.NatureIncarnate], -1));
 
             return scenarios;
         }
@@ -237,7 +240,7 @@ namespace SiRandomizer.Services
             AddAdversaryLevels(adversary, new int[] { 1, 3, 4, 6, 7, 8, 10 }, config);
             adversaries.Add(adversary);
             adversary = new Adversary(Adversary.HapsburgMining, config, adversaries, expansions[Expansion.NatureIncarnate]);
-            AddAdversaryLevels(adversary, new int[] { 0, 0, 0, 0, 0, 0, 0 }, config);
+            AddAdversaryLevels(adversary, new int[] { 1, 3, 4, 5, 7, 9, 10 }, config);
             adversaries.Add(adversary);
             
             return adversaries;

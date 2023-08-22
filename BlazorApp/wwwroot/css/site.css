@@ -108,6 +108,9 @@ table {
 .expansion-tag-HS {
     background-color: rgb(233, 169, 73);
 }
+.expansion-tag-NI {
+    background-color: rgb(190, 165, 104);
+}
 
 .child-item {
     padding-left: 16px;
