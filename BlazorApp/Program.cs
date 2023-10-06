@@ -16,5 +16,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddSingleton<SetupGenerator>();
 builder.Services.AddSingleton<PresetService>();
+builder.Services.AddSingleton<HandelabraLaunchService>();
 
 await builder.Build().RunAsync();

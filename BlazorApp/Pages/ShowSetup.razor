@@ -1,3 +1,6 @@
+@inject HandelabraLaunchService HandelabraLaunch
+@inject IJSRuntime jsRuntime
+
 <div class="row">
     <div class="col-6">
         <Panel>
@@ -85,7 +88,7 @@
                 }
             </Body>
         </Panel>
-    </div>        
+    </div>
     @if(setup.ShowInstructions)
     {
         <div class="col-12">
@@ -169,6 +172,30 @@
             </Panel>
         </div>
     }
+    <div class="col-12">
+        <Panel>
+            <Header>
+                Launch Spirit Island Digital
+            </Header>
+            <Body>
+                <p>Handelabra produces a <a href="https://www.handelabra.com/spiritisland">digital version</a> of Spirit Island. This randomizer can automatically launch the game using the currently displayed setup.</p>
+                @if(handelabraUnsupportedItems.Any())
+                {
+                    <p>The items listed below are not currently supported by Handelabra:</p>
+                    <ul>
+                    @foreach(var entry in handelabraUnsupportedItems)
+                    {
+                        <li>@entry</li>
+                    }
+                    </ul>
+                } 
+                else 
+                {
+                    <button type="button" @onclick="LaunchHandelabraAsync" disabled="@handelabraUnsupportedItems.Any()">Launch</button>
+                }
+            </Body>
+        </Panel>
+    </div>
     <!-- Remove this for now. Previously, all possible setups were generated and then one picked.
         This was changed to randomly pick individual options up front. This is much faster, essepcially for
         situations where large numbers of items are selected.
@@ -188,6 +215,32 @@
 </div>
 
 @code {
+    private SetupResult _setup;
     [CascadingParameter(Name = "Setup")]
-    public SetupResult setup { get; set; }
+    public SetupResult setup 
+    { 
+        get { return _setup; } 
+        set
+        {
+            _setup = value;
+            _handelabraUnsupportedItems = null;
+        }
+     }
+
+    private IReadOnlyList<string> _handelabraUnsupportedItems;
+    public IReadOnlyList<string> handelabraUnsupportedItems 
+    { 
+        get 
+        {   
+            if(_handelabraUnsupportedItems == null) 
+            {
+                _handelabraUnsupportedItems = @HandelabraLaunch.GetUnsupportedSetupItems(setup.Setup);
+            }
+            return _handelabraUnsupportedItems;
+        }
+    }
+    public async Task LaunchHandelabraAsync()
+    {
+        await jsRuntime.InvokeVoidAsync("open", HandelabraLaunch.BuildLaunchUrl(setup.Setup), "_blank");
+    }
 }
