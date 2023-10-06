@@ -91,7 +91,10 @@ namespace SiRandomizer.Services
             result.Append($"&boards={string.Join(",", setup.BoardSetups.Select(s => BoardNameMappings[s.Board.Name]))}");
             result.Append($"&layout={BuildLayoutString(setup)}");
             result.Append($"&adversary={AdversaryNameMappings[setup.LeadingAdversary.Parent.Name]}");
-            result.Append($"&adversaryLevel={setup.LeadingAdversary.Level}");
+            if(setup.LeadingAdversary.Level > 0) 
+            {
+                result.Append($"&adversaryLevel={setup.LeadingAdversary.Level}");
+            }
             if(setup.Scenario.Name != Scenario.NoScenario)
             {
                 result.Append($"&scenario={ScenarioNameMappings[setup.Scenario.Name]}");
