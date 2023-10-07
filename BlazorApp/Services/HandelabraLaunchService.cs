@@ -60,7 +60,7 @@ namespace SiRandomizer.Services
             { Board.B, "B" },
             { Board.C, "C" },
             { Board.D, "D" },
-            { Board.E, "E" },
+            //{ Board.E, "E" }, Not yet added to SI digital
             { Board.F, "F" },
             { Board.G, "G" },
             { Board.H, "H" },
