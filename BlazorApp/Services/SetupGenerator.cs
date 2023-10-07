@@ -394,6 +394,7 @@ namespace SiRandomizer.Services
         private IEnumerable<GameSetup> GetSetups(OverallConfiguration config, DeterminedOptions options) 
         {
             var setups = options.Adversary.Levels
+                .Where(a => a.Selected)
                 .Select(l => new GameSetup() {
                     Scenario = options.Scenario,
                     Map = options.Map,
@@ -406,7 +407,7 @@ namespace SiRandomizer.Services
             {
                 setups = AddSupportingAdversaryOptions(setups,
                     config.Adversaries[Adversary.NoAdversary].Levels.Single(), 
-                    options.SecondaryAdversary.Levels.ToList());
+                    options.SecondaryAdversary.Levels.Where(a => a.Selected).ToList());
             }
 
             // Return the possible options as GameSetup instances.
