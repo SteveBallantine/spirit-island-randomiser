@@ -95,7 +95,7 @@ namespace SiRandomizer.tests
             Assert.AreEqual(Board.A, result.Setup.BoardSetups.First().Board.Name);
             Assert.AreEqual(Spirit.Green, result.Setup.BoardSetups.First().SpiritAspect.Parent.Name);
         }
-
+        
         /// <summary>
         /// Verify that the 'additional board' option is behaving as expected.
         /// </summary>
@@ -230,9 +230,7 @@ namespace SiRandomizer.tests
             SetupMinimalOptions(true);
             // Slect the first level for two adversaries to allow them to be combined.
             _config.Adversaries[Adversary.BrandenburgPrussia].Selected = true;
-            _config.Adversaries[Adversary.BrandenburgPrussia].Levels.First().Selected = true;
             _config.Adversaries[Adversary.England].Selected = true;
-            _config.Adversaries[Adversary.England].Levels.First().Selected = true;
             _config.CombinedAdversariesChance = combinedAdversariesChance;
 
             List<SetupResult> setups = new List<SetupResult>();
@@ -259,7 +257,6 @@ namespace SiRandomizer.tests
                 //Assert.IsTrue(expectedDifficultyOptions.Contains((int)result.DifficultyOptionsConsidered));
             }
         }
-
 
         /// <summary>
         /// Generate 1000 random setups and verify that the spread of selected
@@ -313,6 +310,36 @@ namespace SiRandomizer.tests
             VerifySelectionFrequency(selectedScenarios);
             VerifySelectionFrequency(selectedAdversaries);
             VerifySelectionFrequency(selectedMaps);
+        }
+
+        /// <summary>
+        /// Verify that only the selected adversary levels can be picked
+        /// </summary>
+        [TestMethod]
+        public void Generate_SelectedAdversaryLevels()
+        {
+            SetupMinimalOptions(true);
+            _config.Adversaries[Adversary.NoAdversary].Selected = false;
+            // Slect the middle levels for BP.
+            _config.Adversaries[Adversary.BrandenburgPrussia].Selected = true;
+            _config.Adversaries[Adversary.BrandenburgPrussia].Levels.ToList().ForEach(l => l.Selected = false);
+            var validLevels = new HashSet<int>() { 3, 4 };
+            _config.Adversaries[Adversary.BrandenburgPrussia].Levels.Where(l => validLevels.Contains(l.Level)).ToList().ForEach(l => l.Selected = true);
+
+            List<SetupResult> setups = new List<SetupResult>();
+            var validAdversaries = new HashSet<string>() { Adversary.BrandenburgPrussia };
+
+            for(var i = 0; i < 1000; i++)
+            {
+                var result = _generator.Generate(_config);
+                setups.Add(result);
+                
+                // Verify the selected boards were only the valid ones.
+                Assert.IsTrue(validAdversaries.Contains(result.Setup.LeadingAdversary.Parent.Name), 
+                    $"Invalid adversary - {result.Setup.LeadingAdversary.Parent.Name}");
+                Assert.IsTrue(validLevels.Contains(result.Setup.LeadingAdversary.Level), 
+                    $"Invalid adversary level - {result.Setup.LeadingAdversary.Level}");
+            }
         }
 
         /// <summary>
