@@ -90,7 +90,10 @@ namespace SiRandomizer.Services
             result.Append($"spirits={string.Join(",", setup.BoardSetups.Select(s => SpiritNameMappings[s.SpiritAspect.Parent.Name]))}");
             result.Append($"&boards={string.Join(",", setup.BoardSetups.Select(s => BoardNameMappings[s.Board.Name]))}");
             result.Append($"&layout={BuildLayoutString(setup)}");
-            result.Append($"&adversary={AdversaryNameMappings[setup.LeadingAdversary.Parent.Name]}");
+            if(setup.LeadingAdversary.Parent.Name != Adversary.NoAdversary) 
+            {
+                result.Append($"&adversary={AdversaryNameMappings[setup.LeadingAdversary.Parent.Name]}");
+            }
             if(setup.LeadingAdversary.Level > 0) 
             {
                 result.Append($"&adversaryLevel={setup.LeadingAdversary.Level}");
@@ -124,7 +127,8 @@ namespace SiRandomizer.Services
                 unsupportedItems.Add($"Aspects");
             }
 
-            if(!AdversaryNameMappings.ContainsKey(setup.LeadingAdversary.Parent.Name))
+            if(setup.LeadingAdversary.Parent.Name != Adversary.NoAdversary &&
+                !AdversaryNameMappings.ContainsKey(setup.LeadingAdversary.Parent.Name))
             {
                 unsupportedItems.Add($"Adversary - {setup.LeadingAdversary.Parent.Name}");
             }
