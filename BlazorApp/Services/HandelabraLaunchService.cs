@@ -62,6 +62,8 @@ namespace SiRandomizer.Services
             { Board.D, "D" },
             { Board.E, "E" },
             { Board.F, "F" },
+            { Board.G, "G" },
+            { Board.H, "H" },
             { Board.East, "East" },
             { Board.West, "West" },
             { Board.NEast, "NorthEast" },

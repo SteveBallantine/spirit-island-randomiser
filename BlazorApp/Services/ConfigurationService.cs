@@ -295,6 +295,7 @@ namespace SiRandomizer.Services
             };
 
             var jaggedEarth = expansions[Expansion.JaggedEarth];
+            var horizons = expansions[Expansion.Horizons];
 
             var a = new Board(Board.A, config, boards, null, false);
             var b = new Board(Board.B, config, boards, null, false);
@@ -308,7 +309,8 @@ namespace SiRandomizer.Services
             {
                 ImbalancedWith = new List<Board>() { d }
             };
-
+            var g = new Board(Board.G, config, boards, horizons, false);
+            var h = new Board(Board.H, config, boards, horizons, false);
 
             var ne = new Board(Board.NEast, config, boards, null, true) 
             {
@@ -348,6 +350,8 @@ namespace SiRandomizer.Services
             boards.Add(d);
             boards.Add(e);
             boards.Add(f);
+            boards.Add(g);
+            boards.Add(h);
 
             boards.Add(ne);
             boards.Add(nw);
