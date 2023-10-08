@@ -89,7 +89,7 @@ namespace SiRandomizer.Services
 
             StringBuilder result = new StringBuilder("http://play.spiritislanddigital.com/screen/NewGame?");
             
-            result.Append($"spirits={string.Join(",", setup.BoardSetups.Select(s => SpiritNameMappings[s.SpiritAspect.Parent.Name]))}");
+            result.Append($"spirits={string.Join(",", setup.BoardSetups.Where(s => s.SpiritAspect != null).Select(s => SpiritNameMappings[s.SpiritAspect.Parent.Name]))}");
             result.Append($"&boards={string.Join(",", setup.BoardSetups.Select(s => BoardNameMappings[s.Board.Name]))}");
             result.Append($"&layout={BuildLayoutString(setup)}");
             if(setup.LeadingAdversary.Parent.Name != Adversary.NoAdversary) 
@@ -121,10 +121,10 @@ namespace SiRandomizer.Services
                 unsupportedItems.Add("More than 4 boards/spirits");
             }
 
-            var unsupportedSpirits = setup.BoardSetups.Where(s => !SpiritNameMappings.ContainsKey(s.SpiritAspect.Parent.Name)).ToList();
+            var unsupportedSpirits = setup.BoardSetups.Where(s => s.SpiritAspect != null && !SpiritNameMappings.ContainsKey(s.SpiritAspect.Parent.Name)).ToList();
             unsupportedSpirits.ForEach(s => unsupportedItems.Add($"Spirit - {s.SpiritAspect.Parent.Name}"));
 
-            if(setup.BoardSetups.Any(s => s.SpiritAspect.Name != SpiritAspect.Base))
+            if(setup.BoardSetups.Any(s => s.SpiritAspect != null && s.SpiritAspect.Name != SpiritAspect.Base))
             {
                 unsupportedItems.Add($"Aspects");
             }
