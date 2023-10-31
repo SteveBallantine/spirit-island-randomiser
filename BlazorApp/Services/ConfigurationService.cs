@@ -313,7 +313,7 @@ namespace SiRandomizer.Services
             var b = new Board(Board.B, config, boards, null, false);
             var c = new Board(Board.C, config, boards, null, false);
             var d = new Board(Board.D, config, boards, null, false);
-            var e = new Board(Board.E, config, boards, jaggedEarth, false) 
+            var e = new Board(Board.E, config, boards, jaggedEarth.Union(horizons).ToArray(), false) 
             {
                 ImbalancedWith = new List<Board>() { b }
             };
