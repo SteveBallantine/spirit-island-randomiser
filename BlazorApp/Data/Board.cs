@@ -60,9 +60,9 @@ namespace SiRandomizer.Data
             string name,  
             OverallConfiguration config,
             IComponentCollection parentList,
-            Expansion expansion,
+            Expansion[] expansions,
             bool thematic) 
-            : base(name, config, parentList, expansion) 
+            : base(name, config, parentList, expansions) 
         { 
             Thematic = thematic;
         }

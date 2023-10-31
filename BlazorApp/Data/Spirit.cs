@@ -71,15 +71,15 @@ namespace SiRandomizer.Data
             string name,
             OverallConfiguration config,
             IComponentCollection parentList,
-            Expansion expansion,
+            Expansion[] expansions,
             Complexity baseComplexity) 
-            : base(name, config, parentList, expansion) 
+            : base(name, config, parentList, expansions) 
         { 
             BaseComplexity = baseComplexity;
             // Add a 'base' aspect for all spirits.
             // This allows us to keep the setup generation logic nice and general, rather
             // than having to deal with Aspects as a specical case.
-            Add(new SpiritAspect(SpiritAspect.Base, config, this, expansion, 0));
+            Add(new SpiritAspect(SpiritAspect.Base, config, this, expansions, 0));
         }
 
         [JsonIgnore]

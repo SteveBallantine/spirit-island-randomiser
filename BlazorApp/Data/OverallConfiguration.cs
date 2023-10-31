@@ -239,7 +239,7 @@ namespace SiRandomizer.Data
                 var notInSource = destination.Where(i => 
                     source.Any(j => j.Name == i.Name) == false && 
                     i is IExpansionContent expansionContent &&
-                    expansionContent.Expansion.Name == Expansion.Homebrew);
+                    expansionContent.Expansions.Any(x => x.Name == Expansion.Homebrew));
                 foreach(var item in notInSource)
                 {
                     logger.LogWarning($"Removing '{item.Name}' from configuration");
@@ -255,13 +255,14 @@ namespace SiRandomizer.Data
         /// <returns></returns>
         private Spirit SpiritFactory(Spirit source)
         {
-            var spirit = new Spirit(source.Name, this, Spirits, Expansions[Expansion.Homebrew], source.BaseComplexity);
+            var homebrew = new Expansion[] { Expansions[Expansion.Homebrew] };
+            var spirit = new Spirit(source.Name, this, Spirits, homebrew, source.BaseComplexity);
             spirit.Deletable = true;
             foreach(var aspect in spirit) 
             {
                 if(spirit.HasChild(aspect.Name) == false) 
                 {
-                    var newAspect = new SpiritAspect(aspect.Name, this, spirit, Expansions[Expansion.Homebrew], 0);
+                    var newAspect = new SpiritAspect(aspect.Name, this, spirit, homebrew, 0);
                     aspect.Deletable = true;
                     spirit.Add(newAspect);
                 }

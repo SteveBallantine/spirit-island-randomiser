@@ -268,7 +268,7 @@ else
         if(string.IsNullOrWhiteSpace(newSpirit) == false &&
             config.Spirits.HasChild(newSpirit) == false)
         {
-            var spirit = new Spirit(newSpirit, config, config.Spirits, config.Expansions[Expansion.Homebrew], Complexity.Unspecified);
+            var spirit = new Spirit(newSpirit, config, config.Spirits, new Expansion[] { config.Expansions[Expansion.Homebrew] }, Complexity.Unspecified);
             spirit.Deletable = true;
             config.Spirits.Add(spirit);
         }

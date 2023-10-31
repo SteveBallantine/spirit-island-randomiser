@@ -22,8 +22,8 @@ namespace SiRandomizer.Data
             string name,  
             OverallConfiguration config,
             IComponentCollection parentList,
-            Expansion expansion)
-            : base (name, config, parentList, expansion)
+            Expansion[] expansions)
+            : base (name, config, parentList, expansions)
         {
         }
 

@@ -3,9 +3,11 @@
 <input type="checkbox" @bind="Item.Selected">@Item.Name
 
 @if(Item is IExpansionContent itemEx && 
-    itemEx.Expansion != null &&
-    string.IsNullOrEmpty(itemEx.Expansion.Tag) == false) {
-    <span class="si-tag expansion-tag-@itemEx.Expansion.Tag">@itemEx.Expansion.Tag</span>
+    itemEx.Expansions != null) {
+    foreach(var expansion in itemEx.Expansions.Where(e => string.IsNullOrEmpty(e.Tag) == false))
+    {
+        <span class="si-tag expansion-tag-@expansion.Tag">@expansion.Tag</span>
+    }
 }
 @if(Item is IDifficultyModifier difficultyMod) {
     <span class="si-tag">@difficultyMod.DifficultyModifier.ToString("+0;-#")</span>

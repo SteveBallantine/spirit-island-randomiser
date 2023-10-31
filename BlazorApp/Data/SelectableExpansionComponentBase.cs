@@ -13,7 +13,7 @@ namespace SiRandomizer.Data
         where T : SelectableComponentBase<T>
     {
         [JsonIgnore]
-        public Expansion Expansion { get; set; }
+        public Expansion[] Expansions { get; set; }
 
         public SelectableExpansionComponentBase() {}
 
@@ -21,15 +21,15 @@ namespace SiRandomizer.Data
             string name,
             OverallConfiguration config,
             IComponentCollection parentList,
-            Expansion expansion) 
+            Expansion[] expansions) 
             : base(name, config, parentList)
         {
-            Expansion = expansion;
+            Expansions = expansions;
         }
 
         public override bool IsVisible()
         {
-            var visible = Expansion == null || Config.Expansions[Expansion.Name].Selected;
+            var visible = Expansions == null || Expansions.Any(e => Config.Expansions[e.Name].Selected);
             // If this component is not visible then also ensure it is not selected.
             if(visible == false)
             {

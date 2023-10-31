@@ -48,10 +48,10 @@ namespace SiRandomizer.Data
             string name, 
             OverallConfiguration config,
             IComponentCollection parentList,
-            Expansion expansion,
+            Expansion[] expansions,
             int difficultyModifier,
             List<Map> validMaps = null) 
-            : base(name, config, parentList, expansion) 
+            : base(name, config, parentList, expansions) 
         {
             DifficultyModifier = difficultyModifier;
             ValidMaps = validMaps;

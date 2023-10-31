@@ -79,9 +79,9 @@ namespace SiRandomizer.Data
             string name,
             OverallConfiguration config,
             IComponentCollection parentList,
-            Expansion expansion,
+            Expansion[] expansions,
             int complexityChange) 
-            : base(name, config, parentList, expansion)
+            : base(name, config, parentList, expansions)
         { 
             ComplexityChange = complexityChange;
         }

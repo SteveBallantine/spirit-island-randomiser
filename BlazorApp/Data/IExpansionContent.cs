@@ -4,6 +4,6 @@ namespace SiRandomizer.Data
 {
     public interface IExpansionContent
     {
-        Expansion Expansion {get;}
+        Expansion[] Expansions {get;}
     }
 }
