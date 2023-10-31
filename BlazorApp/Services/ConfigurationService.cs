@@ -309,8 +309,14 @@ namespace SiRandomizer.Services
             {
                 ImbalancedWith = new List<Board>() { d }
             };
-            var g = new Board(Board.G, config, boards, horizons, false);
-            var h = new Board(Board.H, config, boards, horizons, false);
+            var g = new Board(Board.G, config, boards, horizons, false)
+            {
+                ImbalancedWith = new List<Board>() { c }
+            };
+            var h = new Board(Board.H, config, boards, horizons, false)
+            {
+                ImbalancedWith = new List<Board>() { a }
+            };
 
             var ne = new Board(Board.NEast, config, boards, null, true) 
             {
