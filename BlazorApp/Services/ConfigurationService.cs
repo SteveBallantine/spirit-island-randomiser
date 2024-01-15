@@ -173,7 +173,7 @@ namespace SiRandomizer.Services
             spirits.Add(new Spirit(Spirit.Volcano, config, spirits, jaggedEarth, Complexity.Moderate));
 
             var lure = new Spirit(Spirit.Lure, config, spirits, jaggedEarth, Complexity.Moderate);
-            lure.Add(new SpiritAspect(SpiritAspect.Stranded, config, lure, natureIncarnate, 0));
+            lure.Add(new SpiritAspect(SpiritAspect.Lair, config, lure, natureIncarnate, 0));
             spirits.Add(lure);
 
             spirits.Add(new Spirit(Spirit.ManyMinds, config, spirits, jaggedEarth, Complexity.Moderate));
