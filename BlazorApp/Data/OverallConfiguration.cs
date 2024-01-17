@@ -210,12 +210,16 @@ namespace SiRandomizer.Data
                 {         
                     if(destination.HasChild(sourceItem.Name) == false)
                     {
-                        if(itemFactory == null) 
+                        if(itemFactory == null && 
+                            typeof(TItem) != typeof(SpiritAspect)) 
                         {
                             throw new Exception($"No item factory specified for '{typeof(TItem).Name}'");
+                        } 
+                        if(itemFactory != null)
+                        {
+                            // The default list does not include this item, so create and add it.
+                            destination.Add(itemFactory(sourceItem));
                         }
-                        // The default list does not include this item, so create and add it.
-                        destination.Add(itemFactory(sourceItem));
                     }
                     else 
                     {
@@ -258,7 +262,7 @@ namespace SiRandomizer.Data
             var homebrew = new Expansion[] { Expansions[Expansion.Homebrew] };
             var spirit = new Spirit(source.Name, this, Spirits, homebrew, source.BaseComplexity);
             spirit.Deletable = true;
-            foreach(var aspect in spirit) 
+            foreach(var aspect in source) 
             {
                 if(spirit.HasChild(aspect.Name) == false) 
                 {
