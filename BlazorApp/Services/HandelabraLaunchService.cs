@@ -19,19 +19,29 @@ namespace SiRandomizer.Services
             { Spirit.Teeth, "DevouringTeethLurkUnderfoot" },
             { Spirit.Eyes, "EyesWatchFromTheTrees" },
             { Spirit.Swamp, "FathomlessMudOfTheSwamp" },
+            { Spirit.Fractured, "FracturedDaysSplitTheSky" },
+            { Spirit.Trickster, "GrinningTricksterStirsUpTrouble" },
             { Spirit.Wildfire, "HeartOfTheWildfire" },
             { Spirit.Keeper, "KeeperOfTheForbiddenWilds" },
             { Spirit.Lightning, "LightningsSwiftStrike" },
+            { Spirit.Lure, "LureOfTheDeepWilderness" },
+            { Spirit.ManyMinds, "ManyMindsMoveAsOne" },
             { Spirit.Ocean, "OceansHungryGrasp" },
             { Spirit.Heat, "RisingHeatOfStoneAndSand" },
             { Spirit.River, "RiverSurgesInSunlight" },
             { Spirit.Snek, "SerpentSlumberingBeneathTheIsland" },
             { Spirit.Shadows, "ShadowsFlickerLikeFlame" },
             { Spirit.Fangs, "SharpFangsBehindTheLeaves" },
+            { Spirit.Memory, "ShiftingMemoryOfAges" },
+            { Spirit.Mist, "ShroudOfSilentMist" },
             { Spirit.Green, "ASpreadOfRampantGreen" },
+            { Spirit.Starlight, "StarlightSeeksItsForm" },
+            { Spirit.Stone, "StonesUnyieldingDefiance" },
             { Spirit.Whirlwind, "SunBrightWhirlwind" },
             { Spirit.Thunderspeaker, "Thunderspeaker" },
-            { Spirit.Earth, "VitalStrengthOfTheEarth" }
+            { Spirit.Vengeance, "VengeanceAsABurningPlague" },
+            { Spirit.Earth, "VitalStrengthOfTheEarth" },
+            { Spirit.Volcano, "VolcanoLoomingHigh" }
         };
 
         private readonly static Dictionary<string, string> AdversaryNameMappings = new Dictionary<string, string>
@@ -39,7 +49,9 @@ namespace SiRandomizer.Services
             { Adversary.BrandenburgPrussia, "TheKingdomOfBrandenburgPrussia" },
             { Adversary.England, "TheKingdomOfEngland" },
             { Adversary.Sweden, "TheKingdomOfSweden" },
-            { Adversary.France, "TheKingdomOfFrance" }
+            { Adversary.France, "TheKingdomOfFrance" },
+            { Adversary.Habsburg, "TheHabsburgMonarchy" },
+            { Adversary.Russia, "TheTsardomOfRussia" }
         };
 
         private readonly static Dictionary<string, string> ScenarioNameMappings = new Dictionary<string, string>
@@ -51,7 +63,10 @@ namespace SiRandomizer.Services
             { Scenario.PowersLongForgotten, "PowersLongForgotten" },
             { Scenario.RitualsOfTheDestroyingFlame, "RitualsOfTheDestroyingFlame" },
             { Scenario.SecondWave, "SecondWave" },
-            { Scenario.WardTheShores, "WardTheShores" }
+            { Scenario.WardTheShores, "WardTheShores" },
+            { Scenario.DespicableTheft, "DespicableTheft" },
+            { Scenario.ElementalInvocation, "ElementalInvocation" },
+            { Scenario.TheGreatRiver, "TheGreatRiver" }
         };
 
         private readonly static Dictionary<string, string> BoardNameMappings = new Dictionary<string, string>
@@ -60,14 +75,16 @@ namespace SiRandomizer.Services
             { Board.B, "B" },
             { Board.C, "C" },
             { Board.D, "D" },
-            //{ Board.E, "E" }, Not yet added to SI digital
+            { Board.E, "E" },
             { Board.F, "F" },
             { Board.G, "G" },
             { Board.H, "H" },
             { Board.East, "East" },
             { Board.West, "West" },
             { Board.NEast, "NorthEast" },
-            { Board.NWest, "NorthWest" }            
+            { Board.NWest, "NorthWest" },
+            { Board.SEast, "SouthEast" },
+            { Board.SWest, "SouthWest" }            
         };
 
         private ILogger<HandelabraLaunchService> _logger;
@@ -250,7 +267,7 @@ namespace SiRandomizer.Services
         private string BuildExpansionString(GameSetup setup)
         {
             // Just do this for now, it will be ignored if the user does not own it.
-            return "BranchAndClaw";
+            return "BranchAndClaw,JaggedEarth";
         }
 
     }
