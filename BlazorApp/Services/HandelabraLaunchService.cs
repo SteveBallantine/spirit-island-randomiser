@@ -44,6 +44,16 @@ namespace SiRandomizer.Services
             { Spirit.Volcano, "VolcanoLoomingHigh" }
         };
 
+        private readonly static Dictionary<string, string> SpiritAspectNameMappings = new Dictionary<string, string>
+        {
+            { SpiritAspect.Pandemonium, "Pandemonium" },
+            { SpiritAspect.Wind, "Wind" },
+            { SpiritAspect.Sunshine, "Sunshine" },
+            { SpiritAspect.Madness, "Madness" },
+            { SpiritAspect.Reach, "Reach" },
+            { SpiritAspect.Resilience, "Resilience" }
+        };
+
         private readonly static Dictionary<string, string> AdversaryNameMappings = new Dictionary<string, string>
         {
             { Adversary.BrandenburgPrussia, "TheKingdomOfBrandenburgPrussia" },
@@ -124,6 +134,7 @@ namespace SiRandomizer.Services
             result.Append($"&useExpansions={BuildExpansionString(setup)}");
             result.Append($"&useTokens={(setup.Map.Name == Map.ThematicNoTokens ? "0" : "1")}");
             result.Append($"&useEvents=1");
+            result.Append($"aspects={string.Join(",", setup.BoardSetups.Where(s => s.SpiritAspect != null && s.SpiritAspect.Name != SpiritAspect.Base).Select(s => SpiritAspectNameMappings[s.SpiritAspect.Name]))}");
             _logger.LogInformation($"Handelabra url: {result}");
 
             return result.ToString();
@@ -141,10 +152,10 @@ namespace SiRandomizer.Services
             var unsupportedSpirits = setup.BoardSetups.Where(s => s.SpiritAspect != null && !SpiritNameMappings.ContainsKey(s.SpiritAspect.Parent.Name)).ToList();
             unsupportedSpirits.ForEach(s => unsupportedItems.Add($"Spirit - {s.SpiritAspect.Parent.Name}"));
 
-            if(setup.BoardSetups.Any(s => s.SpiritAspect != null && s.SpiritAspect.Name != SpiritAspect.Base))
-            {
-                unsupportedItems.Add($"Aspects");
-            }
+            var unsupportedAspects = setup.BoardSetups.Where(s => s.SpiritAspect != null && 
+                s.SpiritAspect.Name != SpiritAspect.Base && 
+                !SpiritAspectNameMappings.ContainsKey(s.SpiritAspect.Name)).ToList();
+            unsupportedSpirits.ForEach(s => unsupportedItems.Add($"Aspect - {s.SpiritAspect.Name}"));
 
             if(setup.LeadingAdversary.Parent.Name != Adversary.NoAdversary &&
                 !AdversaryNameMappings.ContainsKey(setup.LeadingAdversary.Parent.Name))
