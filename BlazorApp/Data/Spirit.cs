@@ -42,6 +42,7 @@ namespace SiRandomizer.Data
 
         // Apoc
         public const string Rot = "Spreading Rot Renews the Earth";
+        public const string Shards = "Covets Gleaming Shards of Earth";
         
         // Horizons
         public const string Teeth = "Devouring Teeth Lurk Underfoot";

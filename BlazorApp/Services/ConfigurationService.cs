@@ -195,6 +195,8 @@ namespace SiRandomizer.Services
             spirits.Add(new Spirit(Spirit.Fractured, config, spirits, jaggedEarth, Complexity.VeryHigh));
             // Apocrypha
             spirits.Add(new Spirit(Spirit.Rot, config, spirits, new Expansion[] { expansions[Expansion.Apocrypha] }, Complexity.High));
+            spirits.Add(new Spirit(Spirit.Shards, config, spirits, new Expansion[] { expansions[Expansion.Apocrypha] }, Complexity.VeryHigh));
+
             // Horizons
             spirits.Add(new Spirit(Spirit.Teeth, config, spirits, horizons, Complexity.Low));
             spirits.Add(new Spirit(Spirit.Whirlwind, config, spirits, horizons, Complexity.Low));
