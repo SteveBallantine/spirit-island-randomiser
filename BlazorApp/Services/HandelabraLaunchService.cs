@@ -123,7 +123,7 @@ namespace SiRandomizer.Services
             {
                 result.Append($"&adversary={AdversaryNameMappings[setup.LeadingAdversary.Parent.Name]}");
             }
-            if(setup.LeadingAdversary.Level > 0) 
+            if(setup.LeadingAdversary.Level > 0)
             {
                 result.Append($"&adversaryLevel={setup.LeadingAdversary.Level}");
             }
@@ -134,7 +134,7 @@ namespace SiRandomizer.Services
             result.Append($"&useExpansions={BuildExpansionString(setup)}");
             result.Append($"&useTokens={(setup.Map.Name == Map.ThematicNoTokens ? "0" : "1")}");
             result.Append($"&useEvents=1");
-            result.Append($"aspects={string.Join(",", setup.BoardSetups.Where(s => s.SpiritAspect != null && s.SpiritAspect.Name != SpiritAspect.Base).Select(s => SpiritAspectNameMappings[s.SpiritAspect.Name]))}");
+            result.Append($"&aspects={string.Join(",", setup.BoardSetups.Where(s => s.SpiritAspect != null && s.SpiritAspect.Name != SpiritAspect.Base).Select(s => SpiritAspectNameMappings[s.SpiritAspect.Name]))}");
             _logger.LogInformation($"Handelabra url: {result}");
 
             return result.ToString();
