@@ -155,7 +155,7 @@ namespace SiRandomizer.Services
             var unsupportedAspects = setup.BoardSetups.Where(s => s.SpiritAspect != null && 
                 s.SpiritAspect.Name != SpiritAspect.Base && 
                 !SpiritAspectNameMappings.ContainsKey(s.SpiritAspect.Name)).ToList();
-            unsupportedSpirits.ForEach(s => unsupportedItems.Add($"Aspect - {s.SpiritAspect.Name}"));
+            unsupportedAspects.ForEach(a => unsupportedItems.Add($"Aspect - {a.SpiritAspect.Name}"));
 
             if(setup.LeadingAdversary.Parent.Name != Adversary.NoAdversary &&
                 !AdversaryNameMappings.ContainsKey(setup.LeadingAdversary.Parent.Name))
