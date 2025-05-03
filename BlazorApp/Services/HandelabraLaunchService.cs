@@ -127,6 +127,14 @@ namespace SiRandomizer.Services
             {
                 result.Append($"&adversaryLevel={setup.LeadingAdversary.Level}");
             }
+            if(setup.LeadingAdversary.Parent.Name != Adversary.NoAdversary) 
+            {
+                result.Append($"&supportingAdversary={AdversaryNameMappings[setup.SupportingAdversary.Parent.Name]}");
+            }
+            if(setup.LeadingAdversary.Level > 0)
+            {
+                result.Append($"&supportingAdversaryLevel={setup.SupportingAdversary.Level}");
+            }
             if(setup.Scenario.Name != Scenario.NoScenario)
             {
                 result.Append($"&scenario={ScenarioNameMappings[setup.Scenario.Name]}");
@@ -161,10 +169,6 @@ namespace SiRandomizer.Services
                 !AdversaryNameMappings.ContainsKey(setup.LeadingAdversary.Parent.Name))
             {
                 unsupportedItems.Add($"Adversary - {setup.LeadingAdversary.Parent.Name}");
-            }
-            if(setup.HasSupportingAdversary)
-            {
-                unsupportedItems.Add("Multiple adversaries");
             }
 
             var unsupportedBoards = setup.BoardSetups.Where(s => !BoardNameMappings.ContainsKey(s.Board.Name)).ToList();            
