@@ -178,11 +178,6 @@ namespace SiRandomizer.Services
             {
                 unsupportedItems.Add("Non-definitive thematic map");
             }
-            
-            if(setup.BoardSetups.Any(s => s.SpiritAspect == null))
-            {
-                unsupportedItems.Add("Extra board with no starting spirit");
-            }
 
             if(setup.Scenario.Name != Scenario.NoScenario &&
                 !ScenarioNameMappings.ContainsKey(setup.Scenario.Name))
@@ -197,12 +192,12 @@ namespace SiRandomizer.Services
         private string BuildLayoutString(GameSetup setup)
         {
             var boards = setup.BoardSetups.ToArray();
-            var playerCount = boards.Count();
-            if(playerCount == 1) return "";
+            var boardCount = boards.Count();
+            if(boardCount == 1) return "";
 
             if(setup.Map.Name == Map.Standard)
             {
-                switch (playerCount)
+                switch (boardCount)
                 {
                     case 2:
                         return $"{boards[0].Board.Name}2:{boards[1].Board.Name}2";
@@ -221,7 +216,7 @@ namespace SiRandomizer.Services
             }
             else if(setup.Map.Name == Map.Coastline)
             {
-                switch (playerCount)
+                switch (boardCount)
                 {
                     case 2:
                         return $"{boards[0].Board.Name}0:{boards[1].Board.Name}2";
@@ -238,7 +233,7 @@ namespace SiRandomizer.Services
             }
             else if(setup.Map.Name == Map.Snake)
             {
-                switch (playerCount)
+                switch (boardCount)
                 {
                     case 3:
                         return $"{boards[0].Board.Name}2:{boards[1].Board.Name}2," +
@@ -253,27 +248,45 @@ namespace SiRandomizer.Services
             }
             else if(setup.Map.Name == Map.Fragment)
             {
-                if(playerCount != 2) return "";
+                if(boardCount != 2) return "";
                 return $"{boards[0].Board.Name}2:{boards[1].Board.Name}1";
             }
             else if(setup.Map.Name == Map.OppositeShores)
             {
-                if(playerCount != 2) return "";
+                if(boardCount != 2) return "";
                 return $"{boards[0].Board.Name}1:{boards[1].Board.Name}1";
             }
             else if(setup.Map.Name == Map.Sunrise)
             {
-                if(playerCount != 3) return "";
+                if(boardCount != 3) return "";
                 return $"{boards[0].Board.Name}2:{boards[1].Board.Name}1," +
                     $"{boards[1].Board.Name}0:{boards[2].Board.Name}1";
             }
             else if(setup.Map.Name == Map.Leaf)
             {
-                if(playerCount != 4) return "";
+                if(boardCount != 4) return "";
                 return $"{boards[0].Board.Name}0:{boards[1].Board.Name}1," +
                     $"{boards[1].Board.Name}0:{boards[2].Board.Name}2," +
                     $"{boards[2].Board.Name}1:{boards[3].Board.Name}2," +
                     $"{boards[3].Board.Name}1:{boards[0].Board.Name}1";
+            }
+            else if (setup.Map.Name == Map.Archipelago)
+            {
+                switch (boardCount)
+                {
+                    case 2:
+                        return $"{boards[0].Board.Name}3:{boards[1].Board.Name}3";
+                    case 3:
+                        return $"{boards[0].Board.Name}3:{boards[1].Board.Name}3," +
+                            $"{boards[1].Board.Name}0:{boards[2].Board.Name}2";
+                    case 4:
+                        return $"{boards[0].Board.Name}3:{boards[1].Board.Name}3," +
+                            $"{boards[0].Board.Name}0:{boards[2].Board.Name}2," +
+                            $"{boards[2].Board.Name}3:{boards[3].Board.Name}3," +
+                            $"{boards[1].Board.Name}2:{boards[3].Board.Name}0";
+                    default:
+                        return "";
+                }
             }
 
             return "";
