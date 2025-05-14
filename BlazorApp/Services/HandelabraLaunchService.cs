@@ -171,6 +171,12 @@ namespace SiRandomizer.Services
                 unsupportedItems.Add($"Adversary - {setup.LeadingAdversary.Parent.Name}");
             }
 
+            if(setup.SupportingAdversary.Parent.Name != Adversary.NoAdversary &&
+                !AdversaryNameMappings.ContainsKey(setup.SupportingAdversary.Parent.Name))
+            {
+                unsupportedItems.Add($"Adversary - {setup.SupportingAdversary.Parent.Name}");
+            }
+
             var unsupportedBoards = setup.BoardSetups.Where(s => !BoardNameMappings.ContainsKey(s.Board.Name)).ToList();            
             unsupportedBoards.ForEach(s => unsupportedItems.Add($"Board - {s.Board.Name}"));
 
