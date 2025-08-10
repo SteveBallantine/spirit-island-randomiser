@@ -180,11 +180,6 @@ namespace SiRandomizer.Services
             var unsupportedBoards = setup.BoardSetups.Where(s => !BoardNameMappings.ContainsKey(s.Board.Name)).ToList();            
             unsupportedBoards.ForEach(s => unsupportedItems.Add($"Board - {s.Board.Name}"));
 
-            if(setup.Map.Thematic && !setup.BoardSetups.All(s => s.Board.ThematicDefinitivePlayerCounts.Contains(setup.BoardSetups.Count())))
-            {
-                unsupportedItems.Add("Non-definitive thematic map");
-            }
-
             if(setup.Scenario.Name != Scenario.NoScenario &&
                 !ScenarioNameMappings.ContainsKey(setup.Scenario.Name))
             {
