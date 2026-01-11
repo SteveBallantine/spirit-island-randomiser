@@ -25,7 +25,7 @@ namespace SiRandomizer.Data
         public const string Snek = "Serpent Slumbering Beneath the Island";
 
         // JE
-        public const string Stone = "Stone's Unyielding Definance";
+        public const string Stone = "Stone's Unyielding Defiance";
         public const string Memory = "Shifting Memory of Ages";
         public const string Trickster = "Grinning Trickster Stirs up Trouble";
         public const string Lure = "Lure of the Deep Wilderness";
