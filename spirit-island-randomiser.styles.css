@@ -1,0 +1,178 @@
+/* /Pages/PresetDropdown.razor.rz.scp.css */
+.preset-add-new[b-m5pvtik8hj] {
+    color: green;
+}
+
+.preset-delete[b-m5pvtik8hj] {
+    color: red;
+}
+
+.preset-save-new[b-m5pvtik8hj] {
+    color: blue;
+}
+
+.preset-close-new[b-m5pvtik8hj] {
+    color: red;
+}
+/* /Pages/SelectableItem.razor.rz.scp.css */
+.item-delete[b-4gaeuyos4q] {
+    color: red;
+}
+/* /Pages/Tooltip.razor.rz.scp.css */
+.tooltip-wrapper[b-tl5vvmxzsc] {
+    position: relative;
+    display: inline-block;
+}
+.button-style[b-tl5vvmxzsc] {
+    border-bottom: 1px solid black;
+    cursor: help;
+    background-color: rgb(196, 196, 196);
+    padding: 0px 10px 0px 10px;
+    border-radius: 20px;
+    margin-left: 5px;
+}
+
+.tooltip-wrapper:hover span[b-tl5vvmxzsc] {
+    visibility: visible;
+}
+
+span[b-tl5vvmxzsc] {
+    visibility: hidden;
+    position: absolute;
+    width: 350px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -175px;
+    background-color: #363636;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    z-index: 1;
+    font-weight: normal;
+}
+span.small[b-tl5vvmxzsc] {    
+    width: 150px;
+    margin-left: -75px;
+}
+/* On small screens, just center the tool tip on the screen */
+@media screen and (max-width: 600px) 
+{ 
+    span[b-tl5vvmxzsc]
+    {        
+        width: 300px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(0, -50%);
+        bottom: auto;
+    }
+    span.small[b-tl5vvmxzsc]
+    {        
+        width: 150px;
+    }
+    
+}
+
+@media (pointer:coarse) {
+    /* On touch screens, only show tool tips that are using 'button-style'
+    * This is because tooltips that are actually on button elements do not
+    * behave correctly on touch screens.
+    */
+    .tooltip-wrapper:hover span[b-tl5vvmxzsc] {
+        visibility: hidden;
+    }
+    .tooltip-wrapper.button-style:hover span[b-tl5vvmxzsc] {
+        visibility: visible;
+    }
+}
+
+span[b-tl5vvmxzsc]::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #363636 transparent transparent transparent;
+}
+/* Hide the arrow on small screens */
+@media screen and (max-width: 600px) 
+{ 
+    span[b-tl5vvmxzsc]::after 
+    {
+        display: none;
+    }
+}
+/* /Pages/Warning.razor.rz.scp.css */
+.warning[b-25143xfivz] {
+    margin: 4px;
+    background-color:lightgoldenrodyellow;
+    border: 1px solid orange;
+    border-radius: 5px;    
+    display: none;
+}
+.warning.show[b-25143xfivz] {
+    display: flex;
+}
+
+.dismiss[b-25143xfivz] {
+    margin-right: 0.5em;
+}
+
+.fa-xmark[b-25143xfivz] {
+    color: #cc5500;
+}
+
+.message[b-25143xfivz] {
+    margin-left: 0.5em;
+    flex-grow: 1;
+    color: #cc5500;
+}
+/* /Shared/MainLayout.razor.rz.scp.css */
+.page[b-hwot01knbg] {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.main[b-hwot01knbg] {
+    flex: 1;
+}
+
+.top-row[b-hwot01knbg] {
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;
+    min-height: 2.5rem;
+    display: flow-root;
+    text-align: center;
+    top: 0;
+}
+
+.bottom-row[b-hwot01knbg] {
+    background-color: #f7f7f7;
+    border-top: 1px solid #d6d5d5;
+    min-height: 3.5rem;
+    text-align: center;
+}
+
+@media (min-width: 641px) {
+    .page[b-hwot01knbg] {
+        flex-direction: row;
+    }
+
+    .top-row[b-hwot01knbg] {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .main > div[b-hwot01knbg] {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
