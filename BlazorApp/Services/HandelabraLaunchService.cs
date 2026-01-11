@@ -17,8 +17,11 @@ namespace SiRandomizer.Services
         {
             { Spirit.Bringer, "BringerOfDreamsAndNightmares" },
             { Spirit.Teeth, "DevouringTeethLurkUnderfoot" },
+            { Spirit.Downpour, "DownpourDrenchesTheWorld" },
+            { Spirit.Behemoth, "EmberEyedBehemoth" },
             { Spirit.Eyes, "EyesWatchFromTheTrees" },
             { Spirit.Swamp, "FathomlessMudOfTheSwamp" },
+            { Spirit.Finder, "FinderOfPathsUnseen" },
             { Spirit.Fractured, "FracturedDaysSplitTheSky" },
             { Spirit.Trickster, "GrinningTricksterStirsUpTrouble" },
             { Spirit.Wildfire, "HeartOfTheWildfire" },
@@ -41,17 +44,28 @@ namespace SiRandomizer.Services
             { Spirit.Thunderspeaker, "Thunderspeaker" },
             { Spirit.Vengeance, "VengeanceAsABurningPlague" },
             { Spirit.Earth, "VitalStrengthOfTheEarth" },
-            { Spirit.Volcano, "VolcanoLoomingHigh" }
+            { Spirit.Volcano, "VolcanoLoomingHigh" },
+            { Spirit.Voice, "WanderingVoiceKeensDelirium" }
         };
 
         private readonly static Dictionary<string, string> SpiritAspectNameMappings = new Dictionary<string, string>
         {
+            { SpiritAspect.Violence, "Violence" },
+            { SpiritAspect.Hostility, "SpreadingHostility" },
             { SpiritAspect.Pandemonium, "Pandemonium" },
             { SpiritAspect.Wind, "Wind" },
+            { SpiritAspect.Immense, "Immense" },
             { SpiritAspect.Sunshine, "Sunshine" },
+            { SpiritAspect.Travel, "Travel" },
             { SpiritAspect.Madness, "Madness" },
             { SpiritAspect.Reach, "Reach" },
-            { SpiritAspect.Resilience, "Resilience" }
+            { SpiritAspect.Amorphous, "Amorphous" },
+            { SpiritAspect.Foreboding, "Foreboding" },
+            { SpiritAspect.DarkFire, "DarkFire" },
+            { SpiritAspect.Unconstrained, "Unconstrained" },
+            { SpiritAspect.Tactician, "Tactician" },
+            { SpiritAspect.Resilience, "Resilience" },
+            { SpiritAspect.Might, "Might" },
         };
 
         private readonly static Dictionary<string, string> AdversaryNameMappings = new Dictionary<string, string>
@@ -61,7 +75,8 @@ namespace SiRandomizer.Services
             { Adversary.Sweden, "TheKingdomOfSweden" },
             { Adversary.France, "TheKingdomOfFrance" },
             { Adversary.Habsburg, "TheHabsburgMonarchy" },
-            { Adversary.Russia, "TheTsardomOfRussia" }
+            { Adversary.Russia, "TheTsardomOfRussia" },
+            { Adversary.Scotland, "TheKingdomOfScotland" },
         };
 
         private readonly static Dictionary<string, string> ScenarioNameMappings = new Dictionary<string, string>
@@ -76,7 +91,9 @@ namespace SiRandomizer.Services
             { Scenario.WardTheShores, "WardTheShores" },
             { Scenario.DespicableTheft, "DespicableTheft" },
             { Scenario.ElementalInvocation, "ElementalInvocation" },
-            { Scenario.TheGreatRiver, "TheGreatRiver" }
+            { Scenario.TheGreatRiver, "TheGreatRiver" },
+            { Scenario.ADiversityOfSpirits, "ADiversityOfSpirits" },
+            { Scenario.VariedTerrains, "VariedTerrains" },
         };
 
         private readonly static Dictionary<string, string> BoardNameMappings = new Dictionary<string, string>
@@ -296,7 +313,7 @@ namespace SiRandomizer.Services
         private string BuildExpansionString(GameSetup setup)
         {
             // Just do this for now, it will be ignored if the user does not own it.
-            return "BranchAndClaw,JaggedEarth";
+            return "BranchAndClaw,JaggedEarth,Horizons,PromoPack1,PromoPack2,NatureIncarnate";
         }
 
     }
