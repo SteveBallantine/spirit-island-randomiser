@@ -144,7 +144,7 @@ namespace SiRandomizer.Services
             {
                 result.Append($"&adversaryLevel={setup.LeadingAdversary.Level}");
             }
-            if(setup.LeadingAdversary.Parent.Name != Adversary.NoAdversary) 
+            if(setup.HasSupportingAdversary) 
             {
                 result.Append($"&supportingAdversary={AdversaryNameMappings[setup.SupportingAdversary.Parent.Name]}");
             }
