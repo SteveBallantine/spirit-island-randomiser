@@ -45,7 +45,9 @@ namespace SiRandomizer.Services
             { Spirit.Vengeance, "VengeanceAsABurningPlague" },
             { Spirit.Earth, "VitalStrengthOfTheEarth" },
             { Spirit.Volcano, "VolcanoLoomingHigh" },
-            { Spirit.Voice, "WanderingVoiceKeensDelirium" }
+            { Spirit.Voice, "WanderingVoiceKeensDelirium" },
+            { Spirit.Earthquakes, "DancesUpEarthquakes" },
+            { Spirit.Darkness, "BreathOfDarknessDownYourSpine" },
         };
 
         private readonly static Dictionary<string, string> SpiritAspectNameMappings = new Dictionary<string, string>
@@ -66,6 +68,11 @@ namespace SiRandomizer.Services
             { SpiritAspect.Tactician, "Tactician" },
             { SpiritAspect.Resilience, "Resilience" },
             { SpiritAspect.Might, "Might" },
+            { SpiritAspect.Locus, "Locus" },
+            { SpiritAspect.Deeps, "Deeps" },
+            { SpiritAspect.Encircle, "Encircle" },
+            { SpiritAspect.Stranded, "Stranded" },
+            { SpiritAspect.Tangles, "Tangles" },
         };
 
         private readonly static Dictionary<string, string> AdversaryNameMappings = new Dictionary<string, string>
@@ -77,6 +84,7 @@ namespace SiRandomizer.Services
             { Adversary.Habsburg, "TheHabsburgMonarchy" },
             { Adversary.Russia, "TheTsardomOfRussia" },
             { Adversary.Scotland, "TheKingdomOfScotland" },
+            { Adversary.HapsburgMining, "HabsburgMiningExpedition" },
         };
 
         private readonly static Dictionary<string, string> ScenarioNameMappings = new Dictionary<string, string>
