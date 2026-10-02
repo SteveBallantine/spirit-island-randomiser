@@ -3,40 +3,41 @@ name: Deploy to GitHub Pages
 # Run workflow on every push to the main branch
 on:
   push:
-    branches: [feature/launch-service-update]
-
+    branches: [ main ]
+    
 jobs:
   deploy-to-github-pages:
     # use ubuntu-latest image to run steps on
     runs-on: ubuntu-latest
     steps:
-      # uses checkout the current branch
-      - uses: actions/checkout@v3.0.0
-
-      # set up .NET Core SDK
-      - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v2.0.0
-
-      # Run tests
-      - name: Run tests
-        run: dotnet test spirit-island-randomiser.sln
-
-      # Publish project
-      - name: Publish .NET Core Project
-        run: dotnet publish BlazorApp/spirit-island-randomiser.csproj -c Release -o release --nologo
-
-      # Change the base-tag in index.html from '/' to 'spirit-island-randomiser' to match GitHub Pages repository subdirectory
-      - name: Change base-tag
-        run: sed -i 's/<base href="\/" \/>/<base href="\/spirit-island-randomiser\/" \/>/g' release/wwwroot/index.html
-
-      # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project.
-      - name: Add .nojekyll file
-        run: touch release/wwwroot/.nojekyll
-
-      # Update gh-pages branch with published site
-      - name: Commit wwwroot to gh-pages
-        uses: crazy-max/ghaction-github-pages@v2.6.0
-        with:
-          build_dir: release/wwwroot
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    # uses checkout the current branch
+    - uses: actions/checkout@v3.0.0
+    
+    # set up .NET Core SDK
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v2.0.0
+        
+    # Run tests
+    - name: Run tests
+      run: dotnet test spirit-island-randomiser.sln
+      
+    # Publish project
+    - name: Publish .NET Core Project
+      run: dotnet publish BlazorApp/spirit-island-randomiser.csproj -c Release -o release --nologo
+   
+    # Change the base-tag in index.html from '/' to 'spirit-island-randomiser' to match GitHub Pages repository subdirectory
+    - name: Change base-tag
+      run: sed -i 's/<base href="\/" \/>/<base href="\/spirit-island-randomiser\/" \/>/g' release/wwwroot/index.html
+          
+    # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project.
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
+      
+    # Update gh-pages branch with published site
+    - name: Commit wwwroot to gh-pages
+      uses: crazy-max/ghaction-github-pages@v2.6.0
+      with:
+        build_dir: release/wwwroot
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
